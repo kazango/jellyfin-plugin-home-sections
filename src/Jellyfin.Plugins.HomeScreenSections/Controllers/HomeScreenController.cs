@@ -16,13 +16,15 @@ namespace Jellyfin.Plugins.HomeScreenSections.Controllers
     /// <summary>
     /// API controller for the Modular Home Screen.
     /// </summary>
+    [ApiController]
+    [Route("[controller]")]
     public class HomeScreenController : ControllerBase
     {
         private readonly IHomeScreenManager m_homeScreenManager;
         private readonly IDisplayPreferencesManager m_displayPreferencesManager;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TvShowsController"/> class.
+        /// Initializes a new instance of the <see cref="HomeScreenController"/> class.
         /// </summary>
         /// <param name="homeScreenManager">Instance of the <see cref="IHomeScreenManager"/> interface.</param>
         /// <param name="displayPreferencesManager">Instance of the <see cref="IDisplayPreferencesManager" /> interface.</param>

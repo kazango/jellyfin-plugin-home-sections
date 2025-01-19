@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,12 +12,6 @@
       <PackageReference Include="Jellyfin.Controller" Version="10.10.3" />
       <PackageReference Include="Jellyfin.Model" Version="10.10.3" />
       <PackageReference Include="Jellyfin.Sdk" Version="2024.10.28" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Jellyfin.Api">
-        <HintPath>..\..\Jellyfin_Home\jellyfin\Jellyfin.Server\bin\Release\net6.0\Jellyfin.Api.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
     <ItemGroup>
