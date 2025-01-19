@@ -38,16 +38,19 @@ public class Plugin : BasePlugin<BasePluginConfiguration>, IPlugin, IHasWebPages
         {
             config.Add("pages", new JArray());
         }
-        
-        config.Value<JArray>("pages")!.Add(new JObject
+
+        if (!config.Value<JArray>("pages").Any(x => x.Value<string>("Id") == typeof(Plugin).Namespace))
         {
-            { "Id", typeof(Plugin).Namespace },
-            { "Url", "/ModularHomeViews/settings" },
-            { "DisplayText", "Modular Home" },
-            { "Icon", "ballot" }
-        });
+            config.Value<JArray>("pages")!.Add(new JObject
+            {
+                { "Id", typeof(Plugin).Namespace },
+                { "Url", "/ModularHomeViews/settings" },
+                { "DisplayText", "Modular Home" },
+                { "Icon", "ballot" }
+            });
         
-        File.WriteAllText(pluginPagesConfig, config.ToString(Formatting.Indented));
+            File.WriteAllText(pluginPagesConfig, config.ToString(Formatting.Indented));
+        }
     }
 
     public IEnumerable<PluginPageInfo> GetPages()
