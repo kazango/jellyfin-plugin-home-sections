@@ -18,4 +18,9 @@
       <Folder Include="InjectSnippets\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Include="Config\settings.html" />
+      <EmbeddedResource Include="Config\settings.js" />
+    </ItemGroup>
+
 </Project>
