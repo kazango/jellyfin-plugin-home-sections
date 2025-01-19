@@ -1,3 +1,4 @@
+using System.Reflection;
 using Jellyfin.Plugins.HomeScreenSections.HomeScreen.Sections;
 using Jellyfin.Plugins.HomeScreenSections.Library;
 using Jellyfin.Plugins.HomeScreenSections.Model.Dto;
@@ -128,7 +129,7 @@ namespace Jellyfin.Plugins.HomeScreenSections.HomeScreen
         /// <inheritdoc/>
         public ModularHomeUserSettings? GetUserSettings(Guid userId)
         {
-            string pluginSettings = Path.Combine(m_applicationPaths.PluginsPath, "ModularHome", c_settingsFile);
+            string pluginSettings = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), c_settingsFile);
 
             if (File.Exists(pluginSettings))
             {
@@ -149,7 +150,7 @@ namespace Jellyfin.Plugins.HomeScreenSections.HomeScreen
         /// <inheritdoc/>
         public bool UpdateUserSettings(Guid userId, ModularHomeUserSettings userSettings)
         {
-            string pluginSettings = Path.Combine(m_applicationPaths.PluginsPath, "ModularHome", c_settingsFile);
+            string pluginSettings = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), c_settingsFile);
             FileInfo fInfo = new FileInfo(pluginSettings);
             fInfo.Directory?.Create();
 
