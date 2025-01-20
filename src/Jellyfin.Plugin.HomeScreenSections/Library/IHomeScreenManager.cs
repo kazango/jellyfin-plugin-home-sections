@@ -1,8 +1,8 @@
-using Jellyfin.Plugins.HomeScreenSections.Model.Dto;
+using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Querying;
 
-namespace Jellyfin.Plugins.HomeScreenSections.Library
+namespace Jellyfin.Plugin.HomeScreenSections.Library
 {
     /// <summary>
     /// IHomeScreenManager interface.

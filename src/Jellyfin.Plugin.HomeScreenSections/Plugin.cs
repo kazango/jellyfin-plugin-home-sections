@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Jellyfin.Plugins.HomeScreenSections.Library;
+using Jellyfin.Plugin.HomeScreenSections.Library;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
@@ -7,7 +7,7 @@ using MediaBrowser.Model.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Jellyfin.Plugins.HomeScreenSections;
+namespace Jellyfin.Plugin.HomeScreenSections;
 
 public class Plugin : BasePlugin<BasePluginConfiguration>, IPlugin, IHasWebPages
 {

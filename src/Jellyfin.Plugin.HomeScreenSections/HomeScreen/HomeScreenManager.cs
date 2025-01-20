@@ -1,7 +1,7 @@
 using System.Reflection;
-using Jellyfin.Plugins.HomeScreenSections.HomeScreen.Sections;
-using Jellyfin.Plugins.HomeScreenSections.Library;
-using Jellyfin.Plugins.HomeScreenSections.Model.Dto;
+using Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections;
+using Jellyfin.Plugin.HomeScreenSections.Library;
+using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Querying;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Jellyfin.Plugins.HomeScreenSections.HomeScreen
+namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
 {
     /// <summary>
     /// Manager for the Modular Home Screen.

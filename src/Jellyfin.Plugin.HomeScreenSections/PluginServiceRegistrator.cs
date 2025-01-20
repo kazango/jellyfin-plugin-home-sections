@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
-using Jellyfin.Plugins.HomeScreenSections.HomeScreen;
-using Jellyfin.Plugins.HomeScreenSections.Library;
+using Jellyfin.Plugin.HomeScreenSections.HomeScreen;
+using Jellyfin.Plugin.HomeScreenSections.Library;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Jellyfin.Plugins.HomeScreenSections
+namespace Jellyfin.Plugin.HomeScreenSections
 {
     public class PluginServiceRegistrator : IPluginServiceRegistrator
     {

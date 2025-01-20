@@ -1,7 +1,7 @@
 using Jellyfin.Data.Entities;
 using Jellyfin.Data.Enums;
-using Jellyfin.Plugins.HomeScreenSections.Library;
-using Jellyfin.Plugins.HomeScreenSections.Model.Dto;
+using Jellyfin.Plugin.HomeScreenSections.Library;
+using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
@@ -10,7 +10,7 @@ using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
 
-namespace Jellyfin.Plugins.HomeScreenSections.HomeScreen.Sections
+namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
     /// <summary>
     /// Latest Shows Section.

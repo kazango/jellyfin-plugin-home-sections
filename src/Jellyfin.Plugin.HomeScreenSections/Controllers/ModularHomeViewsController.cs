@@ -1,11 +1,11 @@
-﻿using Jellyfin.Plugins.HomeScreenSections.Library;
+﻿using Jellyfin.Plugin.HomeScreenSections.Library;
 using MediaBrowser.Model;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Querying;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugins.HomeScreenSections.Controllers
+namespace Jellyfin.Plugin.HomeScreenSections.Controllers
 {
     /// <summary>
     /// API controller for Modular Home plugin.

@@ -2,7 +2,7 @@
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32505.426
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugins.HomeScreenSections", "Jellyfin.Plugins.HomeScreenSections\Jellyfin.Plugins.HomeScreenSections.csproj", "{D7F7C6FE-9D27-40F9-90E8-F23FC8743BCA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.HomeScreenSections", "Jellyfin.Plugin.HomeScreenSections\Jellyfin.Plugin.HomeScreenSections.csproj", "{D7F7C6FE-9D27-40F9-90E8-F23FC8743BCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

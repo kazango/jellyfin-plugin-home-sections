@@ -1,4 +1,4 @@
-namespace Jellyfin.Plugins.HomeScreenSections.Model.Dto
+namespace Jellyfin.Plugin.HomeScreenSections.Model.Dto
 {
     /// <summary>
     /// Payload created by provided data from the frontend to determine how to deal with how a home screen section should display.

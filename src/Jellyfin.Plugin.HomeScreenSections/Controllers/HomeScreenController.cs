@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 using Jellyfin.Data.Entities;
 using Jellyfin.Data.Enums;
 using Jellyfin.Extensions;
-using Jellyfin.Plugins.HomeScreenSections.Library;
-using Jellyfin.Plugins.HomeScreenSections.Model.Dto;
+using Jellyfin.Plugin.HomeScreenSections.Library;
+using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller;
 using MediaBrowser.Model.Dto;
@@ -11,7 +11,7 @@ using MediaBrowser.Model.Querying;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Jellyfin.Plugins.HomeScreenSections.Controllers
+namespace Jellyfin.Plugin.HomeScreenSections.Controllers
 {
     /// <summary>
     /// API controller for the Modular Home Screen.
