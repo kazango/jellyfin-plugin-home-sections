@@ -21,7 +21,7 @@ public class Plugin : BasePlugin<BasePluginConfiguration>, IPlugin, IHasWebPages
     {
         Instance = this;
         
-        string pluginPagesConfig = Path.Combine(applicationPaths.PluginConfigurationsPath, "Paradox.PluginPages", "config.json");
+        string pluginPagesConfig = Path.Combine(applicationPaths.PluginConfigurationsPath, "Jellyfin.Plugin.PluginPages", "config.json");
         
         JObject config = new JObject();
         if (!File.Exists(pluginPagesConfig))
