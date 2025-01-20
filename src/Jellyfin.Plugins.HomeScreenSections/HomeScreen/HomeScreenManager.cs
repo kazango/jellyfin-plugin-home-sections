@@ -34,7 +34,7 @@ namespace Jellyfin.Plugins.HomeScreenSections.HomeScreen
             m_serviceProvider = serviceProvider;
             m_applicationPaths = applicationPaths;
 
-            string userFeatureEnabledPath = Path.Combine(m_applicationPaths.CachePath, "userFeatureEnabled.json");
+            string userFeatureEnabledPath = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(Plugin).Namespace!, "userFeatureEnabled.json");
             if (File.Exists(userFeatureEnabledPath))
             {
                 m_userFeatureEnabledStates = JsonConvert.DeserializeObject<Dictionary<Guid, bool>>(File.ReadAllText(userFeatureEnabledPath)) ?? new Dictionary<Guid, bool>();
@@ -126,14 +126,14 @@ namespace Jellyfin.Plugins.HomeScreenSections.HomeScreen
 
             m_userFeatureEnabledStates[userId] = enabled;
 
-            string userFeatureEnabledPath = Path.Combine(m_applicationPaths.CachePath, "userFeatureEnabled.json");
+            string userFeatureEnabledPath = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(Plugin).Namespace!, "userFeatureEnabled.json");
             File.WriteAllText(userFeatureEnabledPath, JObject.FromObject(m_userFeatureEnabledStates).ToString(Formatting.Indented));
         }
 
         /// <inheritdoc/>
         public ModularHomeUserSettings? GetUserSettings(Guid userId)
         {
-            string pluginSettings = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), c_settingsFile);
+            string pluginSettings = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(Plugin).Namespace!, c_settingsFile);
 
             if (File.Exists(pluginSettings))
             {
@@ -154,7 +154,7 @@ namespace Jellyfin.Plugins.HomeScreenSections.HomeScreen
         /// <inheritdoc/>
         public bool UpdateUserSettings(Guid userId, ModularHomeUserSettings userSettings)
         {
-            string pluginSettings = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), c_settingsFile);
+            string pluginSettings = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(Plugin).Namespace!, c_settingsFile);
             FileInfo fInfo = new FileInfo(pluginSettings);
             fInfo.Directory?.Create();
 
