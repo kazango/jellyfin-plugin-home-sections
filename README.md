@@ -39,10 +39,16 @@ The sections that are new for this plugin (and most likely the reason you would 
 
 - Because You Watched
 	- Very similar to Netflix's "because you watched" section, a maximum of 5 of these will appear when the section is enabled
+<img src="https://raw.githubusercontent.com/IAmParadox27/jellyfin-plugin-home-sections/refs/heads/main/screenshots/because-you-watched.png" alt="Because You Watched Preview" />
+
 - Watch Again
 	- Again similar to Netflix's feature of the same name, this will request Movies in a Collection and TV Shows that have been watched to their completion and will provide the user an option to watch the show/movie collection again. The listed entry will be the first movie to be released in that collection (done by Premiere Date) or the first episode in the series
+<img src="https://raw.githubusercontent.com/IAmParadox27/jellyfin-plugin-home-sections/refs/heads/main/screenshots/watch-again.png" alt="Watch Again Preview" />
+
 - My List
 	- Again similar to Netflix's feature. This requires a bit more setup than the others to get working. It looks for a playlist called "My List" and retrieves the entries in that playlist.
+<img src="https://raw.githubusercontent.com/IAmParadox27/jellyfin-plugin-home-sections/refs/heads/main/screenshots/my-list.png" alt="My List Preview" />
+
 ## Installation
 
 ### Prerequisites
