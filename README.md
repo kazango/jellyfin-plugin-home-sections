@@ -6,10 +6,10 @@
 	<sub>Custom Logo Coming Soon</sub>
 	<br />
 	<br />
-	<a href="https://github.com/IAmParadox27/jellyfin-home-screen-sections">
+	<a href="https://github.com/IAmParadox27/jellyfin-plugin-home-sections">
 		<img alt="GPL 3.0 License" src="https://img.shields.io/github/license/IAmParadox27/jellyfin-plugin-home-sections.svg" />
 	</a>
-	<a href="https://github.com/IAmParadox27/jellyfin-home-screen-sections/releases">
+	<a href="https://github.com/IAmParadox27/jellyfin-plugin-home-sections/releases">
 		<img alt="Current Release" src="https://img.shields.io/github/release/IAmParadox27/jellyfin-plugin-home-sections.svg" />
 	</a>
 </p>
