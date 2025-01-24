@@ -21,6 +21,18 @@
     <ItemGroup>
       <EmbeddedResource Include="Config\settings.html" />
       <EmbeddedResource Include="Config\settings.js" />
+      <None Remove="Controllers\loadSections.js" />
+      <EmbeddedResource Include="Controllers\loadSections.js" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Reference Include="Jellyfin.Plugin.FileTransformation">
+            <Private>False</Private>
+            <HintPath>C:\ProgramData\Jellyfin\Server\plugins\File Transformation_1.0.0.0\Jellyfin.Plugin.FileTransformation.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="xcopy $(OutDir) &quot;C:\ProgramData\Jellyfin\Server\plugins\Home Screen Sections_1.0.0.8&quot; /y" />
+    </Target>
 </Project>
