@@ -9,15 +9,18 @@
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-      <PackageReference Include="Jellyfin.Controller" Version="10.10.3" />
-      <PackageReference Include="Jellyfin.Model" Version="10.10.3" />
       <PackageReference Include="Jellyfin.Sdk" Version="2024.10.28" />
+      <PackageReference Include="Jellyfin.Plugin.Referenceable" Version="1.0.1-alpha.2" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="InjectSnippets\" />
     </ItemGroup>
 
+    <PropertyGroup>
+        <EnableRepack>false</EnableRepack>
+    </PropertyGroup>
+    
     <ItemGroup>
       <EmbeddedResource Include="Config\settings.html" />
       <EmbeddedResource Include="Config\settings.js" />
