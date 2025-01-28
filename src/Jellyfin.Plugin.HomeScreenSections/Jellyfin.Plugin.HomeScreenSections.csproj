@@ -10,7 +10,8 @@
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="Jellyfin.Sdk" Version="2024.10.28" />
-      <PackageReference Include="Jellyfin.Plugin.Referenceable" Version="1.0.4" OutputItemType="Analyzer" GeneratePathProperty="true" />
+      <PackageReference Include="Jellyfin.Plugin.Referenceable" Version="1.0.5" OutputItemType="Analyzer" GeneratePathProperty="true" />
+      <PackageReference Include="Jellyfin.Plugin.FileTransformation" Version="1.0.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,13 +27,6 @@
       <EmbeddedResource Include="Config\settings.js" />
       <None Remove="Controllers\loadSections.js" />
       <EmbeddedResource Include="Controllers\loadSections.js" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Reference Include="Jellyfin.Plugin.FileTransformation">
-            <Private>False</Private>
-            <HintPath>C:\ProgramData\Jellyfin\Server\plugins\File Transformation_1.0.0.0\Jellyfin.Plugin.FileTransformation.dll</HintPath>
-        </Reference>
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
