@@ -10,8 +10,8 @@
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="Jellyfin.Sdk" Version="2024.10.28" />
-      <PackageReference Include="Jellyfin.Plugin.Referenceable" Version="1.0.5" OutputItemType="Analyzer" GeneratePathProperty="true" />
-      <PackageReference Include="Jellyfin.Plugin.FileTransformation" Version="1.0.1" />
+      <PackageReference Include="Jellyfin.Plugin.Referenceable" Version="1.0.6" OutputItemType="Analyzer" GeneratePathProperty="true" />
+      <PackageReference Include="Jellyfin.Plugin.FileTransformation" Version="1.0.2" />
     </ItemGroup>
 
     <ItemGroup>
