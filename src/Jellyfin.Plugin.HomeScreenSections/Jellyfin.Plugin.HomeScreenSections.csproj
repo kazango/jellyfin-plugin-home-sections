@@ -5,22 +5,44 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>1.1.0</Version>
+        <PackageProjectUrl>https://github.com/IAmParadox27/jellyfin-plugin-home-sections</PackageProjectUrl>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/IAmParadox27/jellyfin-plugin-home-sections/refs/heads/main/LICENSE</PackageLicenseUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/IAmParadox27/jellyfin-plugin-home-sections</RepositoryUrl>
+        <RepositoryType>GitHub</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-      <PackageReference Include="Jellyfin.Controller" Version="10.10.3" />
-      <PackageReference Include="Jellyfin.Model" Version="10.10.3" />
       <PackageReference Include="Jellyfin.Sdk" Version="2024.10.28" />
+      <PackageReference Include="Jellyfin.Model" Version="10.10.3" />
+      <PackageReference Include="Jellyfin.Controller" Version="10.10.3" />
+      <PackageReference Include="Jellyfin.Plugin.Referenceable" Version="1.1.0" OutputItemType="Analyzer" GeneratePathProperty="true" />
+      <PackageReference Include="Jellyfin.Plugin.FileTransformation" Version="1.1.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="InjectSnippets\" />
     </ItemGroup>
 
+    <PropertyGroup>
+        <EnableRepack>false</EnableRepack>
+    </PropertyGroup>
+    
     <ItemGroup>
       <EmbeddedResource Include="Config\settings.html" />
       <EmbeddedResource Include="Config\settings.js" />
+      <None Remove="Controllers\loadSections.js" />
+      <EmbeddedResource Include="Controllers\loadSections.js" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="/" />
     </ItemGroup>
 
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="Exists('C:\ProgramData\Jellyfin\Server\plugins\Home Screen Sections_1.0.0.8')">
+        <Exec Command="xcopy $(OutDir) &quot;C:\ProgramData\Jellyfin\Server\plugins\Home Screen Sections_1.0.0.8&quot; /y" />
+    </Target>
 </Project>

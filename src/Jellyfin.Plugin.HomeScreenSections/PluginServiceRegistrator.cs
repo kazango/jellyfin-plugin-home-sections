@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.Loader;
 using Jellyfin.Plugin.HomeScreenSections.HomeScreen;
 using Jellyfin.Plugin.HomeScreenSections.Library;
 using MediaBrowser.Common.Configuration;
@@ -8,9 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Jellyfin.Plugin.HomeScreenSections
 {
-    public class PluginServiceRegistrator : IPluginServiceRegistrator
+    public class PluginServiceRegistrator : Services.PluginServiceRegistrator
     {
-        public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
+        public override void ConfigureServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
         {
             serviceCollection.AddSingleton<CollectionManagerProxy>();
             serviceCollection.AddSingleton<IHomeScreenManager, HomeScreenManager>(services =>
