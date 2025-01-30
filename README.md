@@ -53,9 +53,9 @@ The sections that are new for this plugin (and most likely the reason you would 
 
 ### Prerequisites
 - This plugin is based on Jellyfin Version `10.10.3`
-- A custom deployment of `jellyfin-web` is required to run this plugin. It can be cloned from https://github.com/IAmParadox27/jellyfin-web or there is release with the data pre-packaged for simpler install available to download.
-- The `jellyfin-web` directory should be writable by whatever user is running the Jellyfin server instance. If on Windows this might mean changing the permissions for `C:\Program Files\Jellyfin\Server\jellyfin-web` to allow write access the Jellyfin user.
-- **Plugin Pages** (https://github.com/IAmParadox27/jellyfin-plugin-pages) is required to be installed. It allow this plugin to be enabled/configured per user, rather than server configured. This was a decision taken at the start so that I could use it, while my users didn't have to.
+- The following plugins are required to also be installed, please following their installation guides:
+  - File Transformation (https://github.com/IAmParadox27/jellyfin-plugin-file-transformation)
+  - Plugin Pages (https://github.com/IAmParadox27/jellyfin-plugin-pages)
 ### Installation
 1. Add `https://www.iamparadox.dev/jellyfin/plugins/manifest.json` to your plugin repositories.
 2. Install `Home Screen Sections` from the Catalogue.
@@ -82,7 +82,7 @@ If you find an issue with any of the sections or usage of the plugin, please ope
 
 Yep! Home Screen Sections supports "plugins" 😅. 
 
-Currently the plugin isn't available on NuGet (this is planned) however you can reference the DLL in a .NET library project.
+The easiest way is to reference the NuGet package `Jellyfin.Plugin.HomeScreenSections`
 
 When you have a project created. Make a new type and inherit from `IHomeScreenSection`. Implement the required properties/functions and away you go. 
 
