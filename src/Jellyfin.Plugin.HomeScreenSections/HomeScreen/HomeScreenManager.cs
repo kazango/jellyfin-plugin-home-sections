@@ -132,6 +132,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
             m_userFeatureEnabledStates[userId] = enabled;
 
             string userFeatureEnabledPath = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(Plugin).Namespace!, "userFeatureEnabled.json");
+            new FileInfo(userFeatureEnabledPath).Directory?.Create();
             File.WriteAllText(userFeatureEnabledPath, JObject.FromObject(m_userFeatureEnabledStates).ToString(Formatting.Indented));
         }
 
