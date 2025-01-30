@@ -16,6 +16,12 @@ namespace Jellyfin.Plugin.HomeScreenSections.Library
         void RegisterResultsDelegate<T>() where T : IHomeScreenSection;
 
         /// <summary>
+        /// Register a home screen section with the <see cref="IHomeScreenManager"/>. This variant allows the plugin to provide their own runtime created instance instead of having it created for them.
+        /// </summary>
+        /// <typeparam name="T">A class that implements <see cref="IHomeScreenSection"/>.</typeparam>
+        void RegisterResultsDelegate<T>(T handler) where T : IHomeScreenSection;
+        
+        /// <summary>
         /// Get the registered <see cref="IHomeScreenSection"/> instances.
         /// </summary>
         /// <returns>Array of <see cref="IHomeScreenSection"/>.</returns>

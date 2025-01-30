@@ -73,6 +73,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
         {
             T handler = ActivatorUtilities.CreateInstance<T>(m_serviceProvider);
 
+            RegisterResultsDelegate(handler);
+        }
+
+        public void RegisterResultsDelegate<T>(T handler) where T : IHomeScreenSection
+        {
             if (handler.Section != null)
             {
                 if (!m_delegates.ContainsKey(handler.Section))
