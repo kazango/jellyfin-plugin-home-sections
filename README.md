@@ -12,6 +12,12 @@
 	<a href="https://github.com/IAmParadox27/jellyfin-plugin-home-sections/releases">
 		<img alt="Current Release" src="https://img.shields.io/github/release/IAmParadox27/jellyfin-plugin-home-sections.svg" />
 	</a>
+	<a href="https://www.nuget.org/packages/Jellyfin.Plugin.HomeScreenSections">
+		<img alt="NuGet Release" src="https://img.shields.io/nuget/v/Jellyfin.Plugin.HomeScreenSections" />
+	</a>
+	  <a href="https://www.nuget.org/packages/Jellyfin.Plugin.Referenceable/1.1.0">
+	    <img alt="Shield Example" src="https://img.shields.io/badge/JF%20Referenceable-v1.1.0-blue" /> 
+	  </a>
 </p>
 
 ## Introduction
