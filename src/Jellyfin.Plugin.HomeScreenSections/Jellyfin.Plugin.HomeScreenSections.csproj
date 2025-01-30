@@ -5,6 +5,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>1.1.0</Version>
+        <PackageProjectUrl>https://github.com/IAmParadox27/jellyfin-plugin-home-sections</PackageProjectUrl>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/IAmParadox27/jellyfin-plugin-home-sections/refs/heads/main/LICENSE</PackageLicenseUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/IAmParadox27/jellyfin-plugin-home-sections</RepositoryUrl>
+        <RepositoryType>GitHub</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>
@@ -30,8 +37,12 @@
       <None Remove="Controllers\loadSections.js" />
       <EmbeddedResource Include="Controllers\loadSections.js" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="Exists('C:\ProgramData\Jellyfin\Server\plugins\Home Screen Sections_1.0.0.8')">
         <Exec Command="xcopy $(OutDir) &quot;C:\ProgramData\Jellyfin\Server\plugins\Home Screen Sections_1.0.0.8&quot; /y" />
     </Target>
 </Project>
