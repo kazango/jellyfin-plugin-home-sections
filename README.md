@@ -71,12 +71,8 @@ The sections that are new for this plugin (and most likely the reason you would 
 6. Save the settings. _Please note currently the user is not provided any feedback when the settings are saved_.
 7. Force refresh your webpage (or app) and you should see your new sections instead of the original ones.
 ## Upcoming Features/Known Issues
-If you find an issue with any of the sections or usage of the plugin, please open an issue on GitHub, see below the issues I know about already which are planned to be solved in due course.
+If you find an issue with any of the sections or usage of the plugin, please open an issue on GitHub.
 
-| Feature                     | Status  | Comments                                                                                                                                                                                                                               |
-| --------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Server Side Configuration   | Planned | The plugin doesn't have any server side configuration at the moment, there are plans to add some configuration on the server side to configure things like "which sections are available" and "how many of some sections are allowed". |
-| Save Settings User Feedback | Bug     | Currently when the user saves their settings the webpage doesn't tell them that the settings have been saved successfully.                                                                                                             |
 ### FAQ
 
 #### How can I tell if its worked?
@@ -90,7 +86,23 @@ Yep! Home Screen Sections supports "plugins" 😅.
 
 The easiest way is to reference the NuGet package `Jellyfin.Plugin.HomeScreenSections`
 
-When you have a project created. Make a new type and inherit from `IHomeScreenSection`. Implement the required properties/functions and away you go. 
+When you have a project created. ~~Make a new type and inherit from `IHomeScreenSection`. Implement the required properties/functions and away you go.~~.
+
+There is an issue with the above described approach as the plugins being reloaded they reference the wrong assembly. You have to add the following code to your plugin:
+
+```csharp
+[ModuleInitializer]
+public static void Init()
+{
+	// This is annoyingly necessary at the moment. Looking to find a solution to this.
+	AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+	{
+		return AssemblyLoadContext.All.FirstOrDefault(x => x.Name?.Contains("Referenceable") ?? false)?.Assemblies?.FirstOrDefault(x => x.FullName == args.Name);
+	};
+}
+```
+
+Then use the `IHomeScreenManager.RegisterResultsDelegate` function that accepts a parameter, pass in an instance of `PluginDefinedSection` and set the `OnGetResults` delegate to the function you want to call to get the results for your section. All other parameters are required in the constructor.
 
 _When referencing Jellyfin NuGet packages please ensure that you reference the same version that is references by Home Screen Sections to avoid any conflicts._
 

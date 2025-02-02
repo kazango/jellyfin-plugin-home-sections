@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>1.1.0</Version>
+        <Version>1.1.1</Version>
         <PackageProjectUrl>https://github.com/IAmParadox27/jellyfin-plugin-home-sections</PackageProjectUrl>
         <PackageLicenseUrl>https://raw.githubusercontent.com/IAmParadox27/jellyfin-plugin-home-sections/refs/heads/main/LICENSE</PackageLicenseUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>

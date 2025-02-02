@@ -3,4 +3,4 @@
 [assembly: AssemblyProduct("Jellyfin.Plugin.HomeScreenSections")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyTitle("Jellyfin.Plugin.HomeScreenSections")]
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.1.0")]
