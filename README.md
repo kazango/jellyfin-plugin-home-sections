@@ -15,8 +15,8 @@
 	<a href="https://www.nuget.org/packages/Jellyfin.Plugin.HomeScreenSections">
 		<img alt="NuGet Release" src="https://img.shields.io/nuget/v/Jellyfin.Plugin.HomeScreenSections" />
 	</a>
-	  <a href="https://www.nuget.org/packages/Jellyfin.Plugin.Referenceable/1.1.0">
-	    <img alt="Shield Example" src="https://img.shields.io/badge/JF%20Referenceable-v1.1.0-blue" /> 
+	  <a href="https://www.nuget.org/packages/Jellyfin.Plugin.Referenceable/1.2.0">
+	    <img alt="Shield Example" src="https://img.shields.io/badge/JF%20Referenceable-v1.2.0-blue" /> 
 	  </a>
 </p>
 
@@ -58,7 +58,7 @@ The sections that are new for this plugin (and most likely the reason you would 
 ## Installation
 
 ### Prerequisites
-- This plugin is based on Jellyfin Version `10.10.3`
+- This plugin is based on Jellyfin Version `10.10.5`
 - The following plugins are required to also be installed, please following their installation guides:
   - File Transformation (https://github.com/IAmParadox27/jellyfin-plugin-file-transformation)
   - Plugin Pages (https://github.com/IAmParadox27/jellyfin-plugin-pages)
