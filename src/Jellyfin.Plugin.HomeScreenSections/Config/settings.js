@@ -74,6 +74,8 @@ const config = {
                     type: 'POST',
                     data: JSON.stringify(data),
                     contentType: 'application/json'
+                }).then(function () {
+                    Dashboard.alert('Settings updated');
                 })
 
                 e.preventDefault();
