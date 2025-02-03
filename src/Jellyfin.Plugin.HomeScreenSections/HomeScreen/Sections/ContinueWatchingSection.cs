@@ -32,6 +32,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         /// <inheritdoc/>
         public string? AdditionalData { get; set; } = null;
 
+        public object? OriginalPayload => null;
+        
         private readonly IUserViewManager m_userViewManager;
         private readonly IUserManager m_userManager;
         private readonly IDtoService m_dtoService;

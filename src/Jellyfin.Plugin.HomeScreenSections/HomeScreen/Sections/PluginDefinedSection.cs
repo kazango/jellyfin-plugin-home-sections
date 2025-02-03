@@ -15,6 +15,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         public string? Route { get; }
         public string? AdditionalData { get; set; }
 
+        public object? OriginalPayload => null;
+        
         public required GetResultsDelegate OnGetResults { get; set; }
         
         public PluginDefinedSection(string sectionUuid, string displayText, string? route = null, string? additionalData = null)

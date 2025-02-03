@@ -96,6 +96,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.Library
         public string? AdditionalData { get; set; }
 
         /// <summary>
+        /// The original payload as if Jellyfin was going to send it.
+        /// </summary>
+        public object? OriginalPayload { get; }
+        
+        /// <summary>
         /// Get the results for the section.
         /// </summary>
         /// <param name="payload">The data for the section to determine what results to provider.</param>
@@ -141,6 +146,10 @@ namespace Jellyfin.Plugin.HomeScreenSections.Library
         /// </summary>
         public string? AdditionalData { get; set; }
 
+        /// <summary>
+        /// The original payload as if Jellyfin was going to send it.
+        /// </summary>
+        public object? OriginalPayload { get; set; }
     }
 
     /// <summary>
@@ -177,7 +186,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Library
                 DisplayText = section.DisplayText,
                 AdditionalData = section.AdditionalData,
                 Route = section.Route,
-                Limit = section.Limit ?? 1
+                Limit = section.Limit ?? 1,
+                OriginalPayload = section.OriginalPayload
             };
         }
     }

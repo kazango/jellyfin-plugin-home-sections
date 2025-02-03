@@ -32,8 +32,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         /// <inheritdoc/>
         public string? AdditionalData { get; set; } = "movies";
 
+        public object? OriginalPayload { get; set; } = null;
+        
         private readonly IUserViewManager m_userViewManager;
         private readonly IUserManager m_userManager;
+        private readonly ILibraryManager m_libraryManager;
         private readonly IDtoService m_dtoService;
 
         /// <summary>
@@ -44,10 +47,12 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         /// <param name="dtoService">Instance of <see href="IDtoService" /> interface.</param>
         public LatestMoviesSection(IUserViewManager userViewManager,
             IUserManager userManager,
+            ILibraryManager libraryManager,
             IDtoService dtoService)
         {
             m_userViewManager = userViewManager;
             m_userManager = userManager;
+            m_libraryManager = libraryManager;
             m_dtoService = dtoService;
         }
 
@@ -116,7 +121,31 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         /// <inheritdoc/>
         public IHomeScreenSection CreateInstance(Guid? userId, IEnumerable<IHomeScreenSection>? otherInstances = null)
         {
-            return this;
+            User? user = m_userManager.GetUserById(userId ?? Guid.Empty);
+
+            Folder? folder = m_libraryManager.GetUserRootFolder()
+                .GetChildren(user, true)
+                .OfType<Folder>()
+                .Select(x => x as ICollectionFolder)
+                .Where(x => x != null)
+                .FirstOrDefault(x => x.CollectionType == CollectionType.movies) as Folder;
+
+            BaseItemDto? originalPayload = null;
+            if (folder != null)
+            {
+                DtoOptions dtoOptions = new DtoOptions();
+                dtoOptions.Fields =
+                    [..dtoOptions.Fields, ItemFields.PrimaryImageAspectRatio, ItemFields.DisplayPreferencesId];
+
+                originalPayload = Array.ConvertAll(new[] { folder }, i => m_dtoService.GetBaseItemDto(i, dtoOptions, user)).First();
+            }
+
+            return new LatestMoviesSection(m_userViewManager, m_userManager, m_libraryManager, m_dtoService)
+            {
+                AdditionalData = AdditionalData,
+                DisplayText = DisplayText,
+                OriginalPayload = originalPayload
+            };
         }
     }
 }

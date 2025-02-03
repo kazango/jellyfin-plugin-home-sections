@@ -46,6 +46,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 		public string? AdditionalData { get; set; }
 
+		public object? OriginalPayload => null;
+		
 		private ICollectionManager CollectionManager { get; set; }
 
 		private IUserManager UserManager { get; set; }

@@ -23,6 +23,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 		public string? AdditionalData { get; set; }
 
+		public object? OriginalPayload => null;
+		
 		private IUserManager UserManager { get; set; }
 
 		private IDtoService DtoService { get; set; }
