@@ -75,7 +75,11 @@ const config = {
                     data: JSON.stringify(data),
                     contentType: 'application/json'
                 }).then(function () {
-                    Dashboard.alert('Settings updated');
+                    Dashboard.alert('Settings have been updated, reloading page in 2 seconds.');
+                    
+                    setTimeout(function () {
+                        location.reload(true);
+                    }, 2000);
                 })
 
                 e.preventDefault();
