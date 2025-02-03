@@ -13,24 +13,24 @@ using MediaBrowser.Model.Querying;
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
     /// <summary>
-    /// Latest Shows Section.
+    /// Latest Movies Section.
     /// </summary>
-    public class LatestShowsSection : IHomeScreenSection
+    public class RecentlyAddedMoviesSection : IHomeScreenSection
     {
         /// <inheritdoc/>
-        public string? Section => "LatestShows";
+        public string? Section => "LatestMovies";
 
         /// <inheritdoc/>
-        public string? DisplayText { get; set; } = "Latest Shows";
+        public string? DisplayText { get; set; } = "Latest Movies";
 
         /// <inheritdoc/>
         public int? Limit => 1;
 
         /// <inheritdoc/>
-        public string? Route => "tvshows";
+        public string? Route => "movies";
 
         /// <inheritdoc/>
-        public string? AdditionalData { get; set; } = "tvshows";
+        public string? AdditionalData { get; set; } = "movies";
 
         public object? OriginalPayload { get; set; } = null;
         
@@ -45,7 +45,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         /// <param name="userViewManager">Instance of <see href="IUserViewManager" /> interface.</param>
         /// <param name="userManager">Instance of <see href="IUserManager" /> interface.</param>
         /// <param name="dtoService">Instance of <see href="IDtoService" /> interface.</param>
-        public LatestShowsSection(IUserViewManager userViewManager,
+        public RecentlyAddedMoviesSection(IUserViewManager userViewManager,
             IUserManager userManager,
             ILibraryManager libraryManager,
             IDtoService dtoService)
@@ -81,21 +81,19 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             MyMediaSection myMedia = new MyMediaSection(m_userViewManager, m_userManager, m_dtoService);
             QueryResult<BaseItemDto> media = myMedia.GetResults(payload);
 
-            Guid parentId = Guid.Empty;
-            if (Enum.TryParse(payload.AdditionalData, out CollectionType collectionType))
-            {
-                parentId = media.Items.FirstOrDefault(x => x.CollectionType == collectionType)?.Id ?? Guid.Empty;
-            }
-            
+            Guid parentId = media.Items.FirstOrDefault(x => x.Name == payload.AdditionalData)?.Id ?? Guid.Empty;
+
             List<Tuple<BaseItem, List<BaseItem>>>? list = m_userViewManager.GetLatestItems(
                 new LatestItemsQuery
                 {
-                    GroupItems = true,
+                    GroupItems = false,
                     Limit = 16,
                     ParentId = parentId,
                     User = user,
-                    IsPlayed = false,
-                    IncludeItemTypes = Array.Empty<BaseItemKind>()
+                    IncludeItemTypes = new BaseItemKind[]
+                    {
+                        BaseItemKind.Movie
+                    }
                 },
                 dtoOptions);
 
@@ -130,7 +128,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 .OfType<Folder>()
                 .Select(x => x as ICollectionFolder)
                 .Where(x => x != null)
-                .FirstOrDefault(x => x.CollectionType == CollectionType.tvshows) as Folder;
+                .FirstOrDefault(x => x.CollectionType == CollectionType.movies) as Folder;
 
             BaseItemDto? originalPayload = null;
             if (folder != null)
@@ -142,7 +140,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 originalPayload = Array.ConvertAll(new[] { folder }, i => m_dtoService.GetBaseItemDto(i, dtoOptions, user)).First();
             }
 
-            return new LatestShowsSection(m_userViewManager, m_userManager, m_libraryManager, m_dtoService)
+            return new RecentlyAddedMoviesSection(m_userViewManager, m_userManager, m_libraryManager, m_dtoService)
             {
                 AdditionalData = AdditionalData,
                 DisplayText = DisplayText,
