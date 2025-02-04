@@ -18,10 +18,10 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
     public class RecentlyAddedMoviesSection : IHomeScreenSection
     {
         /// <inheritdoc/>
-        public string? Section => "LatestMovies";
+        public string? Section => "RecentlyAddedMovies";
 
         /// <inheritdoc/>
-        public string? DisplayText { get; set; } = "Latest Movies";
+        public string? DisplayText { get; set; } = "Recently Added Movies";
 
         /// <inheritdoc/>
         public int? Limit => 1;
