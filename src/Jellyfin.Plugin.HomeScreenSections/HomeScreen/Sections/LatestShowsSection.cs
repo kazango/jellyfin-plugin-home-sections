@@ -75,7 +75,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                     { Fields = new[] { ItemFields.SeriesPresentationUniqueKey }, EnableImages = false }
             });
             
-            List<BaseItem> series = episodes.Select(x => (x.FindParent<Series>(), x)).GroupBy(x => x.Item1).Select(x => x.Key as BaseItem).ToList();
+            List<BaseItem> series = episodes
+                .Select(x => (x.FindParent<Series>(), (x as Episode)?.PremiereDate))
+                .GroupBy(x => x.Item1)
+                .Select(x => (x.Key, x.Max(y => y.PremiereDate)))
+                .OrderByDescending(x => x.Item2)
+                .Select(x => x.Key as BaseItem)
+                .ToList();
             
             return new QueryResult<BaseItemDto>(Array.ConvertAll(series.ToArray(),
                 i => m_dtoService.GetBaseItemDto(i, dtoOptions, user)));
