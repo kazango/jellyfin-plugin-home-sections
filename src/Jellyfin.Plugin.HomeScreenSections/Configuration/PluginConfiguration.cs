@@ -4,9 +4,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
 {
     public class PluginConfiguration : BasePluginConfiguration
     {
-        public bool Enabled { get; set; }
-        
-        public bool AllowUserOverride { get; set; }
+        public bool Enabled { get; set; } = false;
+
+        public bool AllowUserOverride { get; set; } = true;
         
         public SectionSettings[] SectionSettings { get; set; } = Array.Empty<SectionSettings>();
     }
