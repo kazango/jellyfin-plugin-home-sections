@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Text.RegularExpressions;
 using Jellyfin.Plugin.FileTransformation.Controller;
+using Jellyfin.Plugin.HomeScreenSections.Configuration;
 using Jellyfin.Plugin.HomeScreenSections.Library;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
@@ -12,7 +13,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Jellyfin.Plugin.HomeScreenSections;
 
-public class Plugin : BasePlugin<BasePluginConfiguration>, IPlugin, IHasWebPages
+public class Plugin : BasePlugin<PluginConfiguration>, IPlugin, IHasWebPages
 {
     public override Guid Id => Guid.Parse("b8298e01-2697-407a-b44d-aa8dc795e850");
 
@@ -104,7 +105,13 @@ public class Plugin : BasePlugin<BasePluginConfiguration>, IPlugin, IHasWebPages
 
     public IEnumerable<PluginPageInfo> GetPages()
     {
-        return Enumerable.Empty<PluginPageInfo>();
+        string? prefix = GetType().Namespace;
+
+        yield return new PluginPageInfo
+        {
+            Name = Name,
+            EmbeddedResourcePath = $"{prefix}.Configuration.config.html"
+        };
     }
 
     /// <summary>

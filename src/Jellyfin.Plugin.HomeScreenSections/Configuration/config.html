@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Home Screen Sections</title>
+</head>
+<body>
+<div data-role="page" id="homeScreenSectionsConfigurationPage" class="page type-interior pluginConfigurationPage fullWidthContent">
+    <div class="content-primary">
+        <div class="verticalSection">
+            <div class="sectionTitleContainer">
+                <h2 class="sectionTitle">Home Screen Sections</h2>
+                <a is="emby-linkbutton" class="raised raised-mini emby-button" style="margin-left: 2em;" target="_blank" href="https://github.com/IAmParadox27/jellyfin-plugin-home-sections">
+                    <i class="md-icon button-icon button-icon-left secondaryText"></i>
+                    <span>Help</span>
+                </a>
+            </div>
+        </div>
+        <hr class="solid">
+        <form class="artworkConfigurationForm">
+            <fieldset class="verticalSection-extrabottompadding">
+                <legend>Global Settings</legend>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label class="emby-checkbox-label">
+                        <input id="globalEnabledDefault" type="checkbox" is="emby-checkbox" data-embycheckbox="true" class="emby-checkbox">
+                        <span class="checkboxLabel">Enabled by Default</span>
+                        <span class="checkboxOutline">
+                            <span class="material-icons checkboxIcon checkboxIcon-checked check" aria-hidden="true"></span>
+                            <span class="material-icons checkboxIcon checkboxIcon-unchecked " aria-hidden="true"></span>
+                        </span>
+                    </label>
+                    <div class="fieldDescription">Is Home Screen Sections enabled by default for all users?</div>
+                </div>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label class="emby-checkbox-label">
+                        <input id="globalAllowUserOverride" type="checkbox" is="emby-checkbox" data-embycheckbox="true" class="emby-checkbox">
+                        <span class="checkboxLabel">Allow User Override</span>
+                        <span class="checkboxOutline">
+                            <span class="material-icons checkboxIcon checkboxIcon-checked check" aria-hidden="true"></span>
+                            <span class="material-icons checkboxIcon checkboxIcon-unchecked " aria-hidden="true"></span>
+                        </span>
+                    </label>
+                    <div class="fieldDescription">Is the user allowed to enable/disable this plugin for their view?</div>
+                </div>
+            </fieldset>
+            <fieldset class="verticalSection-extrabottompadding">
+                <legend>Section Settings</legend>
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <fieldset class="verticalSection-extrabottompadding">
+                        <legend>Section Name</legend>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input id="templateSectionEnabled" type="checkbox" is="emby-checkbox" data-embycheckbox="true" class="emby-checkbox">
+                                <span class="checkboxLabel">Enabled</span>
+                                <span class="checkboxOutline">
+                                    <span class="material-icons checkboxIcon checkboxIcon-checked check" aria-hidden="true"></span>
+                                    <span class="material-icons checkboxIcon checkboxIcon-unchecked " aria-hidden="true"></span>
+                                </span>
+                            </label>
+                            <div class="fieldDescription">Is this section enabled by default?</div>
+                        </div>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input id="templateSectionAllowUserOverride" type="checkbox" is="emby-checkbox" data-embycheckbox="true" class="emby-checkbox">
+                                <span class="checkboxLabel">Allow User Override</span>
+                                <span class="checkboxOutline">
+                                    <span class="material-icons checkboxIcon checkboxIcon-checked check" aria-hidden="true"></span>
+                                    <span class="material-icons checkboxIcon checkboxIcon-unchecked " aria-hidden="true"></span>
+                                </span>
+                            </label>
+                            <div class="fieldDescription">Is the user allowed to enable/disable this section?</div>
+                        </div>
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="templateSectionMinLimit">Lower Limit</label>
+                            <label class="inputLabel inputLabelUnfocused" for="templateSectionMinLimit"></label>
+                            <input id="templateSectionMinLimit" type="number" is="emby-input" min="0" class="emby-input">
+                            <div class="fieldDescription">What is the minimum number of this section that should appear?</div>
+                        </div>
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="templateSectionMaxLimit">Upper Limit</label>
+                            <label class="inputLabel inputLabelUnfocused" for="templateSectionMaxLimit"></label>
+                            <input id="templateSectionMaxLimit" type="number" is="emby-input" min="0" class="emby-input">
+                            <div class="fieldDescription">What is the maximum number of this section that should appear?</div>
+                        </div>
+                    </fieldset>
+                </div>
+            </fieldset>
+            <br>
+            <button id="saveConfig" is="emby-button" type="submit" class="raised button-submit block emby-button">
+                <span>Save</span>
+            </button>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        if (typeof HomeScreenSections == 'undefined') {
+
+            const HomeScreenSections = {
+                init: function () {
+                    
+                }
+            }
+
+            document.querySelector('#homeScreenSectionsConfigurationPage').addEventListener("pageshow", function () {
+                HomeScreenSections.init();
+            });
+        }
+    </script>
+</div>
+</body>
+</html>

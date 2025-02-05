@@ -35,6 +35,8 @@
       <EmbeddedResource Include="Config\settings.js" />
       <None Remove="Controllers\loadSections.js" />
       <EmbeddedResource Include="Controllers\loadSections.js" />
+      <None Remove="Configuration\config.html" />
+      <EmbeddedResource Include="Configuration\config.html" />
     </ItemGroup>
     
     <ItemGroup>
