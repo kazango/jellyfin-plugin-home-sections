@@ -43,6 +43,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
             RegisterResultsDelegate<MyMediaSection>();
             RegisterResultsDelegate<ContinueWatchingSection>();
             RegisterResultsDelegate<NextUpSection>();
+            RegisterResultsDelegate<RecentlyAddedMoviesSection>();
+            RegisterResultsDelegate<RecentlyAddedShowsSection>();
             RegisterResultsDelegate<LatestMoviesSection>();
             RegisterResultsDelegate<LatestShowsSection>();
             RegisterResultsDelegate<BecauseYouWatchedSection>();
