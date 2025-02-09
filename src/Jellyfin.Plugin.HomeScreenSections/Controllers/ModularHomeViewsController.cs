@@ -97,12 +97,12 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
 
         private ActionResult ServeView(string viewName)
         {
-            if (Plugin.Instance == null)
+            if (HomeScreenSectionsPlugin.Instance == null)
             {
                 return BadRequest("No plugin instance found");
             }
 
-            IEnumerable<PluginPageInfo> pages = Plugin.Instance.GetViews();
+            IEnumerable<PluginPageInfo> pages = HomeScreenSectionsPlugin.Instance.GetViews();
 
             if (pages == null)
             {
@@ -116,7 +116,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
                 return NotFound("No matching view found");
             }
 
-            Stream? stream = Plugin.Instance.GetType().Assembly.GetManifestResourceStream(view.EmbeddedResourcePath);
+            Stream? stream = HomeScreenSectionsPlugin.Instance.GetType().Assembly.GetManifestResourceStream(view.EmbeddedResourcePath);
 
             if (stream == null)
             {

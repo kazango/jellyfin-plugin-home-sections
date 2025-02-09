@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.Loader;
 using Jellyfin.Plugin.HomeScreenSections.HomeScreen;
 using Jellyfin.Plugin.HomeScreenSections.Library;
 using MediaBrowser.Common.Configuration;
@@ -9,9 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Jellyfin.Plugin.HomeScreenSections
 {
-    public class PluginServiceRegistrator : Services.PluginServiceRegistrator
+    public class PluginServiceRegistrator : IPluginServiceRegistrator
     {
-        public override void ConfigureServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
+        public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
         {
             serviceCollection.AddSingleton<CollectionManagerProxy>();
             serviceCollection.AddSingleton<IHomeScreenManager, HomeScreenManager>(services =>
@@ -20,7 +19,7 @@ namespace Jellyfin.Plugin.HomeScreenSections
                 
                 HomeScreenManager homeScreenManager = ActivatorUtilities.CreateInstance<HomeScreenManager>(services);
                 
-                string pluginLocation = Path.Combine(appPaths.PluginConfigurationsPath, typeof(Plugin).Namespace!);
+                string pluginLocation = Path.Combine(appPaths.PluginConfigurationsPath, typeof(HomeScreenSectionsPlugin).Namespace!);
 
                 string[] extraDlls = Directory.GetFiles(pluginLocation, "*.dll", SearchOption.AllDirectories).ToArray();
 

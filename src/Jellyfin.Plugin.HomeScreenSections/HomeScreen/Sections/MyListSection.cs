@@ -45,7 +45,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 		public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload)
 		{
-			var dtoOptions = new DtoOptions
+			DtoOptions? dtoOptions = new DtoOptions
 			{
 				Fields = new List<ItemFields>
 				{
@@ -60,7 +60,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				}
 			};
 
-			User user = UserManager.GetUserById(payload.UserId);
+			User user = UserManager.GetUserById(payload.UserId)!;
 
 			IEnumerable<Playlist> playlists = PlaylistManager.GetPlaylists(user.Id);
 			Playlist? myListPlaylist = playlists.FirstOrDefault(x => x.Name == "My List");
@@ -75,7 +75,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				}));
 			}
 
-			var result = new QueryResult<BaseItemDto>(DtoService.GetBaseItemDtos(results, dtoOptions, user));
+			QueryResult<BaseItemDto>? result = new QueryResult<BaseItemDto>(DtoService.GetBaseItemDtos(results, dtoOptions, user));
 
 			return result;
 		}
