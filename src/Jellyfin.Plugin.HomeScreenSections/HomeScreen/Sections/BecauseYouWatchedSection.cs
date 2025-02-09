@@ -1,4 +1,5 @@
-﻿using Jellyfin.Data.Enums;
+﻿using Jellyfin.Data.Entities;
+using Jellyfin.Data.Enums;
 using Jellyfin.Plugin.HomeScreenSections.Library;
 using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 using MediaBrowser.Controller.Collections;
@@ -46,13 +47,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 		public IHomeScreenSection CreateInstance(Guid? userId, IEnumerable<IHomeScreenSection>? otherInstances = null)
 		{
-			Jellyfin.Data.Entities.User? user = userId is null || userId.Value.Equals(default)
+			User? user = userId is null || userId.Value.Equals(default)
 				? null
 				: UserManager.GetUserById(userId.Value);
 
 			BecauseYouWatchedSection section = new BecauseYouWatchedSection(UserDataManager, UserManager, LibraryManager, DtoService, CollectionManager, CollectionManagerProxy);
 
-			var dtoOptions = new DtoOptions 
+			DtoOptions? dtoOptions = new DtoOptions 
 			{ 
 				Fields = new[] 
 				{ 
@@ -61,15 +62,12 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				}
 			};
 
-			var query = new InternalItemsQuery(user)
+			InternalItemsQuery? query = new InternalItemsQuery(user)
 			{
 				IncludeItemTypes = new[]
 				{
-					BaseItemKind.Movie,
-                    // nameof(Trailer),
-                    // nameof(LiveTvProgram)
+					BaseItemKind.Movie
                 },
-				// IsMovie = true
 				OrderBy = new[] { (ItemSortBy.DatePlayed, SortOrder.Descending), (ItemSortBy.Random, SortOrder.Descending) },
 				Limit = 7,
 				ParentId = Guid.Empty,
@@ -82,13 +80,17 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 			recentlyPlayedMovies = recentlyPlayedMovies.Where(x => !otherInstances?.Select(y => y.AdditionalData).Contains(x.Id.ToString()) ?? true).Where(x =>
 			{
-				var collections = CollectionManagerProxy.GetCollections(user).Where(y => y.GetChildren(user, true).OfType<Movie>().Contains(x as Movie));
-
-				foreach (BoxSet? collection in collections)
+				if (user != null)
 				{
-					if (collection.GetChildren(user, true).OfType<Movie>().Any(y => otherInstances?.Select(z => z.AdditionalData).Contains(y.Id.ToString()) ?? true))
+					IEnumerable<BoxSet>? collections = CollectionManagerProxy.GetCollections(user)
+						.Where(y => y.GetChildren(user, true).OfType<Movie>().Contains(x as Movie));
+
+					foreach (BoxSet? collection in collections)
 					{
-						return false;
+						if (collection.GetChildren(user, true).OfType<Movie>().Any(y => otherInstances?.Select(z => z.AdditionalData).Contains(y.Id.ToString()) ?? true))
+						{
+							return false;
+						}
 					}
 				}
 
@@ -99,7 +101,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 			if (recentlyPlayedMovies.Count == 0)
 			{
-				return null;
+				return null!;
 			}
 
 			BaseItem item = recentlyPlayedMovies.ElementAt(rnd.Next(0, recentlyPlayedMovies.Count));
@@ -112,7 +114,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 		public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload)
 		{
-			var dtoOptions = new DtoOptions
+			DtoOptions? dtoOptions = new DtoOptions
 			{
 				Fields = new[]
 				{
@@ -129,9 +131,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				ImageTypeLimit = 1
 			};
 
-			BaseItem item = LibraryManager.GetItemById(Guid.Parse(payload.AdditionalData ?? Guid.Empty.ToString()));
+			BaseItem? item = LibraryManager.GetItemById(Guid.Parse(payload.AdditionalData ?? Guid.Empty.ToString()));
 
-			var similar = LibraryManager.GetItemList(new InternalItemsQuery(UserManager.GetUserById(payload.UserId))
+			List<BaseItem>? similar = LibraryManager.GetItemList(new InternalItemsQuery(UserManager.GetUserById(payload.UserId))
 			{
 				Limit = 8,
 				IncludeItemTypes = new[]

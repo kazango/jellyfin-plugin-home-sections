@@ -1,4 +1,3 @@
-using System.Reflection;
 using Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections;
 using Jellyfin.Plugin.HomeScreenSections.Library;
 using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
@@ -34,7 +33,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
             m_serviceProvider = serviceProvider;
             m_applicationPaths = applicationPaths;
 
-            string userFeatureEnabledPath = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(Plugin).Namespace!, "userFeatureEnabled.json");
+            string userFeatureEnabledPath = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(HomeScreenSectionsPlugin).Namespace!, "userFeatureEnabled.json");
             if (File.Exists(userFeatureEnabledPath))
             {
                 m_userFeatureEnabledStates = JsonConvert.DeserializeObject<Dictionary<Guid, bool>>(File.ReadAllText(userFeatureEnabledPath)) ?? new Dictionary<Guid, bool>();
@@ -82,14 +81,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
         {
             if (handler.Section != null)
             {
-                if (!m_delegates.ContainsKey(handler.Section))
-                {
-                    m_delegates.Add(handler.Section, handler);
-                }
-                else
-                {
-                    throw new Exception($"Section type '{handler.Section}' has already been registered to type '{m_delegates[handler.Section].GetType().FullName}'.");
-                }
+                m_delegates[handler.Section] = handler;
             }
         }
 
@@ -133,7 +125,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
 
             m_userFeatureEnabledStates[userId] = enabled;
 
-            string userFeatureEnabledPath = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(Plugin).Namespace!, "userFeatureEnabled.json");
+            string userFeatureEnabledPath = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(HomeScreenSectionsPlugin).Namespace!, "userFeatureEnabled.json");
             new FileInfo(userFeatureEnabledPath).Directory?.Create();
             File.WriteAllText(userFeatureEnabledPath, JObject.FromObject(m_userFeatureEnabledStates).ToString(Formatting.Indented));
         }
@@ -141,7 +133,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
         /// <inheritdoc/>
         public ModularHomeUserSettings? GetUserSettings(Guid userId)
         {
-            string pluginSettings = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(Plugin).Namespace!, c_settingsFile);
+            string pluginSettings = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(HomeScreenSectionsPlugin).Namespace!, c_settingsFile);
 
             if (File.Exists(pluginSettings))
             {
@@ -162,7 +154,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
         /// <inheritdoc/>
         public bool UpdateUserSettings(Guid userId, ModularHomeUserSettings userSettings)
         {
-            string pluginSettings = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(Plugin).Namespace!, c_settingsFile);
+            string pluginSettings = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(HomeScreenSectionsPlugin).Namespace!, c_settingsFile);
             FileInfo fInfo = new FileInfo(pluginSettings);
             fInfo.Directory?.Create();
 

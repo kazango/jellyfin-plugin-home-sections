@@ -128,7 +128,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 .OfType<Folder>()
                 .Select(x => x as ICollectionFolder)
                 .Where(x => x != null)
-                .FirstOrDefault(x => x.CollectionType == CollectionType.movies) as Folder;
+                .FirstOrDefault(x => x!.CollectionType == CollectionType.movies) as Folder;
 
             BaseItemDto? originalPayload = null;
             if (folder != null)
