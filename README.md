@@ -1,9 +1,7 @@
 <h1 align="center">Home Screen Sections (Modular Home)</h1>
 <h2 align="center">A Jellyfin Plugin</h2>
 <p align="center">
-	<img alt="Logo" width="256" height="256" src="https://camo.githubusercontent.com/ab4b1ec289bed0a0ac8dd2828c41b695dbfeaad8c82596339f09ce23b30d3eb3/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f73656c666873742f69636f6e732f776562702f6a656c6c7966696e2e77656270" />
-	<br />
-	<sub>Custom Logo Coming Soon</sub>
+	<img alt="Logo" src="https://raw.githubusercontent.com/IAmParadox27/jellyfin-plugin-home-sections/main/src/logo.png" />
 	<br />
 	<br />
 	<a href="https://github.com/IAmParadox27/jellyfin-plugin-home-sections">
@@ -12,12 +10,6 @@
 	<a href="https://github.com/IAmParadox27/jellyfin-plugin-home-sections/releases">
 		<img alt="Current Release" src="https://img.shields.io/github/release/IAmParadox27/jellyfin-plugin-home-sections.svg" />
 	</a>
-	<a href="https://www.nuget.org/packages/Jellyfin.Plugin.HomeScreenSections">
-		<img alt="NuGet Release" src="https://img.shields.io/nuget/v/Jellyfin.Plugin.HomeScreenSections" />
-	</a>
-	  <a href="https://www.nuget.org/packages/Jellyfin.Plugin.Referenceable/1.2.1">
-	    <img alt="Shield Example" src="https://img.shields.io/badge/JF%20Referenceable-v1.2.1-blue" /> 
-	  </a>
 </p>
 
 ## Introduction
@@ -43,6 +35,9 @@ These vanilla sections are listed here:
 
 The sections that are new for this plugin (and most likely the reason you would use this plugin in the first place) are outlined here:
 
+- Latest Movies/TV Shows
+    - These are movies/shows that have recently aired (or released) rather than when they were added to your library. 
+
 - Because You Watched
 	- Very similar to Netflix's "because you watched" section, a maximum of 5 of these will appear when the section is enabled
 <img src="https://raw.githubusercontent.com/IAmParadox27/jellyfin-plugin-home-sections/refs/heads/main/screenshots/because-you-watched.png" alt="Because You Watched Preview" />
@@ -62,6 +57,7 @@ The sections that are new for this plugin (and most likely the reason you would 
 - The following plugins are required to also be installed, please following their installation guides:
   - File Transformation (https://github.com/IAmParadox27/jellyfin-plugin-file-transformation)
   - Plugin Pages (https://github.com/IAmParadox27/jellyfin-plugin-pages)
+
 ### Installation
 1. Add `https://www.iamparadox.dev/jellyfin/plugins/manifest.json` to your plugin repositories.
 2. Install `Home Screen Sections` from the Catalogue.
@@ -82,29 +78,18 @@ If you find an issue with any of the sections or usage of the plugin, please ope
 ### Adding your own sections
 > This is great an' all but I want a section that doesn't exist here. Can I make one?
 
-Yep! Home Screen Sections supports "plugins" 😅. 
+Yep! Home Screen Sections exposes HTTP endpoints which can be used to register sections.
 
-The easiest way is to reference the NuGet package `Jellyfin.Plugin.HomeScreenSections`
-
-When you have a project created. ~~Make a new type and inherit from `IHomeScreenSection`. Implement the required properties/functions and away you go.~~.
-
-There is an issue with the above described approach as the plugins being reloaded they reference the wrong assembly. You have to add the following code to your plugin:
-
-```csharp
-[ModuleInitializer]
-public static void Init()
+Send an HTTP POST request to `http(s)://{YOUR_JELLYFIN_URL}/HomeScreen/RegisterSection` with data in the following structure
+```json
 {
-	// This is annoyingly necessary at the moment. Looking to find a solution to this.
-	AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
-	{
-		return AssemblyLoadContext.All.FirstOrDefault(x => x.Name?.Contains("Referenceable") ?? false)?.Assemblies?.FirstOrDefault(x => x.FullName == args.Name);
-	};
+	"id": "", // Unique ID for your section
+	"displayText":"", // What text should be displayed for your section
+	"limit": 1, // This can only be 1 at the moment, I am working hard to support more than 1 section via HTTP request 
+	"additionalData": "", // Any accompanying data you want sent to your endpoint
+	"resultsEndpoint":"" // The endpoint that will be requested when the section is requested. Expected to return `QueryResult<BaseItemDto>`
 }
 ```
-
-Then use the `IHomeScreenManager.RegisterResultsDelegate` function that accepts a parameter, pass in an instance of `PluginDefinedSection` and set the `OnGetResults` delegate to the function you want to call to get the results for your section. All other parameters are required in the constructor.
-
-_When referencing Jellyfin NuGet packages please ensure that you reference the same version that is references by Home Screen Sections to avoid any conflicts._
 
 ### Pull Requests
 I'm open to any and all pull requests that expand the functionality of this plugin, while keeping within the scope of what its outlined to do, however if the PR includes new sections which **are not** vanilla implementations it will be rejected as the above approach is preferred.
