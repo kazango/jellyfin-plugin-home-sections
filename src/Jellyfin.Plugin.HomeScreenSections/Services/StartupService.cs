@@ -41,7 +41,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                     JObject payload = new JObject();
                     payload.Add("id", "ea4045f3-6604-4ba4-9581-f91f96bbd2ae");
                     payload.Add("fileNamePattern", Path.GetFileName(jsChunk));
-                    payload.Add("tranformationEndpoint", "/HomeScreen/Patch/LoadSections");
+                    payload.Add("transformationEndpoint", "/HomeScreen/Patch/LoadSections");
 
                     //new Uri(m_serverApplicationHost.GetSmartApiUrl(IPAddress.Loopback))
                     string? publishedServerUrl = m_serverApplicationHost.GetType()
