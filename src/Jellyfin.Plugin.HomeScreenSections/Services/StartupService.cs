@@ -32,6 +32,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
 
         public async Task ExecuteAsync(IProgress<double> progress, CancellationToken cancellationToken)
         {
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+            
             // Look through the web path and find the file that contains `",loadSections:`
             string[] allJsChunks = Directory.GetFiles(m_applicationPaths.WebPath, "*.chunk.js", SearchOption.AllDirectories);
             foreach (string jsChunk in allJsChunks)
