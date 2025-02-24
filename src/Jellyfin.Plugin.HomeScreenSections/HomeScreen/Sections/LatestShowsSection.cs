@@ -76,6 +76,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             });
             
             List<BaseItem> series = episodes
+                .Where(x => !x.IsUnaired && !x.IsVirtualItem)
                 .Select(x => (x.FindParent<Series>(), (x as Episode)?.PremiereDate))
                 .GroupBy(x => x.Item1)
                 .Select(x => (x.Key, x.Max(y => y.PremiereDate)))
