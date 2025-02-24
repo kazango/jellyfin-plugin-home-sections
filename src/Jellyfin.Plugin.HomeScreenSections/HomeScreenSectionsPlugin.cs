@@ -19,6 +19,12 @@ namespace Jellyfin.Plugin.HomeScreenSections
         {
             Instance = this;
         
+            string homeScreenSectionsConfigDir = Path.Combine(applicationPaths.PluginConfigurationsPath, "Jellyfin.Plugin.HomeScreenSections");
+            if (!Directory.Exists(homeScreenSectionsConfigDir))
+            {
+                Directory.CreateDirectory(homeScreenSectionsConfigDir);
+            }
+            
             string pluginPagesConfig = Path.Combine(applicationPaths.PluginConfigurationsPath, "Jellyfin.Plugin.PluginPages", "config.json");
         
             JObject config = new JObject();
