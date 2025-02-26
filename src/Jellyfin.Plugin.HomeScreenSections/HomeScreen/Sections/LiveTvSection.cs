@@ -45,7 +45,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 		public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload)
 		{
-			var dtoOptions = new DtoOptions
+			DtoOptions? dtoOptions = new DtoOptions
 			{
 				Fields = new List<ItemFields>
 				{
@@ -60,7 +60,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				}
 			};
 
-			User user = UserManager.GetUserById(payload.UserId);
+			User user = UserManager.GetUserById(payload.UserId)!;
 
 			return LiveTvManager.GetPrograms(new InternalItemsQuery(user), dtoOptions, CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
 		}

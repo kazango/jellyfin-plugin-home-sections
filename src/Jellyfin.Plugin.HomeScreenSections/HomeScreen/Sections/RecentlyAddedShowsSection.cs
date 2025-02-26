@@ -12,24 +12,24 @@ using MediaBrowser.Model.Querying;
 
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
-    /// <summary>
-    /// Latest Shows Section.
-    /// </summary>
+    
+    
+    
     public class RecentlyAddedShowsSection : IHomeScreenSection
     {
-        /// <inheritdoc/>
+        
         public string? Section => "RecentlyAddedShows";
 
-        /// <inheritdoc/>
+        
         public string? DisplayText { get; set; } = "Recently Added Shows";
 
-        /// <inheritdoc/>
+        
         public int? Limit => 1;
 
-        /// <inheritdoc/>
+        
         public string? Route => "tvshows";
 
-        /// <inheritdoc/>
+        
         public string? AdditionalData { get; set; } = "tvshows";
 
         public object? OriginalPayload { get; set; } = null;
@@ -39,12 +39,12 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         private readonly ILibraryManager m_libraryManager;
         private readonly IDtoService m_dtoService;
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="userViewManager">Instance of <see href="IUserViewManager" /> interface.</param>
-        /// <param name="userManager">Instance of <see href="IUserManager" /> interface.</param>
-        /// <param name="dtoService">Instance of <see href="IDtoService" /> interface.</param>
+        
+        
+        
+        
+        
+        
         public RecentlyAddedShowsSection(IUserViewManager userViewManager,
             IUserManager userManager,
             ILibraryManager libraryManager,
@@ -56,7 +56,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             m_dtoService = dtoService;
         }
 
-        /// <inheritdoc/>
+        
         public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload)
         {
             User? user = m_userManager.GetUserById(payload.UserId);
@@ -120,7 +120,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             return new QueryResult<BaseItemDto>(dtos.ToList());
         }
 
-        /// <inheritdoc/>
+        
         public IHomeScreenSection CreateInstance(Guid? userId, IEnumerable<IHomeScreenSection>? otherInstances = null)
         {
             User? user = m_userManager.GetUserById(userId ?? Guid.Empty);
@@ -130,7 +130,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 .OfType<Folder>()
                 .Select(x => x as ICollectionFolder)
                 .Where(x => x != null)
-                .FirstOrDefault(x => x.CollectionType == CollectionType.tvshows) as Folder;
+                .FirstOrDefault(x => x!.CollectionType == CollectionType.tvshows) as Folder;
 
             BaseItemDto? originalPayload = null;
             if (folder != null)

@@ -1,15 +1,23 @@
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http.Headers;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using Jellyfin.Data.Entities;
 using Jellyfin.Data.Enums;
 using Jellyfin.Extensions;
+using Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections;
 using Jellyfin.Plugin.HomeScreenSections.Library;
+using Jellyfin.Plugin.HomeScreenSections.Model;
 using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Querying;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Jellyfin.Plugin.HomeScreenSections.Controllers
 {
@@ -22,25 +30,21 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
     {
         private readonly IHomeScreenManager m_homeScreenManager;
         private readonly IDisplayPreferencesManager m_displayPreferencesManager;
+        private readonly IServerApplicationHost m_serverApplicationHost;
+        private readonly IApplicationPaths m_applicationPaths;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HomeScreenController"/> class.
-        /// </summary>
-        /// <param name="homeScreenManager">Instance of the <see cref="IHomeScreenManager"/> interface.</param>
-        /// <param name="displayPreferencesManager">Instance of the <see cref="IDisplayPreferencesManager" /> interface.</param>
         public HomeScreenController(
             IHomeScreenManager homeScreenManager,
-            IDisplayPreferencesManager displayPreferencesManager)
+            IDisplayPreferencesManager displayPreferencesManager,
+            IServerApplicationHost serverApplicationHost, 
+            IApplicationPaths applicationPaths)
         {
             m_homeScreenManager = homeScreenManager;
             m_displayPreferencesManager = displayPreferencesManager;
+            m_serverApplicationHost = serverApplicationHost;
+            m_applicationPaths = applicationPaths;
         }
 
-        /// <summary>
-        /// Get what home screen sections the user has enabled.
-        /// </summary>
-        /// <param name="userId">The user ID.</param>
-        /// <returns></returns>
         [HttpGet("Sections")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<QueryResult<HomeScreenSectionInfo>> GetHomeScreenSections(
@@ -134,13 +138,6 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
                 sections);
         }
 
-        /// <summary>
-        /// Get the content for the home screen section based on <paramref name="sectionType"/>.
-        /// </summary>
-        /// <param name="sectionType">The section type.</param>
-        /// <param name="userId">The user ID.</param>
-        /// <param name="additionalData">Any additional data this section is showing.</param>
-        /// <returns></returns>
         [HttpGet("Section/{sectionType}")]
         public QueryResult<BaseItemDto> GetSectionContent(
             [FromRoute] string sectionType,
@@ -154,6 +151,51 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             };
 
             return m_homeScreenManager.InvokeResultsDelegate(sectionType, payload);
+        }
+
+        [HttpPost("RegisterSection")]
+        public ActionResult RegisterSection([FromBody] SectionRegisterPayload payload)
+        {
+            m_homeScreenManager.RegisterResultsDelegate(new PluginDefinedSection(payload.Id, payload.DisplayText!, payload.Route, payload.AdditionalData)
+            {
+                OnGetResults = sectionPayload =>
+                {
+                    JObject jsonPayload = JObject.FromObject(sectionPayload);
+
+                    string? publishedServerUrl = m_serverApplicationHost.GetType()
+                        .GetProperty("PublishedServerUrl", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(m_serverApplicationHost) as string;
+                
+                    HttpClient client = new HttpClient();
+                    client.BaseAddress = new Uri(publishedServerUrl ?? $"http://localhost:{m_serverApplicationHost.HttpPort}");
+                    
+                    HttpResponseMessage responseMessage = client.PostAsync(payload.ResultsEndpoint, 
+                        new StringContent(jsonPayload.ToString(Formatting.None), MediaTypeHeaderValue.Parse("application/json"))).GetAwaiter().GetResult();
+
+                    return JsonConvert.DeserializeObject<QueryResult<BaseItemDto>>(responseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult()) ?? new QueryResult<BaseItemDto>();
+                }
+            });
+            
+            return Ok();
+        }
+
+        [HttpPost("Patch/LoadSections")]
+        public ActionResult ApplyLoadSectionsPatch([FromBody] PatchRequestPayload content)
+        {
+            // replace `",loadSections:` with itself followed by our function followed by `",originalLoadSections:`
+            Stream replacementStream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{GetType().Namespace}.loadSections.js")!;
+            using TextReader replacementTextReader = new StreamReader(replacementStream);
+        
+            string[] parts = content.Contents!.Split(",loadSections:", StringSplitOptions.RemoveEmptyEntries);
+            Regex variableFind = new Regex(@"var\s+([a-zA-Z][^=]*)=");
+            string thisVariableName = variableFind.Matches(parts[0]).Last().Groups[1].Value;
+            string replacementText = replacementTextReader.ReadToEnd()
+                .Replace("{{this_hook}}", thisVariableName)
+                .Replace("{{layoutmanager_hook}}", "n") // TODO: lookup the first "assigned" variable after `var`
+                .Replace("{{cardbuilder_hook}}", "h"); // TODO: lookup the last "assigned" variable in block that includes "SmallLibraryTiles" 
+
+            string regex = content.Contents.Replace(",loadSections:", $",loadSections:{replacementText},originalLoadSections:");
+        
+            return Content(regex, "application/javascript");
         }
     }
 }

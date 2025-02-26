@@ -82,7 +82,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 		public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload)
 		{
-			var dtoOptions = new DtoOptions
+			DtoOptions? dtoOptions = new DtoOptions
 			{
 				Fields = new List<ItemFields>
 				{
@@ -97,7 +97,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				}
 			};
 
-			User user = UserManager.GetUserById(payload.UserId);
+			User user = UserManager.GetUserById(payload.UserId)!;
 
 			List<BaseItem> results = new List<BaseItem>();
 
@@ -106,7 +106,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 					.Where(x => x.IsPlayed(user))
 					.Select(x =>
 					{
-						var children = x.GetChildren(user, true);
+						List<BaseItem>? children = x.GetChildren(user, true);
 
 						if (children.Any())
 						{
@@ -129,11 +129,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 			{
 
-				var series = LibraryManager.GetItemList(new InternalItemsQuery
+				IEnumerable<Series>? series = LibraryManager.GetItemList(new InternalItemsQuery
 				{
 					IncludeItemTypes = new[] { BaseItemKind.Series }
 				}).Cast<Series>().Where(x => x.IsPlayed(user));
-				var eqComp = new EpisodeEqualityComparer();
+				EpisodeEqualityComparer? eqComp = new EpisodeEqualityComparer();
 
 				IEnumerable<BaseItem?> firstEpisodes = series
 				//.Where(x =>
@@ -157,7 +157,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				return data.LastPlayedDate;
 			}).ToList();
 
-			var result = new QueryResult<BaseItemDto>(DtoService.GetBaseItemDtos(results, dtoOptions, user));
+			QueryResult<BaseItemDto>? result = new QueryResult<BaseItemDto>(DtoService.GetBaseItemDtos(results, dtoOptions, user));
 
 			return result;
 		}
