@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Jellyfin.Plugin.HomeScreenSections.HomeScreen;
 using Jellyfin.Plugin.HomeScreenSections.Library;
+using Jellyfin.Plugin.HomeScreenSections.Services;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Plugins;
@@ -12,6 +13,11 @@ namespace Jellyfin.Plugin.HomeScreenSections
     {
         public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
         {
+            serviceCollection.AddSingleton<NamedPipeService>();
+            serviceCollection.AddHostedService<NamedPipeService>(services =>
+            {
+                return services.GetRequiredService<NamedPipeService>();
+            });
             serviceCollection.AddSingleton<CollectionManagerProxy>();
             serviceCollection.AddSingleton<IHomeScreenManager, HomeScreenManager>(services =>
             {
