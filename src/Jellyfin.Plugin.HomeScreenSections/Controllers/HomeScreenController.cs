@@ -5,10 +5,12 @@ using System.Text.RegularExpressions;
 using Jellyfin.Data.Entities;
 using Jellyfin.Data.Enums;
 using Jellyfin.Extensions;
+using Jellyfin.Plugin.HomeScreenSections.Helpers;
 using Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections;
 using Jellyfin.Plugin.HomeScreenSections.Library;
 using Jellyfin.Plugin.HomeScreenSections.Model;
 using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
+using Jellyfin.Plugin.HomeScreenSections.Services;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Extensions;
 using MediaBrowser.Controller;
@@ -181,21 +183,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
         [HttpPost("Patch/LoadSections")]
         public ActionResult ApplyLoadSectionsPatch([FromBody] PatchRequestPayload content)
         {
-            // replace `",loadSections:` with itself followed by our function followed by `",originalLoadSections:`
-            Stream replacementStream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{GetType().Namespace}.loadSections.js")!;
-            using TextReader replacementTextReader = new StreamReader(replacementStream);
-        
-            string[] parts = content.Contents!.Split(",loadSections:", StringSplitOptions.RemoveEmptyEntries);
-            Regex variableFind = new Regex(@"var\s+([a-zA-Z][^=]*)=");
-            string thisVariableName = variableFind.Matches(parts[0]).Last().Groups[1].Value;
-            string replacementText = replacementTextReader.ReadToEnd()
-                .Replace("{{this_hook}}", thisVariableName)
-                .Replace("{{layoutmanager_hook}}", "n") // TODO: lookup the first "assigned" variable after `var`
-                .Replace("{{cardbuilder_hook}}", "h"); // TODO: lookup the last "assigned" variable in block that includes "SmallLibraryTiles" 
-
-            string regex = content.Contents.Replace(",loadSections:", $",loadSections:{replacementText},originalLoadSections:");
-        
-            return Content(regex, "application/javascript");
+            return Content(TransformationPatches.LoadSections(content), "application/javascript");
         }
     }
 }
