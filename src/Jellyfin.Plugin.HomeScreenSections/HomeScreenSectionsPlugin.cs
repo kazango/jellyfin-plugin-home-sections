@@ -1,4 +1,5 @@
-﻿using MediaBrowser.Common.Configuration;
+﻿using Jellyfin.Plugin.HomeScreenSections.Configuration;
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
@@ -7,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Jellyfin.Plugin.HomeScreenSections
 {
-    public class HomeScreenSectionsPlugin : BasePlugin<BasePluginConfiguration>, IPlugin, IHasWebPages
+    public class HomeScreenSectionsPlugin : BasePlugin<PluginConfiguration>, IPlugin, IHasPluginConfiguration, IHasWebPages
     {
         public override Guid Id => Guid.Parse("b8298e01-2697-407a-b44d-aa8dc795e850");
 
@@ -59,7 +60,13 @@ namespace Jellyfin.Plugin.HomeScreenSections
 
         public IEnumerable<PluginPageInfo> GetPages()
         {
-            return Enumerable.Empty<PluginPageInfo>();
+            string? prefix = GetType().Namespace;
+
+            yield return new PluginPageInfo
+            {
+                Name = Name,
+                EmbeddedResourcePath = $"{prefix}.Configuration.config.html"
+            };
         }
 
         /// <summary>

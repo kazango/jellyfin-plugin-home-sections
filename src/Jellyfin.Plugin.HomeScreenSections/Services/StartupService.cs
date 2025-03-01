@@ -3,6 +3,8 @@ using System.IO.Pipes;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+using Jellyfin.Plugin.HomeScreenSections.Helpers;
+using Jellyfin.Plugin.HomeScreenSections.Model;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller;
 using MediaBrowser.Model.Tasks;
@@ -25,12 +27,15 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
         private readonly IServerApplicationHost m_serverApplicationHost;
         private readonly IApplicationPaths m_applicationPaths;
         private readonly ILogger<HomeScreenSectionsPlugin> m_logger;
+        private readonly NamedPipeService m_namedPipeService;
 
-        public StartupService(IServerApplicationHost serverApplicationHost, IApplicationPaths applicationPaths, ILogger<HomeScreenSectionsPlugin> logger)
+        public StartupService(IServerApplicationHost serverApplicationHost, IApplicationPaths applicationPaths, ILogger<HomeScreenSectionsPlugin> logger,
+            NamedPipeService namedPipeService)
         {
             m_serverApplicationHost = serverApplicationHost;
             m_applicationPaths = applicationPaths;
             m_logger = logger;
+            m_namedPipeService = namedPipeService;
         }
 
         public async Task ExecuteAsync(IProgress<double> progress, CancellationToken cancellationToken)
@@ -45,6 +50,32 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                     payload.Add("id", "ea4045f3-6604-4ba4-9581-f91f96bbd2ae");
                     payload.Add("fileNamePattern", Path.GetFileName(jsChunk));
                     payload.Add("transformationEndpoint", "/HomeScreen/Patch/LoadSections");
+                    payload.Add("transformationPipe", "Jellyfin.Plugin.HomeScreenSections.Pipes.LoadSections");
+                    m_namedPipeService.CreateNamedPipeHandler("Jellyfin.Plugin.HomeScreenSections.Pipes.LoadSections", async stream =>
+                    {
+                        byte[] lengthBuffer = new byte[8];
+                        await stream.ReadExactlyAsync(lengthBuffer, 0, lengthBuffer.Length);
+                        long length = BitConverter.ToInt64(lengthBuffer, 0);
+                        
+                        MemoryStream memoryStream = new MemoryStream();
+                        while (length > 0)
+                        {
+                            byte[] buffer = new byte[Math.Min(length, 1024)];
+                            int readBytes = await stream.ReadAsync(buffer, 0, buffer.Length);
+                            length -= readBytes;
+                            
+                            memoryStream.Write(buffer, 0, readBytes);
+                        }
+                        
+                        string rawJson = Encoding.UTF8.GetString(memoryStream.ToArray());
+                        
+                        string response = TransformationPatches.LoadSections(JsonConvert.DeserializeObject<PatchRequestPayload>(rawJson)!);
+                        byte[] responseBuffer = Encoding.UTF8.GetBytes(response);
+                        byte[] responseLengthBuffer = BitConverter.GetBytes((long)responseBuffer.Length);
+                        
+                        await stream.WriteAsync(responseLengthBuffer, 0, responseLengthBuffer.Length);
+                        await stream.WriteAsync(responseBuffer, 0, responseBuffer.Length);
+                    });
 
                     string fileTransformationPipeName = "Jellyfin.Plugin.FileTransformation.NamedPipe";
                     bool serverSupportsPipeCommunication = Directory.GetFiles(@"\\.\pipe\").Contains($@"\\.\pipe\{fileTransformationPipeName}");

@@ -1,3 +1,4 @@
+using Jellyfin.Plugin.HomeScreenSections.Configuration;
 using Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections;
 using Jellyfin.Plugin.HomeScreenSections.Library;
 using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
@@ -135,20 +136,38 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
         {
             string pluginSettings = Path.Combine(m_applicationPaths.PluginConfigurationsPath, typeof(HomeScreenSectionsPlugin).Namespace!, c_settingsFile);
 
-            if (File.Exists(pluginSettings))
-            {
-                JArray settings = JArray.Parse(File.ReadAllText(pluginSettings));
-
-                if (settings.Select(x => JsonConvert.DeserializeObject<ModularHomeUserSettings>(x.ToString())).Any(x => x != null && x.UserId.Equals(userId)))
-                {
-                    return settings.Select(x => JsonConvert.DeserializeObject<ModularHomeUserSettings>(x.ToString())).First(x => x != null && x.UserId.Equals(userId));
-                }
-            }
-
-            return new ModularHomeUserSettings
+            ModularHomeUserSettings? settings = new ModularHomeUserSettings
             {
                 UserId = userId
             };
+            if (File.Exists(pluginSettings))
+            {
+                JArray settingsArray = JArray.Parse(File.ReadAllText(pluginSettings));
+
+                if (settingsArray.Select(x => JsonConvert.DeserializeObject<ModularHomeUserSettings>(x.ToString())).Any(x => x != null && x.UserId.Equals(userId)))
+                {
+                    settings = settingsArray.Select(x => JsonConvert.DeserializeObject<ModularHomeUserSettings>(x.ToString())).First(x => x != null && x.UserId.Equals(userId));
+                }
+            }
+
+            if (settings != null)
+            {
+                IEnumerable<SectionSettings> forcedSectionSettings = HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings.Where(x => !x.AllowUserOverride);
+
+                foreach (SectionSettings sectionSettings in forcedSectionSettings)
+                {
+                    if (sectionSettings.Enabled && !settings.EnabledSections.Contains(sectionSettings.SectionId))
+                    {
+                        settings.EnabledSections.Add(sectionSettings.SectionId);
+                    }
+                    else if (!sectionSettings.Enabled && settings.EnabledSections.Contains(sectionSettings.SectionId))
+                    {
+                        settings.EnabledSections.Remove(sectionSettings.SectionId);
+                    }
+                }
+            }
+            
+            return settings;
         }
 
         /// <inheritdoc/>

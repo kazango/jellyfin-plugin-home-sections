@@ -1,4 +1,5 @@
-﻿using Jellyfin.Plugin.HomeScreenSections.Library;
+﻿using Jellyfin.Plugin.HomeScreenSections.Configuration;
+using Jellyfin.Plugin.HomeScreenSections.Library;
 using MediaBrowser.Model;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Querying;
@@ -76,9 +77,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
         [HttpGet("UserSettings")]
         public ActionResult<ModularHomeUserSettings> GetUserSettings([FromQuery] Guid userId)
         {
+            IEnumerable<SectionSettings> defaultEnabledSections =
+                HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings.Where(x => x.Enabled);
+            
             return m_homeScreenManager.GetUserSettings(userId) ?? new ModularHomeUserSettings
             {
-                UserId = userId
+                UserId = userId,
+                EnabledSections = defaultEnabledSections.Select(x => x.SectionId).ToList()
             };
         }
 
