@@ -1,5 +1,8 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics;
+using System.IO.Pipes;
+using System.Net.Http.Headers;
 using System.Reflection;
+using System.Text;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller;
 using MediaBrowser.Model.Tasks;
@@ -32,8 +35,6 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
 
         public async Task ExecuteAsync(IProgress<double> progress, CancellationToken cancellationToken)
         {
-            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
-            
             // Look through the web path and find the file that contains `",loadSections:`
             string[] allJsChunks = Directory.GetFiles(m_applicationPaths.WebPath, "*.chunk.js", SearchOption.AllDirectories);
             foreach (string jsChunk in allJsChunks)
@@ -45,24 +46,43 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                     payload.Add("fileNamePattern", Path.GetFileName(jsChunk));
                     payload.Add("transformationEndpoint", "/HomeScreen/Patch/LoadSections");
 
-                    //new Uri(m_serverApplicationHost.GetSmartApiUrl(IPAddress.Loopback))
-                    string? publishedServerUrl = m_serverApplicationHost.GetType()
-                        .GetProperty("PublishedServerUrl", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(m_serverApplicationHost) as string;
+                    string fileTransformationPipeName = "Jellyfin.Plugin.FileTransformation.NamedPipe";
+                    bool serverSupportsPipeCommunication = Directory.GetFiles(@"\\.\pipe\").Contains($@"\\.\pipe\{fileTransformationPipeName}");
+
+                    if (serverSupportsPipeCommunication)
+                    {
+                        NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", fileTransformationPipeName, PipeDirection.InOut);
+                        await pipeClient.ConnectAsync();
+                        byte[] payloadBytes = Encoding.UTF8.GetBytes(payload.ToString(Formatting.None));
+                        
+                        await pipeClient.WriteAsync(BitConverter.GetBytes((long)payloadBytes.Length));
+                        await pipeClient.WriteAsync(payloadBytes, 0, payloadBytes.Length);
+                        
+                        pipeClient.ReadByte();
+                        
+                        await pipeClient.DisposeAsync();
+                    }
+                    else
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+                        string? publishedServerUrl = m_serverApplicationHost.GetType()
+                            .GetProperty("PublishedServerUrl", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(m_serverApplicationHost) as string;
                 
-                    HttpClient client = new HttpClient();
-                    client.BaseAddress = new Uri(publishedServerUrl ?? $"http://localhost:{m_serverApplicationHost.HttpPort}");
+                        HttpClient client = new HttpClient();
+                        client.BaseAddress = new Uri(publishedServerUrl ?? $"http://localhost:{m_serverApplicationHost.HttpPort}");
 
-                    try
-                    {
-                        await client.PostAsync("/FileTransformation/RegisterTransformation",
-                            new StringContent(payload.ToString(Formatting.None),
-                                MediaTypeHeaderValue.Parse("application/json")));
+                        try
+                        {
+                            await client.PostAsync("/FileTransformation/RegisterTransformation",
+                                new StringContent(payload.ToString(Formatting.None),
+                                    MediaTypeHeaderValue.Parse("application/json")));
+                        }
+                        catch (Exception ex)
+                        {
+                            m_logger.LogError(ex, $"Caught exception when attempting to register file transformation. Ensure you have `File Transformation` plugin installed on your server.");
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        m_logger.LogError(ex, $"Caught exception when attempting to register file transformation. Ensure you have `File Transformation` plugin installed on your server.");
-                    }
-
+                    
                     break;
                 }
             }
