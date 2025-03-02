@@ -150,6 +150,12 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
                 }
             }
 
+            // If there are none enabled by the user then add all the default enabled settings.
+            if (settings?.EnabledSections.Count == 0)
+            {
+                settings.EnabledSections.AddRange(HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings.Where(x => x.Enabled).Select(x => x.SectionId));
+            }
+
             if (settings != null)
             {
                 IEnumerable<SectionSettings> forcedSectionSettings = HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings.Where(x => !x.AllowUserOverride);
