@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Jellyfin.Data.Entities;
 using Jellyfin.Data.Enums;
 using Jellyfin.Extensions;
+using Jellyfin.Plugin.HomeScreenSections.Configuration;
 using Jellyfin.Plugin.HomeScreenSections.Helpers;
 using Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections;
 using Jellyfin.Plugin.HomeScreenSections.Library;
@@ -47,6 +48,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             m_applicationPaths = applicationPaths;
         }
 
+        [HttpGet("Configuration")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<PluginConfiguration> GetHomeScreenConfiguration()
+        {
+            return HomeScreenSectionsPlugin.Instance.Configuration;
+        }
+        
         [HttpGet("Sections")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<QueryResult<HomeScreenSectionInfo>> GetHomeScreenSections(

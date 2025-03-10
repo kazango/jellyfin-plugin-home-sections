@@ -89,7 +89,7 @@
     }
     
     async function isUserUsingHomeScreenSections(_userSettings, _apiClient) {
-        var pluginConfig = await _apiClient.getPluginConfiguration('b8298e01-2697-407a-b44d-aa8dc795e850');
+        var pluginConfig = await _apiClient.getJSON(_apiClient.getUrl("HomeScreen/Configuration"));
         
         if (pluginConfig.AllowUserOverride === true) {
             if (_userSettings && _userSettings.getData() && _userSettings.getData().CustomPrefs && _userSettings.getData().CustomPrefs.useModularHome !== undefined) {
