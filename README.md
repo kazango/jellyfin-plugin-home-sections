@@ -53,10 +53,10 @@ The sections that are new for this plugin (and most likely the reason you would 
 ## Installation
 
 ### Prerequisites
-- This plugin is based on Jellyfin Version `10.10.5`
+- This plugin is based on Jellyfin Version `10.10.6`
 - The following plugins are required to also be installed, please following their installation guides:
-  - File Transformation (https://github.com/IAmParadox27/jellyfin-plugin-file-transformation)
-  - Plugin Pages (https://github.com/IAmParadox27/jellyfin-plugin-pages)
+  - File Transformation (https://github.com/IAmParadox27/jellyfin-plugin-file-transformation) at least v2.2.1.0
+  - Plugin Pages (https://github.com/IAmParadox27/jellyfin-plugin-pages) at least v2.2.2.0
 
 ### Installation
 1. Add `https://www.iamparadox.dev/jellyfin/plugins/manifest.json` to your plugin repositories.
