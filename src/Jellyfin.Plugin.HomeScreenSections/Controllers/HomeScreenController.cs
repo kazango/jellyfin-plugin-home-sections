@@ -179,11 +179,5 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             
             return Ok();
         }
-
-        [HttpPost("Patch/LoadSections")]
-        public ActionResult ApplyLoadSectionsPatch([FromBody] PatchRequestPayload content)
-        {
-            return Content(TransformationPatches.LoadSections(content), "application/javascript");
-        }
     }
 }

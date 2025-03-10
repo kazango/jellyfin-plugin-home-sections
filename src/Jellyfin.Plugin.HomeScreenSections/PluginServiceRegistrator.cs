@@ -13,11 +13,6 @@ namespace Jellyfin.Plugin.HomeScreenSections
     {
         public void RegisterServices(IServiceCollection serviceCollection, IServerApplicationHost applicationHost)
         {
-            serviceCollection.AddSingleton<NamedPipeService>();
-            serviceCollection.AddHostedService<NamedPipeService>(services =>
-            {
-                return services.GetRequiredService<NamedPipeService>();
-            });
             serviceCollection.AddSingleton<CollectionManagerProxy>();
             serviceCollection.AddSingleton<IHomeScreenManager, HomeScreenManager>(services =>
             {
