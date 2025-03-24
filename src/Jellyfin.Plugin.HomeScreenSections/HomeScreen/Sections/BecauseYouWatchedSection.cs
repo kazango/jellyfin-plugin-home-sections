@@ -148,5 +148,17 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 			return new QueryResult<BaseItemDto>(DtoService.GetBaseItemDtos(similar, dtoOptions));
 		}
+		
+		public HomeScreenSectionInfo GetInfo()
+		{
+			return new HomeScreenSectionInfo
+			{
+				Section = Section,
+				DisplayText = DisplayText,
+				AdditionalData = AdditionalData,
+				Route = Route,
+				Limit = Limit ?? 1
+			};
+		}
 	}
 }

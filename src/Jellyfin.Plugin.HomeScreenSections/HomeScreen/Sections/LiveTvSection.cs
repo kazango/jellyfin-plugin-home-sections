@@ -64,5 +64,17 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 			return LiveTvManager.GetPrograms(new InternalItemsQuery(user), dtoOptions, CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
 		}
+		
+		public HomeScreenSectionInfo GetInfo()
+		{
+			return new HomeScreenSectionInfo
+			{
+				Section = Section,
+				DisplayText = DisplayText,
+				AdditionalData = AdditionalData,
+				Route = Route,
+				Limit = Limit ?? 1
+			};
+		}
 	}
 }

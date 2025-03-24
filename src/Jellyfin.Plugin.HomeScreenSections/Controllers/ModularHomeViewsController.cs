@@ -54,14 +54,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
 
             foreach (IHomeScreenSection section in sections)
             {
-                HomeScreenSectionInfo item = new HomeScreenSectionInfo
-                {
-                    Section = section.Section,
-                    DisplayText = section.DisplayText,
-                    AdditionalData = section.AdditionalData,
-                    Route = section.Route,
-                    Limit = section.Limit ?? 1
-                };
+                HomeScreenSectionInfo item = section.GetInfo();
 
                 items.Add(item);
             }

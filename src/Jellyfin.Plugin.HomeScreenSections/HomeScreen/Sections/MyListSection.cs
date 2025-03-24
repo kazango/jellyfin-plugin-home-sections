@@ -79,5 +79,17 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 			return result;
 		}
+		
+		public HomeScreenSectionInfo GetInfo()
+		{
+			return new HomeScreenSectionInfo
+			{
+				Section = Section,
+				DisplayText = DisplayText,
+				AdditionalData = AdditionalData,
+				Route = Route,
+				Limit = Limit ?? 1
+			};
+		}
 	}
 }

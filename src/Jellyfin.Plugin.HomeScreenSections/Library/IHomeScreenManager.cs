@@ -40,6 +40,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Library
         public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload);
 
         public IHomeScreenSection CreateInstance(Guid? userId, IEnumerable<IHomeScreenSection>? otherInstances = null);
+
+        public HomeScreenSectionInfo GetInfo();
     }
 
     public class HomeScreenSectionInfo
