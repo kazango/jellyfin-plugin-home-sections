@@ -131,8 +131,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
                 {
                     if (sectionType.Limit > 1)
                     {
+                        SectionSettings? sectionSettings = HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings.FirstOrDefault(x =>
+                            x.SectionId == sectionType.Section);
+
                         Random rnd = new Random();
-                        int instanceCount = rnd.Next(0, sectionType.Limit ?? 1) + 1;
+                        int instanceCount = rnd.Next(sectionSettings?.LowerLimit ?? 0, sectionSettings?.UpperLimit ?? sectionType.Limit ?? 1);
 
                         for (int i = 0; i < instanceCount; ++i)
                         {
@@ -152,14 +155,20 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
 
             foreach (IHomeScreenSection sectionType in sectionTypes)
             {
+                SectionSettings? sectionSettings = HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings.FirstOrDefault(x =>
+                    x.SectionId == sectionType.Section);
+                
                 if (sectionType.Limit > 1)
                 {
                     Random rnd = new Random();
-                    int instanceCount = rnd.Next(0, sectionType.Limit ?? 1) + 1;
+                    int instanceCount = rnd.Next(sectionSettings?.LowerLimit ?? 0, sectionSettings?.UpperLimit ?? sectionType.Limit ?? 1);
 
                     for (int i = 0; i < instanceCount; ++i)
                     {
-                        pluginSections.Add(sectionType.CreateInstance(userId, sectionInstances.Where(x => x.GetType() == sectionType.GetType())));
+                        IHomeScreenSection[] tmpSectionInstances = pluginSections.Where(x => x?.GetType() == sectionType.GetType())
+                            .Concat(sectionInstances.Where(x => x.GetType() == sectionType.GetType())).ToArray();
+                        
+                        pluginSections.Add(sectionType.CreateInstance(userId, tmpSectionInstances));
                     }
                 }
                 else if (sectionType.Limit == 1)

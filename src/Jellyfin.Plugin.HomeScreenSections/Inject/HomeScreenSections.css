@@ -1,11 +1,18 @@
 .top-ten .card:before {
-    content: attr(data-number);
+    content: var(--card-number);
     position:fixed;
-    margin-left: 15px;
-    font-size:4vw;
-    bottom: -5px;
+    margin-left: 20px;
+    font-size:75px;
     width:50px;
     text-align:right;
+    height: 100px;
+    vertical-align: middle;
+    --card-number: attr(data-number);
+    bottom: calc(50% - 50px);
+    font-weight: bold;
+    -webkit-text-stroke: 3px var(--borderColor);
+    color: var(--darkerGradientPoint);
+    text-shadow: 0 0 10px var(--borderColor);
 }
 
 .top-ten .card .cardBox {
@@ -14,4 +21,13 @@
 
 .top-ten .cardFooter {
     display:none;
+}
+
+@media (min-width:100em) {
+    .top-ten .card:before {
+        margin-left: 12px;
+        font-size:6vw;
+        height: 120px;
+        bottom: calc(50% - 60px);
+    }
 }

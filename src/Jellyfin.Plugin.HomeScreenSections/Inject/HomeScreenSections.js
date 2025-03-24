@@ -26,4 +26,6 @@ const HomeScreenSections = {
     }
 }
 
-HomeScreenSections.init();
+setTimeout(function () {
+    HomeScreenSections.init();
+}, 50);

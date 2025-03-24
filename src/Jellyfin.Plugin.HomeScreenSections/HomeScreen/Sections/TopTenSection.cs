@@ -66,9 +66,11 @@ public class TopTenSection : IHomeScreenSection
         // TODO: Add config variable for collection name.
         BoxSet? collection = m_collectionManager.GetCollections(user)
             .FirstOrDefault(x => x.Name == "Top Ten");
+
+        TopTenType type = Enum.Parse<TopTenType>(payload.AdditionalData ?? "Movies");
         
         List<BaseItem> items =  collection?.GetChildren(user, true) ?? new List<BaseItem>();
-        items = items.Where(x => (x is Movie && Type == TopTenType.Movies) || (x is Series && Type == TopTenType.Shows)).ToList();
+        items = items.Where(x => (x is Movie && type == TopTenType.Movies) || (x is Series && type == TopTenType.Shows)).ToList();
         
         items = items.Take(Math.Min(items.Count, 10)).ToList();
         
@@ -82,7 +84,7 @@ public class TopTenSection : IHomeScreenSection
         {
             return new TopTenSection(m_userManager, m_collectionManager, m_dtoService)
             {
-                AdditionalData = AdditionalData,
+                AdditionalData = TopTenType.Movies.ToString(),
                 DisplayText = $"{DisplayText} Movies",
                 Type = TopTenType.Movies,
             };
@@ -96,7 +98,7 @@ public class TopTenSection : IHomeScreenSection
             
             return new TopTenSection(m_userManager, m_collectionManager, m_dtoService)
             {
-                AdditionalData = AdditionalData,
+                AdditionalData = TopTenType.Shows.ToString(),
                 DisplayText = $"{DisplayText} Shows",
                 Type = TopTenType.Shows,
             };
