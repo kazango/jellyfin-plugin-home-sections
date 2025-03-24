@@ -10,7 +10,7 @@
         }
     }
     
-    function getHomeScreenSectionItemsHtmlFn(useEpisodeImages, enableOverflow, sectionKey, cardBuilder, getBackdropShapeFn) {
+    function getHomeScreenSectionItemsHtmlFn(useEpisodeImages, enableOverflow, sectionKey, cardBuilder, getBackdropShapeFn, additionalSettings) {
         return function(items) {
             return cardBuilder.getCardsHtml({
                 items: items,
@@ -18,17 +18,17 @@
                 inheritThumb: !useEpisodeImages,
                 shape: getBackdropShapeFn(enableOverflow),
                 overlayText: false,
-                showTitle: true,
-                showParentTitle: true,
+                showTitle: additionalSettings.DisplayTitleText,
+                showParentTitle: additionalSettings.DisplayTitleText,
                 lazy: true,
-                showDetailsMenu: true,
+                showDetailsMenu: additionalSettings.ShowDetailsMenu,
                 overlayPlayButton: "MyMedia" !== sectionKey,
                 context: "home",
                 centerText: true,
                 allowBottomPadding: false,
-                cardLayout: false,
+                cardLayout: additionalSettings.UsePortraitTiles,
                 showYear: true,
-                lines: sectionKey === "MyMedia" ? 1 : 2
+                lines: additionalSettings.DisplayTitleText ? 0 : (sectionKey === "MyMedia" ? 1 : 2)
             });
         }
     }
@@ -78,10 +78,20 @@
             var var13_, var14_, itemsContainer = elem.querySelector(".itemsContainer");
             
             if (itemsContainer !== null) {
+                if (sectionInfo.ContainerClass !== undefined) {
+                    itemsContainer.classList.add(sectionInfo.ContainerClass);
+                }
+                
                 var cardBuilder = {{cardbuilder_hook}}.default;
                 
+                var cardSettings = {
+                    UsePortraitTiles: sectionInfo.UsePortraitTiles,
+                    DisplayTitleText: sectionInfo.DisplayTitleText,
+                    ShowDetailsMenu: sectionInfo.ShowDetailsMenu
+                }
+                
                 itemsContainer.fetchData = getHomeScreenSectionFetchFn(apiClient.serverId(), sectionInfo, u.A);
-                itemsContainer.getItemsHtml = getHomeScreenSectionItemsHtmlFn(userSettings.useEpisodeImagesInNextUpAndResume(), options.enableOverflow, sectionInfo.Section, cardBuilder, y.UI);
+                itemsContainer.getItemsHtml = getHomeScreenSectionItemsHtmlFn(userSettings.useEpisodeImagesInNextUpAndResume(), options.enableOverflow, sectionInfo.Section, cardBuilder, y.UI, cardSettings);
                 itemsContainer.parentContainer = elem;
             }
         }
@@ -104,7 +114,7 @@
         return function(elem, apiClient, user, userSettings) {
             var var39_, var39_3, var39_4;
             return var39_ = this, void 0, var39_4 = function() {
-                var var44_, var44_2, var44_3, var44_4, var44_5, var44_6, var44_7, var44_8, var44_9, var44_10, var44_11;
+                var var44_, options, var44_3, var44_4, var44_5, var44_6, var44_7, sectionInfo, var44_9, var44_10, var44_11;
                 return function(param45_, param45_2) {
                     var var46_, var47_, var48_, var49_ = {
                             label: 0,
@@ -184,12 +194,12 @@
                                 UserId: apiClient.getCurrentUserId()
                             }, var123_3 = var123_.getUrl("HomeScreen/Sections", var123_2), var123_.getJSON(var123_3))];
                         case 1:
-                            if (var44_ = param120_.sent(), var44_2 = {
+                            if (var44_ = param120_.sent(), options = {
                                 enableOverflow: !0
                             }, var44_3 = "", var44_4 = [], void 0 !== var44_.Items) {
                                 for (var44_5 = 0; var44_5 < var44_.TotalRecordCount; var44_5++) var44_6 = var44_.Items[var44_5].Section, var44_.Items[var44_5].Limit > 1 && (var44_6 += "-" + var44_.Items[var44_5].AdditionalData), var44_3 += '<div class="verticalSection ' + var44_6 + '"></div>';
                                 if (elem.innerHTML = var44_3, elem.classList.add("homeSectionsContainer"), var44_.TotalRecordCount > 0)
-                                    for (var44_7 = 0; var44_7 < var44_.Items.length; var44_7++) var44_8 = var44_.Items[var44_7], var44_4.push(loadHomeSection(elem, apiClient, 0, userSettings, var44_8, var44_2))
+                                    for (var44_7 = 0; var44_7 < var44_.Items.length; var44_7++) sectionInfo = var44_.Items[var44_7], var44_4.push(loadHomeSection(elem, apiClient, 0, userSettings, sectionInfo, options))
                             }
                             return var44_.TotalRecordCount > 0 ? [2, Promise.all(var44_4).then((function() {
                                 var var134_2, var134_3, var134_4;

@@ -51,6 +51,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
             RegisterResultsDelegate<LiveTvSection>();
             RegisterResultsDelegate<MyListSection>();
             RegisterResultsDelegate<WatchAgainSection>();
+            RegisterResultsDelegate<TopTenSection>();
         }
 
         /// <inheritdoc/>

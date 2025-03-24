@@ -55,6 +55,14 @@ namespace Jellyfin.Plugin.HomeScreenSections.Library
         public string? Route { get; set; }
 
         public string? AdditionalData { get; set; }
+        
+        public string? ContainerClass { get; set; }
+
+        public bool UsePortraitTiles { get; set; } = false;
+
+        public bool DisplayTitleText { get; set; } = true;
+        
+        public bool ShowDetailsMenu { get; set; } = true;
 
         public object? OriginalPayload { get; set; }
     }
