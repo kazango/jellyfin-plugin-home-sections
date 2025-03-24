@@ -109,9 +109,10 @@ public class TopTenSection : IHomeScreenSection
         {
             Section = Section,
             DisplayText = DisplayText,
-            AdditionalData = ((int)Type).ToString(),
+            AdditionalData = AdditionalData,
             Route = Route,
             Limit = Limit ?? 1,
+            OriginalPayload = OriginalPayload,
             ContainerClass = "top-ten",
             DisplayTitleText = false,
             ShowDetailsMenu = false,

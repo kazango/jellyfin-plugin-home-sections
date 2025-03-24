@@ -78,15 +78,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Library
     {
         public static HomeScreenSectionInfo AsInfo(this IHomeScreenSection section)
         {
-            return new HomeScreenSectionInfo
-            {
-                Section = section.Section,
-                DisplayText = section.DisplayText,
-                AdditionalData = section.AdditionalData,
-                Route = section.Route,
-                Limit = section.Limit ?? 1,
-                OriginalPayload = section.OriginalPayload
-            };
+            return section.GetInfo();
         }
     }
 }

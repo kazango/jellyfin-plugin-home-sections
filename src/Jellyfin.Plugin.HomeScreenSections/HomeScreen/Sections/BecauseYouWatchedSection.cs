@@ -157,7 +157,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				DisplayText = DisplayText,
 				AdditionalData = AdditionalData,
 				Route = Route,
-				Limit = Limit ?? 1
+				Limit = Limit ?? 1,
+				OriginalPayload = OriginalPayload
 			};
 		}
 	}
