@@ -24,5 +24,15 @@ namespace Jellyfin.Plugin.HomeScreenSections.Helpers
 
             return regex;
         }
+
+        public static string IndexHtml(PatchRequestPayload content)
+        {
+            string replacementText0 = "<link rel=\"stylesheet\" href=\"/HomeScreen/home-screen-sections.css\" />";
+            string replacementText1 = "<script type=\"text/javascript\" plugin=\"Jellyfin.Plugin.HomeScreenSections\" src=\"/HomeScreen/home-screen-sections.js\"></script>";
+            
+            return content.Contents!
+                .Replace("</head>", $"{replacementText0}</head>")
+                .Replace("</body>", $"{replacementText1}</body>");
+        }
     }
 }

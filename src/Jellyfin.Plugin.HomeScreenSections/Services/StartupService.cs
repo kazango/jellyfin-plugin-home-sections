@@ -39,6 +39,17 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
         public async Task ExecuteAsync(IProgress<double> progress, CancellationToken cancellationToken)
         {
             // Look through the web path and find the file that contains `",loadSections:`
+            List<JObject> payloads = new List<JObject>();
+            {
+                JObject payload = new JObject();
+                payload.Add("id", "e531b5a0-5493-42b0-b632-619e2d06db5c");
+                payload.Add("fileNamePattern", "index.html");
+                payload.Add("callbackAssembly", GetType().Assembly.FullName);
+                payload.Add("callbackClass", typeof(TransformationPatches).FullName);
+                payload.Add("callbackMethod", nameof(TransformationPatches.IndexHtml));
+                payloads.Add(payload);
+            }
+            
             string[] allJsChunks = Directory.GetFiles(m_applicationPaths.WebPath, "*.chunk.js", SearchOption.AllDirectories);
             foreach (string jsChunk in allJsChunks)
             {
@@ -50,21 +61,25 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                     payload.Add("callbackAssembly", GetType().Assembly.FullName);
                     payload.Add("callbackClass", typeof(TransformationPatches).FullName);
                     payload.Add("callbackMethod", nameof(TransformationPatches.LoadSections));
-                    
-                    Assembly? fileTransformationAssembly =
-                        AssemblyLoadContext.All.SelectMany(x => x.Assemblies).FirstOrDefault(x =>
-                            x.FullName?.Contains(".FileTransformation") ?? false);
-
-                    if (fileTransformationAssembly != null)
-                    {
-                        Type? pluginInterfaceType = fileTransformationAssembly.GetType("Jellyfin.Plugin.FileTransformation.PluginInterface");
-
-                        if (pluginInterfaceType != null)
-                        {
-                            pluginInterfaceType.GetMethod("RegisterTransformation")?.Invoke(null, new object?[] { payload });
-                        }
-                    }
+                    payloads.Add(payload);
                     break;
+                }
+            }
+            
+            Assembly? fileTransformationAssembly =
+                AssemblyLoadContext.All.SelectMany(x => x.Assemblies).FirstOrDefault(x =>
+                    x.FullName?.Contains(".FileTransformation") ?? false);
+
+            if (fileTransformationAssembly != null)
+            {
+                Type? pluginInterfaceType = fileTransformationAssembly.GetType("Jellyfin.Plugin.FileTransformation.PluginInterface");
+
+                if (pluginInterfaceType != null)
+                {
+                    foreach (JObject payload in payloads)
+                    {
+                        pluginInterfaceType.GetMethod("RegisterTransformation")?.Invoke(null, new object?[] { payload });
+                    }
                 }
             }
         }

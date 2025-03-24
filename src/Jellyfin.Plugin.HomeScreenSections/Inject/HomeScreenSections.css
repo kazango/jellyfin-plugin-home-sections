@@ -1,0 +1,13 @@
+.top-ten .card:before {
+    content: attr(data-number);
+    position:fixed;
+    margin-left:-40px;
+    font-size:4vw;
+    bottom:40px;
+    width:50px;
+    text-align:right;
+}
+
+.top-ten .card {
+    margin-left:2.2em !important;
+}

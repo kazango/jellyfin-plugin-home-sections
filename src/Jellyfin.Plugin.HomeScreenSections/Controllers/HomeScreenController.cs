@@ -48,6 +48,38 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             m_applicationPaths = applicationPaths;
         }
 
+        [HttpGet("home-screen-sections.js")]
+        [Produces("application/javascript")]
+        public ActionResult GetPluginScript()
+        {
+            Stream? stream = Assembly.GetExecutingAssembly()
+                .GetManifestResourceStream(typeof(HomeScreenSectionsPlugin).Namespace +
+                                           ".Inject.HomeScreenSections.js");
+
+            if (stream == null)
+            {
+                return NotFound();
+            }
+            
+            return File(stream, "application/javascript");
+        }
+
+        [HttpGet("home-screen-sections.css")]
+        [Produces("text/css")]
+        public ActionResult GetPluginStylesheet()
+        {
+            Stream? stream = Assembly.GetExecutingAssembly()
+                .GetManifestResourceStream(typeof(HomeScreenSectionsPlugin).Namespace +
+                                           ".Inject.HomeScreenSections.css");
+
+            if (stream == null)
+            {
+                return NotFound();
+            }
+            
+            return File(stream, "text/css");
+        }
+
         [HttpGet("Configuration")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<PluginConfiguration> GetHomeScreenConfiguration()
