@@ -91,9 +91,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				ImageTypeLimit = 1,
 				ImageTypes = new List<ImageType>
 				{
-					ImageType.Primary,
+					ImageType.Thumb,
 					ImageType.Backdrop,
-					ImageType.Thumb
+					ImageType.Primary,
 				}
 			};
 

@@ -82,10 +82,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             options.ImageTypeLimit = 1;
             options.ImageTypes = new List<ImageType>
             {
-                ImageType.Primary,
+                ImageType.Thumb,
                 ImageType.Backdrop,
-                ImageType.Banner,
-                ImageType.Thumb
+                ImageType.Primary,
             };
 
             QueryResult<BaseItem> result = m_tvSeriesManager.GetNextUp(

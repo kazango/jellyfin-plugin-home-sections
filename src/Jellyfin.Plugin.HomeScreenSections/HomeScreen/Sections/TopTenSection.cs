@@ -53,10 +53,9 @@ public class TopTenSection : IHomeScreenSection
             },
             ImageTypes = new[]
             {
-                ImageType.Primary,
+                ImageType.Thumb,
                 ImageType.Backdrop,
-                ImageType.Banner,
-                ImageType.Thumb
+                ImageType.Primary,
             },
             ImageTypeLimit = 1
         };

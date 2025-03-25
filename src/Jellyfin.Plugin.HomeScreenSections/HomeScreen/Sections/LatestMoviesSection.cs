@@ -55,9 +55,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             dtoOptions.ImageTypeLimit = 1;
             dtoOptions.ImageTypes = new List<ImageType>
             {
-                ImageType.Primary,
+                ImageType.Thumb,
                 ImageType.Backdrop,
-                ImageType.Thumb
+                ImageType.Primary,
             };
             
             User? user = m_userManager.GetUserById(payload.UserId);

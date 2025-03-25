@@ -5,6 +5,7 @@ using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Audio;
+using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
@@ -73,9 +74,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             dtoOptions.ImageTypeLimit = 1;
             dtoOptions.ImageTypes = new List<ImageType>
             {
-                ImageType.Primary,
+                ImageType.Thumb,
                 ImageType.Backdrop,
-                ImageType.Thumb
+                ImageType.Primary,
             };
 
             MyMediaSection myMedia = new MyMediaSection(m_userViewManager, m_userManager, m_dtoService);
@@ -102,6 +103,12 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             IEnumerable<BaseItemDto>? dtos = list.Select(i =>
             {
                 BaseItem? item = i.Item2[0];
+
+                if (item is Episode episode)
+                {
+                    item = episode.Series;
+                }
+                
                 int childCount = 0;
 
                 if (i.Item1 != null && (i.Item2.Count > 1 || i.Item1 is MusicAlbum))

@@ -123,10 +123,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				},
 				ImageTypes = new[]
 				{
-					ImageType.Primary,
+					ImageType.Thumb,
 					ImageType.Backdrop,
-					ImageType.Banner,
-					ImageType.Thumb
+					ImageType.Primary,
 				},
 				ImageTypeLimit = 1
 			};
