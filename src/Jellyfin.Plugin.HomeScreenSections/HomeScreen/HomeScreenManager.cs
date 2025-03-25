@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Jellyfin.Plugin.HomeScreenSections.Configuration;
 using Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections;
 using Jellyfin.Plugin.HomeScreenSections.Library;
@@ -51,7 +52,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
             RegisterResultsDelegate<LiveTvSection>();
             RegisterResultsDelegate<MyListSection>();
             RegisterResultsDelegate<WatchAgainSection>();
-            RegisterResultsDelegate<TopTenSection>();
+            
+            //RegisterResultsDelegate<TopTenSection>();
         }
 
         /// <inheritdoc/>
