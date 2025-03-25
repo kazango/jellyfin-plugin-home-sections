@@ -143,6 +143,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				},
 				IsMovie = true,
 				SimilarTo = item,
+				User = user,
+				IsPlayed = false, // Maybe make this configuable but this is the preferred default behaviour.
 				EnableGroupByMetadataKey = true,
 				DtoOptions = dtoOptions
 			});
