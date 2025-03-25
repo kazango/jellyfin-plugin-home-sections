@@ -73,7 +73,7 @@ public class TopTenSection : IHomeScreenSection
         
         items = items.Take(Math.Min(items.Count, 10)).ToList();
         
-        return new QueryResult<BaseItemDto>(m_dtoService.GetBaseItemDtos(items, dtoOptions));
+        return new QueryResult<BaseItemDto>(m_dtoService.GetBaseItemDtos(items, dtoOptions, user));
     }
 
     public IHomeScreenSection CreateInstance(Guid? userId, IEnumerable<IHomeScreenSection>? otherInstances = null)

@@ -114,6 +114,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 		public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload)
 		{
+			User user = UserManager.GetUserById(payload.UserId)!;
+			
 			DtoOptions? dtoOptions = new DtoOptions
 			{
 				Fields = new[]
@@ -145,7 +147,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				DtoOptions = dtoOptions
 			});
 
-			return new QueryResult<BaseItemDto>(DtoService.GetBaseItemDtos(similar, dtoOptions));
+			return new QueryResult<BaseItemDto>(DtoService.GetBaseItemDtos(similar, dtoOptions, user));
 		}
 		
 		public HomeScreenSectionInfo GetInfo()
