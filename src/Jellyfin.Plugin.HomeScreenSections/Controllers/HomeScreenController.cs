@@ -181,7 +181,14 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
 
             sectionInstances.AddRange(pluginSections);
 
-            List<HomeScreenSectionInfo> sections = sectionInstances.Where(x => x != null).Select(x => x.AsInfo()).ToList();
+            List<HomeScreenSectionInfo> sections = sectionInstances.Where(x => x != null).Select(x =>
+            {
+                HomeScreenSectionInfo info = x.AsInfo();
+
+                info.ViewMode ??= HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings.FirstOrDefault(x => x.SectionId == info.Section)?.ViewMode ?? SectionViewMode.Landscape;
+                
+                return info;
+            }).ToList();
 
             return new QueryResult<HomeScreenSectionInfo>(
                 0,

@@ -1,3 +1,4 @@
+using Jellyfin.Plugin.HomeScreenSections.Configuration;
 using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Querying;
@@ -58,13 +59,15 @@ namespace Jellyfin.Plugin.HomeScreenSections.Library
         
         public string? ContainerClass { get; set; }
 
-        public bool UsePortraitTiles { get; set; } = false;
+        public SectionViewMode? ViewMode { get; set; } = null;
 
         public bool DisplayTitleText { get; set; } = true;
         
         public bool ShowDetailsMenu { get; set; } = true;
 
         public object? OriginalPayload { get; set; }
+        
+        public bool AllowViewModeChange { get; set; } = true;
     }
 
     public class ModularHomeUserSettings

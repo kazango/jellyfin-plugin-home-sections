@@ -14,7 +14,7 @@
         return function(items) {
             return cardBuilder.getCardsHtml({
                 items: items,
-                preferThumb: additionalSettings.UsePortraitTiles ? null : 'auto',
+                preferThumb: additionalSettings.ViewMode === 'Portrait' ? null : 'auto',
                 inheritThumb: !useEpisodeImages,
                 shape: getShapeFn(enableOverflow),
                 overlayText: false,
@@ -85,7 +85,7 @@
                 var cardBuilder = {{cardbuilder_hook}}.default;
                 
                 var cardSettings = {
-                    UsePortraitTiles: sectionInfo.UsePortraitTiles,
+                    ViewMode: sectionInfo.ViewMode,
                     DisplayTitleText: sectionInfo.DisplayTitleText,
                     ShowDetailsMenu: sectionInfo.ShowDetailsMenu
                 }
@@ -96,7 +96,15 @@
                 var getPortraitShape = y.xK;
                 var getSquareShape = y.zP;
                 
-                var getShapeFn = cardSettings.UsePortraitTiles ? getPortraitShape : getBackdropShape;
+                var getShapeFn = getBackdropShape;
+                if (cardSettings.ViewMode === 'Portrait')
+                {
+                    getShapeFn = getPortraitShape;
+                }
+                else if (cardSettings.ViewMode === 'Square')
+                {
+                    getShapeFn = getSquareShape;
+                }
                 
                 itemsContainer.getItemsHtml = getHomeScreenSectionItemsHtmlFn(userSettings.useEpisodeImagesInNextUpAndResume(), options.enableOverflow, sectionInfo.Section, cardBuilder, getShapeFn, cardSettings);
                 itemsContainer.parentContainer = elem;

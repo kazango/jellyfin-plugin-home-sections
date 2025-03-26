@@ -81,6 +81,15 @@
                 <div class="fieldDescription">Is the user allowed to enable/disable this section?</div>
             </div>
             <div class="inputContainer">
+                <span>View Mode: </span>
+                <select is="emby-select" class="emby-select-withcolor emby-select" data-id="viewModeSelect">
+                    <option value="Portrait">Portrait</option>
+                    <option value="Landscape">Landscape</option>
+                    <option value="Square">Square</option>
+                </select>
+                <span>What shape should the cards appear as when results are loaded. <i>When this field is disabled, it means the section only supports the shape displayed.</i></span>
+            </div>
+            <div class="inputContainer">
                 <label class="inputLabel inputLabelUnfocused" for="templateSectionMinLimit">Lower Limit</label>
                 <label class="inputLabel inputLabelUnfocused" for="templateSectionMinLimit"></label>
                 <input id="templateSectionMinLimit" data-id="txtSectionMinLimit" type="number" is="emby-input" min="0" class="emby-input">
@@ -122,7 +131,8 @@
                             Enabled: configs[i].querySelector('[data-id=chkSectionEnabled]').checked,
                             AllowUserOverride: configs[i].querySelector('[data-id=chkSectionUserOverrideAllowed]').checked,
                             LowerLimit: configs[i].querySelector('[data-id=txtSectionMinLimit]').value,
-                            UpperLimit: configs[i].querySelector('[data-id=txtSectionMaxLimit]').value
+                            UpperLimit: configs[i].querySelector('[data-id=txtSectionMaxLimit]').value,
+                            ViewMode: configs[i].querySelector('[data-id=viewModeSelect]').value
                         };
                         
                         config.SectionSettings.push(sectionConfig);
@@ -169,7 +179,7 @@
                         let found = false;
                         for (let j = 0; j < pluginConfig.SectionSettings.length; ++j) {
                             if (pluginConfig.SectionSettings[j].SectionId == sectionTypes[i].Section) {
-                                HomeScreenSections.addSectionSetting(pluginConfig.SectionSettings[j], sectionTypes[i].DisplayText);
+                                HomeScreenSections.addSectionSetting(pluginConfig.SectionSettings[j], sectionTypes[i]);
                                 found = true;
                             }
                         }
@@ -183,20 +193,25 @@
                                 UpperLimit: sectionTypes[i].Limit,
                             };
                             
-                            HomeScreenSections.addSectionSetting(newConfig, sectionTypes[i].DisplayText);
+                            HomeScreenSections.addSectionSetting(newConfig, sectionTypes[i]);
                         }
                     }
                     
                 },
-                addSectionSetting: function(sectionConfig, displayText) {
+                addSectionSetting: function(sectionConfig, sectionInfo) {
                     const template = HomeScreenSections.sectionTemplate.cloneNode(true).content;
                     template.querySelector('[data-id=hiddenSectionId]').value = sectionConfig.SectionId;
                     template.querySelector('[data-id=chkSectionEnabled]').checked = sectionConfig.Enabled;
                     template.querySelector('[data-id=chkSectionUserOverrideAllowed]').checked = sectionConfig.AllowUserOverride;
                     template.querySelector('[data-id=txtSectionMinLimit]').value = sectionConfig.LowerLimit;
                     template.querySelector('[data-id=txtSectionMaxLimit]').value = sectionConfig.UpperLimit;
+                    template.querySelector('[data-id=viewModeSelect]').value = sectionConfig.ViewMode;
+                    if (!sectionInfo.AllowViewModeChange) {
+                        template.querySelector('[data-id=viewModeSelect]').value = sectionInfo.ViewMode;
+                        template.querySelector('[data-id=viewModeSelect]').setAttribute('disabled', true)
+                    }
                     
-                    template.querySelector('[data-id=lblSectionName]').innerHTML = displayText;
+                    template.querySelector('[data-id=lblSectionName]').innerHTML = sectionInfo.DisplayText;
                     
                     const el = HomeScreenSections.sectionWrapper.appendChild(template);
                 }
@@ -205,9 +220,7 @@
             document.querySelector('#homeScreenSectionsConfigurationPage').addEventListener("pageshow", function () {
                 HomeScreenSections.btnSave.addEventListener("click", HomeScreenSections.saveConfig);
                 HomeScreenSections.init();
-                console.log('init');
             });
-            console.log('init');
         }
     </script>
 </div>

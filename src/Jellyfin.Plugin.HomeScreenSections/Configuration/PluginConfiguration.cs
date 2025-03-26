@@ -11,6 +11,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         public SectionSettings[] SectionSettings { get; set; } = Array.Empty<SectionSettings>();
     }
 
+    public enum SectionViewMode
+    {
+        Portrait,
+        Landscape,
+        Square
+    }
+    
     public class SectionSettings
     {
         public string SectionId { get; set; } = string.Empty;
@@ -22,5 +29,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         public int LowerLimit { get; set; }
         
         public int UpperLimit { get; set; }
+
+        public SectionViewMode ViewMode { get; set; } = SectionViewMode.Landscape;
     }
 }

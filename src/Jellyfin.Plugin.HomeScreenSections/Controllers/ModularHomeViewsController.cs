@@ -56,6 +56,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             {
                 HomeScreenSectionInfo item = section.GetInfo();
 
+                item.ViewMode ??= SectionViewMode.Landscape;
+                
                 items.Add(item);
             }
 
