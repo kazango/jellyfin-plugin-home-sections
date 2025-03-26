@@ -82,6 +82,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 .Select(x => (x.Key, x.Max(y => y.PremiereDate)))
                 .OrderByDescending(x => x.Item2)
                 .Select(x => x.Key as BaseItem)
+                .Take(16)
                 .ToList();
             
             return new QueryResult<BaseItemDto>(Array.ConvertAll(series.ToArray(),

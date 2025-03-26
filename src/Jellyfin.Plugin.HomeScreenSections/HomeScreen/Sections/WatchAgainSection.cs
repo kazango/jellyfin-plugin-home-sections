@@ -155,7 +155,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				UserItemData data = UserDataManager.GetUserData(user, x);
 			
 				return data.LastPlayedDate;
-			}).ToList();
+			}).Take(16).ToList();
 
 			QueryResult<BaseItemDto>? result = new QueryResult<BaseItemDto>(DtoService.GetBaseItemDtos(results, dtoOptions, user));
 
