@@ -82,7 +82,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             List<BaseItem> episodes = m_libraryManager.GetItemList(new InternalItemsQuery(user)
             {
                 IncludeItemTypes = new[] { BaseItemKind.Episode },
-                OrderBy = new[] { (ItemSortBy.PremiereDate, SortOrder.Descending) },
+                OrderBy = new[] { (ItemSortBy.DateCreated, SortOrder.Descending) },
                 DtoOptions = new DtoOptions
                     { Fields = new[] { ItemFields.SeriesPresentationUniqueKey }, EnableImages = false }
             });
