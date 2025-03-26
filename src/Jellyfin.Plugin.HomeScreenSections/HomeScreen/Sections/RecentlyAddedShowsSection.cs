@@ -79,52 +79,26 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 ImageType.Primary,
             };
 
-            MyMediaSection myMedia = new MyMediaSection(m_userViewManager, m_userManager, m_dtoService);
-            QueryResult<BaseItemDto> media = myMedia.GetResults(payload);
-
-            Guid parentId = Guid.Empty;
-            if (Enum.TryParse(payload.AdditionalData, out CollectionType collectionType))
+            List<BaseItem> episodes = m_libraryManager.GetItemList(new InternalItemsQuery(user)
             {
-                parentId = media.Items.FirstOrDefault(x => x.CollectionType == collectionType)?.Id ?? Guid.Empty;
-            }
-            
-            List<Tuple<BaseItem, List<BaseItem>>>? list = m_userViewManager.GetLatestItems(
-                new LatestItemsQuery
-                {
-                    GroupItems = true,
-                    Limit = 16,
-                    ParentId = parentId,
-                    User = user,
-                    IsPlayed = false,
-                    IncludeItemTypes = Array.Empty<BaseItemKind>()
-                },
-                dtoOptions);
-
-            IEnumerable<BaseItemDto>? dtos = list.Select(i =>
-            {
-                BaseItem? item = i.Item2[0];
-
-                if (item is Episode episode)
-                {
-                    item = episode.Series;
-                }
-                
-                int childCount = 0;
-
-                if (i.Item1 != null && (i.Item2.Count > 1 || i.Item1 is MusicAlbum))
-                {
-                    item = i.Item1;
-                    childCount = i.Item2.Count;
-                }
-
-                BaseItemDto? dto = m_dtoService.GetBaseItemDto(item, dtoOptions, user);
-
-                dto.ChildCount = childCount;
-
-                return dto;
+                IncludeItemTypes = new[] { BaseItemKind.Episode },
+                OrderBy = new[] { (ItemSortBy.PremiereDate, SortOrder.Descending) },
+                DtoOptions = new DtoOptions
+                    { Fields = new[] { ItemFields.SeriesPresentationUniqueKey }, EnableImages = false }
             });
+            
+            List<BaseItem> series = episodes
+                .Where(x => !x.IsUnaired && !x.IsVirtualItem)
+                .Select(x => (x.FindParent<Series>(), (x as Episode)?.DateCreated))
+                .GroupBy(x => x.Item1)
+                .Select(x => (x.Key, x.Max(y => y.DateCreated)))
+                .OrderByDescending(x => x.Item2)
+                .Select(x => x.Key as BaseItem)
+                .Take(16)
+                .ToList();
 
-            return new QueryResult<BaseItemDto>(dtos.ToList());
+            return new QueryResult<BaseItemDto>(Array.ConvertAll(series.ToArray(),
+                i => m_dtoService.GetBaseItemDto(i, dtoOptions, user)));
         }
 
         
