@@ -10,13 +10,13 @@
         }
     }
     
-    function getHomeScreenSectionItemsHtmlFn(useEpisodeImages, enableOverflow, sectionKey, cardBuilder, getBackdropShapeFn, additionalSettings) {
+    function getHomeScreenSectionItemsHtmlFn(useEpisodeImages, enableOverflow, sectionKey, cardBuilder, getShapeFn, additionalSettings) {
         return function(items) {
             return cardBuilder.getCardsHtml({
                 items: items,
-                preferThumb: true,
+                preferThumb: additionalSettings.UsePortraitTiles ? null : 'auto',
                 inheritThumb: !useEpisodeImages,
-                shape: getBackdropShapeFn(enableOverflow),
+                shape: getShapeFn(enableOverflow),
                 overlayText: false,
                 showTitle: additionalSettings.DisplayTitleText,
                 showParentTitle: additionalSettings.DisplayTitleText,
@@ -26,7 +26,7 @@
                 context: "home",
                 centerText: true,
                 allowBottomPadding: false,
-                cardLayout: additionalSettings.UsePortraitTiles,
+                cardLayout: false,
                 showYear: true,
                 lines: additionalSettings.DisplayTitleText ? 0 : (sectionKey === "MyMedia" ? 1 : 2)
             });
@@ -91,7 +91,14 @@
                 }
                 
                 itemsContainer.fetchData = getHomeScreenSectionFetchFn(apiClient.serverId(), sectionInfo, u.A);
-                itemsContainer.getItemsHtml = getHomeScreenSectionItemsHtmlFn(userSettings.useEpisodeImagesInNextUpAndResume(), options.enableOverflow, sectionInfo.Section, cardBuilder, y.UI, cardSettings);
+                
+                var getBackdropShape = y.UI;
+                var getPortraitShape = y.xK;
+                var getSquareShape = y.zP;
+                
+                var getShapeFn = cardSettings.UsePortraitTiles ? getPortraitShape : getBackdropShape;
+                
+                itemsContainer.getItemsHtml = getHomeScreenSectionItemsHtmlFn(userSettings.useEpisodeImagesInNextUpAndResume(), options.enableOverflow, sectionInfo.Section, cardBuilder, getShapeFn, cardSettings);
                 itemsContainer.parentContainer = elem;
             }
         }
