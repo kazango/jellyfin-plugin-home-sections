@@ -28,7 +28,7 @@
                 allowBottomPadding: false,
                 cardLayout: false,
                 showYear: true,
-                lines: additionalSettings.DisplayTitleText ? 0 : (sectionKey === "MyMedia" ? 1 : 2)
+                lines: additionalSettings.DisplayTitleText ? (sectionKey === "MyMedia" ? 1 : 2) : 0
             });
         }
     }
