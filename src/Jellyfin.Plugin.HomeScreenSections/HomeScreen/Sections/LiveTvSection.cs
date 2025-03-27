@@ -62,7 +62,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 			User user = UserManager.GetUserById(payload.UserId)!;
 
-			return LiveTvManager.GetPrograms(new InternalItemsQuery(user), dtoOptions, CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
+			return LiveTvManager.GetRecommendedProgramsAsync(new InternalItemsQuery(user)
+			{
+				Limit = 24,
+				EnableTotalRecordCount = false,
+				IsAiring = true,
+				User = user
+			}, dtoOptions, CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
 		}
 		
 		public HomeScreenSectionInfo GetInfo()
