@@ -188,6 +188,15 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
 
                 info.ViewMode ??= HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings.FirstOrDefault(x => x.SectionId == info.Section)?.ViewMode ?? SectionViewMode.Landscape;
                 
+                if (language != "en" && !string.IsNullOrEmpty(language?.Trim()) &&
+                    info.DisplayText != null)
+                {
+                    string? translatedResult = TranslationHelper.TranslateAsync(info.DisplayText, "en", language.Trim())
+                        .GetAwaiter().GetResult();
+
+                    info.DisplayText = translatedResult;
+                }
+                
                 return info;
             }).ToList();
 
