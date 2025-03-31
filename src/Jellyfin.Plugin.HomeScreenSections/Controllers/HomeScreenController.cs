@@ -90,7 +90,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
         [HttpGet("Sections")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<QueryResult<HomeScreenSectionInfo>> GetHomeScreenSections(
-            [FromQuery] Guid? userId)
+            [FromQuery] Guid? userId,
+            [FromQuery] string? language)
         {
             string displayPreferencesId = "usersettings";
             Guid itemId = displayPreferencesId.GetMD5();
@@ -200,7 +201,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
         public QueryResult<BaseItemDto> GetSectionContent(
             [FromRoute] string sectionType,
             [FromQuery, Required] Guid userId,
-            [FromQuery] string? additionalData)
+            [FromQuery] string? additionalData,
+            [FromQuery] string? language)
         {
             HomeScreenSectionPayload payload = new HomeScreenSectionPayload
             {

@@ -4,7 +4,8 @@
             var _apiClient = serverConnections.getApiClient(serverId);
             var getUrl = _apiClient.getUrl("HomeScreen/Section/" + sectionInfo.Section, {
                     UserId: _apiClient.getCurrentUserId(),
-                    AdditionalData: sectionInfo.AdditionalData
+                    AdditionalData: sectionInfo.AdditionalData,
+                    Language: localStorage.getItem(apiClient.getCurrentUserId() + '-language')
                 });
             return _apiClient.getJSON(getUrl);
         }
@@ -206,7 +207,8 @@
                         case 0:
                             var var123_, var123_2, var123_3;
                             return [4, (var123_ = apiClient, var123_2 = {
-                                UserId: apiClient.getCurrentUserId()
+                                UserId: apiClient.getCurrentUserId(),
+                                Language: localStorage.getItem(apiClient.getCurrentUserId() + '-language')
                             }, var123_3 = var123_.getUrl("HomeScreen/Sections", var123_2), var123_.getJSON(var123_3))];
                         case 1:
                             if (var44_ = param120_.sent(), options = {
