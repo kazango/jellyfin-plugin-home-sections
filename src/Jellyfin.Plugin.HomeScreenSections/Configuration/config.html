@@ -41,6 +41,14 @@
                     </label>
                     <div class="fieldDescription">Is the user allowed to enable/disable this plugin for their view?</div>
                 </div>
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" data-id="txtLibreTranslateUrl" label="LibreTranslate URL" />
+                    <span>URL for LibreTranslate instance to use for translations.</span>
+                </div>
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" data-id="txtLibreTranslateApiKey" required="required" label="LibreTranslate API Key" />
+                    <span>API Key for LibreTranslate instance.</span>
+                </div>
             </fieldset>
             <fieldset class="verticalSection-extrabottompadding">
                 <legend>Section Settings</legend>
@@ -121,6 +129,8 @@
                     const config = {
                         Enabled: document.querySelector('#globalEnabledDefault').checked,
                         AllowUserOverride: document.querySelector('#globalAllowUserOverride').checked,
+                        LibreTranslateUrl: document.querySelector('[data-id=txtLibreTranslateUrl]').value,
+                        LibreTranslateApiKey: document.querySelector('[data-id=txtLibreTranslateApiKey]').value,
                         SectionSettings: []
                     };
                     
@@ -153,6 +163,8 @@
                         .then(function (config) {
                             document.querySelector('#globalEnabledDefault').checked = config.Enabled;
                             document.querySelector('#globalAllowUserOverride').checked = config.AllowUserOverride;
+                            document.querySelector('[data-id=txtLibreTranslateUrl]').value = config.LibreTranslateUrl;
+                            document.querySelector('[data-id=txtLibreTranslateApiKey]').value = config.LibreTranslateApiKey;
                             
                             // Get plugin defaults for each section it defines
                             // Loop over these sections and add in what the config has overwritten
