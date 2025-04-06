@@ -71,6 +71,15 @@ If you find an issue with any of the sections or usage of the plugin, please ope
 
 ### FAQ
 
+#### I've installed the plugins and don't get any options or changes. How do I fix?
+This is common, particularly on a fresh install. The first thing you should try is the following
+1. Launch your browsers developer tools
+![image](https://github.com/user-attachments/assets/e8781a69-464e-430e-a07c-5172a620ef84)
+2. Open the **Network** tab across the top bar
+3. Check the **Disable cache** checkbox
+4. Refresh the page **while the dev tools are still open**
+![image](https://github.com/user-attachments/assets/6f8c3fc7-89a3-4475-b8a6-cd4a58d51b84)
+
 #### How can I tell if its worked?
 
 > The easiest way to confirm whether the user is using the modular home settings is to check whether the movie posters are portrait or landscape. Due to how the cards are delivered from the backend all cards are forced to be landscape
