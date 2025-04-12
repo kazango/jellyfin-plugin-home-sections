@@ -1,5 +1,6 @@
 ﻿using Jellyfin.Plugin.HomeScreenSections.Configuration;
 using MediaBrowser.Common.Configuration;
+using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Model.Plugins;
@@ -51,10 +52,16 @@ namespace Jellyfin.Plugin.HomeScreenSections
 
             if (!config.Value<JArray>("pages")!.Any(x => x.Value<string>("Id") == typeof(HomeScreenSectionsPlugin).Namespace))
             {
+                string rootUrl = ServerConfigurationManager.GetNetworkConfiguration().BaseUrl.TrimStart('/').Trim();
+                if (!string.IsNullOrEmpty(rootUrl))
+                {
+                    rootUrl = $"/{rootUrl}";
+                }
+                
                 config.Value<JArray>("pages")!.Add(new JObject
                 {
                     { "Id", typeof(HomeScreenSectionsPlugin).Namespace },
-                    { "Url", "/ModularHomeViews/settings" },
+                    { "Url", $"{rootUrl}/ModularHomeViews/settings" },
                     { "DisplayText", "Modular Home" },
                     { "Icon", "ballot" }
                 });
@@ -86,12 +93,7 @@ namespace Jellyfin.Plugin.HomeScreenSections
                 {
                     Name = "settings",
                     EmbeddedResourcePath = $"{GetType().Namespace}.Config.settings.html"
-                },
-                new PluginPageInfo
-                {
-                    Name = "settings.js",
-                    EmbeddedResourcePath = $"{GetType().Namespace}.Config.settings.js"
-                },
+                }
             };
         }
     }
