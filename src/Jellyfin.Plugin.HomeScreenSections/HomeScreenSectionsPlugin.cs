@@ -1,6 +1,7 @@
 ﻿using Jellyfin.Plugin.HomeScreenSections.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
+using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 using Newtonsoft.Json;
@@ -10,15 +11,19 @@ namespace Jellyfin.Plugin.HomeScreenSections
 {
     public class HomeScreenSectionsPlugin : BasePlugin<PluginConfiguration>, IPlugin, IHasPluginConfiguration, IHasWebPages
     {
+        internal IServerConfigurationManager ServerConfigurationManager { get; private set; }
+        
         public override Guid Id => Guid.Parse("b8298e01-2697-407a-b44d-aa8dc795e850");
 
         public override string Name => "Home Screen Sections";
 
         public static HomeScreenSectionsPlugin Instance { get; private set; } = null!;
     
-        public HomeScreenSectionsPlugin(IApplicationPaths applicationPaths, IXmlSerializer xmlSerializer) : base(applicationPaths, xmlSerializer)
+        public HomeScreenSectionsPlugin(IApplicationPaths applicationPaths, IXmlSerializer xmlSerializer, IServerConfigurationManager serverConfigurationManager) : base(applicationPaths, xmlSerializer)
         {
             Instance = this;
+            
+            ServerConfigurationManager = serverConfigurationManager;
         
             string homeScreenSectionsConfigDir = Path.Combine(applicationPaths.PluginConfigurationsPath, "Jellyfin.Plugin.HomeScreenSections");
             if (!Directory.Exists(homeScreenSectionsConfigDir))

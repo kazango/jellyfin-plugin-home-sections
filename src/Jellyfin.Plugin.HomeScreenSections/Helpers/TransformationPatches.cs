@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Text.RegularExpressions;
 using Jellyfin.Plugin.HomeScreenSections.Model;
+using MediaBrowser.Common.Net;
 
 namespace Jellyfin.Plugin.HomeScreenSections.Helpers
 {
@@ -27,8 +28,16 @@ namespace Jellyfin.Plugin.HomeScreenSections.Helpers
 
         public static string IndexHtml(PatchRequestPayload content)
         {
-            string replacementText0 = "<link rel=\"stylesheet\" href=\"/HomeScreen/home-screen-sections.css\" />";
-            string replacementText1 = "<script type=\"text/javascript\" plugin=\"Jellyfin.Plugin.HomeScreenSections\" src=\"/HomeScreen/home-screen-sections.js\" defer></script>";
+            NetworkConfiguration networkConfiguration = HomeScreenSectionsPlugin.Instance.ServerConfigurationManager.GetNetworkConfiguration();
+
+            string rootPath = "";
+            if (!string.IsNullOrWhiteSpace(networkConfiguration.BaseUrl))
+            {
+                rootPath = $"/{networkConfiguration.BaseUrl.TrimStart('/').Trim()}";
+            }
+            
+            string replacementText0 = $"<link rel=\"stylesheet\" href=\"{rootPath}/HomeScreen/home-screen-sections.css\" />";
+            string replacementText1 = $"<script type=\"text/javascript\" plugin=\"Jellyfin.Plugin.HomeScreenSections\" src=\"{rootPath}/HomeScreen/home-screen-sections.js\" defer></script>";
             
             return content.Contents!
                 .Replace("</head>", $"{replacementText0}</head>")
