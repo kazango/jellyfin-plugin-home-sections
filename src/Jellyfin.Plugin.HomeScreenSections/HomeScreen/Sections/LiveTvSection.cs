@@ -1,4 +1,5 @@
 ﻿using Jellyfin.Data.Entities;
+using Jellyfin.Plugin.HomeScreenSections.Configuration;
 using Jellyfin.Plugin.HomeScreenSections.Library;
 using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 using MediaBrowser.Controller.Dto;
@@ -80,7 +81,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				AdditionalData = AdditionalData,
 				Route = Route,
 				Limit = Limit ?? 1,
-				OriginalPayload = OriginalPayload
+				OriginalPayload = OriginalPayload,
+				ViewMode = SectionViewMode.Landscape
 			};
 		}
 	}
