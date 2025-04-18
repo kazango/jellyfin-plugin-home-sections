@@ -20,10 +20,10 @@
         <span>Save</span>
     </button>
 </form>
-<script>
+<script defer>
 
     const config = {
-        setup: (view) => {
+        setup: function () {
             ApiClient.getDisplayPreferences('usersettings', ApiClient.getCurrentUserId(), 'emby').then(function (userSettings) {
                 document.querySelector('#modularHomeEnabled').checked = userSettings.CustomPrefs['useModularHome'] === 'true';
             });
@@ -111,9 +111,6 @@
         }
     }
 
-
-    export default function (view) {
-        config.setup(view);
-    }
+    config.setup();
 
 </script>
