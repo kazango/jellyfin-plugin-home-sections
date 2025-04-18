@@ -22,7 +22,6 @@
     
     <ItemGroup>
       <EmbeddedResource Include="Config\settings.html" />
-      <EmbeddedResource Include="Config\settings.js" />
       <EmbeddedResource Include="Controllers\loadSections.js" />
       <None Remove="Configuration\config.html" />
       <EmbeddedResource Include="Configuration\config.html" />

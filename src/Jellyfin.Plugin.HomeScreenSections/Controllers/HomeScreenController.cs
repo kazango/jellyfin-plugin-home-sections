@@ -152,36 +152,45 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
 
             sectionTypes.RemoveAll(x => homeSectionOrderTypes.Contains(x.Section ?? string.Empty));
 
-            List<IHomeScreenSection> pluginSections = new List<IHomeScreenSection>(); // we want these randomly distributed among each other.
+            IEnumerable<IGrouping<int, SectionSettings>> groupedOrderedSections = HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings
+                .OrderBy(x => x.OrderIndex)
+                .GroupBy(x => x.OrderIndex);
 
-            foreach (IHomeScreenSection sectionType in sectionTypes)
+            foreach (IGrouping<int, SectionSettings> orderedSections in groupedOrderedSections)
             {
-                SectionSettings? sectionSettings = HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings.FirstOrDefault(x =>
-                    x.SectionId == sectionType.Section);
+                List<IHomeScreenSection> tmpPluginSections = new List<IHomeScreenSection>(); // we want these randomly distributed among each other.
                 
-                if (sectionType.Limit > 1)
+                foreach (SectionSettings sectionSettings in orderedSections)
                 {
-                    Random rnd = new Random();
-                    int instanceCount = rnd.Next(sectionSettings?.LowerLimit ?? 0, sectionSettings?.UpperLimit ?? sectionType.Limit ?? 1);
+                    IHomeScreenSection? sectionType = sectionTypes.FirstOrDefault(x => x.Section == sectionSettings.SectionId);
 
-                    for (int i = 0; i < instanceCount; ++i)
+                    if (sectionType != null)
                     {
-                        IHomeScreenSection[] tmpSectionInstances = pluginSections.Where(x => x?.GetType() == sectionType.GetType())
-                            .Concat(sectionInstances.Where(x => x.GetType() == sectionType.GetType())).ToArray();
-                        
-                        pluginSections.Add(sectionType.CreateInstance(userId, tmpSectionInstances));
+                        if (sectionType.Limit > 1)
+                        {
+                            Random rnd = new Random();
+                            int instanceCount = rnd.Next(sectionSettings?.LowerLimit ?? 0, sectionSettings?.UpperLimit ?? sectionType.Limit ?? 1);
+                            
+                            for (int i = 0; i < instanceCount; ++i)
+                            {
+                                IHomeScreenSection[] tmpSectionInstances = tmpPluginSections.Where(x => x?.GetType() == sectionType.GetType())
+                                    .Concat(sectionInstances.Where(x => x.GetType() == sectionType.GetType())).ToArray();
+                            
+                                tmpPluginSections.Add(sectionType.CreateInstance(userId, tmpSectionInstances));
+                            }
+                        }
+                        else if (sectionType.Limit == 1)
+                        {
+                            tmpPluginSections.Add(sectionType.CreateInstance(userId));
+                        }
                     }
                 }
-                else if (sectionType.Limit == 1)
-                {
-                    pluginSections.Add(sectionType.CreateInstance(userId));
-                }
+                
+                tmpPluginSections.Shuffle();
+                
+                sectionInstances.AddRange(tmpPluginSections);
             }
-
-            pluginSections.Shuffle();
-
-            sectionInstances.AddRange(pluginSections);
-
+            
             List<HomeScreenSectionInfo> sections = sectionInstances.Where(x => x != null).Select(x =>
             {
                 HomeScreenSectionInfo info = x.AsInfo();

@@ -34,6 +34,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         
         public int UpperLimit { get; set; }
 
+        public int OrderIndex { get; set; }
+        
         public SectionViewMode ViewMode { get; set; } = SectionViewMode.Landscape;
     }
 }

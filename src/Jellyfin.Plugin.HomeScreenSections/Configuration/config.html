@@ -66,6 +66,12 @@
         <fieldset class="verticalSection-extrabottompadding" data-id="section-config">
             <legend data-id="lblSectionName"></legend>
             <input type="hidden" data-id="hiddenSectionId" />
+            <div class="inputContainer">
+                <label class="inputLabel inputLabelUnfocused" for="templateOrderIndex">Order Index</label>
+                <label class="inputLabel inputLabelUnfocused" for="templateOrderIndex"></label>
+                <input id="templateOrderIndex" data-id="txtOrderIndex" type="number" is="emby-input" min="0" class="emby-input">
+                <div class="fieldDescription">Defines an order location for this section, the smaller the number the higher it will appear on the home page. <i>Note: When sections share a number they will be randomized among themselves.</i></div>
+            </div>
             <div class="checkboxContainer checkboxContainer-withDescription">
                 <label class="emby-checkbox-label">
                     <input id="templateSectionEnabled" data-id="chkSectionEnabled" type="checkbox" is="emby-checkbox" data-embycheckbox="true" class="emby-checkbox">
@@ -142,7 +148,8 @@
                             AllowUserOverride: configs[i].querySelector('[data-id=chkSectionUserOverrideAllowed]').checked,
                             LowerLimit: configs[i].querySelector('[data-id=txtSectionMinLimit]').value,
                             UpperLimit: configs[i].querySelector('[data-id=txtSectionMaxLimit]').value,
-                            ViewMode: configs[i].querySelector('[data-id=viewModeSelect]').value
+                            OrderIndex: configs[i].querySelector('[data-id=txtOrderIndex]').value,
+                            ViewMode: configs[i].querySelector('[data-id=viewModeSelect]').value,
                         };
                         
                         config.SectionSettings.push(sectionConfig);
@@ -203,6 +210,7 @@
                                 AllowUserOverride: true,
                                 LowerLimit: 1,
                                 UpperLimit: sectionTypes[i].Limit,
+                                OrderIndex: 999 // new sections will always appear last to avoid admins orders being screwed
                             };
                             
                             HomeScreenSections.addSectionSetting(newConfig, sectionTypes[i]);
@@ -217,6 +225,7 @@
                     template.querySelector('[data-id=chkSectionUserOverrideAllowed]').checked = sectionConfig.AllowUserOverride;
                     template.querySelector('[data-id=txtSectionMinLimit]').value = sectionConfig.LowerLimit;
                     template.querySelector('[data-id=txtSectionMaxLimit]').value = sectionConfig.UpperLimit;
+                    template.querySelector('[data-id=txtOrderIndex]').value = sectionConfig.OrderIndex;
                     template.querySelector('[data-id=viewModeSelect]').value = sectionConfig.ViewMode;
                     if (!sectionInfo.AllowViewModeChange) {
                         template.querySelector('[data-id=viewModeSelect]').value = sectionInfo.ViewMode;
