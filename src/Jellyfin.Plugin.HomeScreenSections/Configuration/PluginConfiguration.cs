@@ -7,10 +7,10 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         public bool Enabled { get; set; } = false;
 
         public bool AllowUserOverride { get; set; } = true;
-        
-        public string? LibreTranslateUrl { get; set; }
-        
-        public string? LibreTranslateApiKey { get; set; }
+
+        public string? LibreTranslateUrl { get; set; } = "";
+
+        public string? LibreTranslateApiKey { get; set; } = "";
         
         public SectionSettings[] SectionSettings { get; set; } = Array.Empty<SectionSettings>();
     }
