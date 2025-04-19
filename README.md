@@ -53,7 +53,7 @@ The sections that are new for this plugin (and most likely the reason you would 
 ## Installation
 
 ### Prerequisites
-- This plugin is based on Jellyfin Version `10.10.6`
+- This plugin is based on Jellyfin Version `10.10.7`
 - The following plugins are required to also be installed, please following their installation guides:
   - File Transformation (https://github.com/IAmParadox27/jellyfin-plugin-file-transformation) at least v2.2.1.0
   - Plugin Pages (https://github.com/IAmParadox27/jellyfin-plugin-pages) at least v2.2.2.0

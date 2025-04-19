@@ -195,7 +195,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             {
                 HomeScreenSectionInfo info = x.AsInfo();
 
-                info.ViewMode ??= HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings.FirstOrDefault(x => x.SectionId == info.Section)?.ViewMode ?? SectionViewMode.Landscape;
+                info.ViewMode = HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings.FirstOrDefault(x => x.SectionId == info.Section)?.ViewMode ?? info.ViewMode ?? SectionViewMode.Landscape;
                 
                 if (language != "en" && !string.IsNullOrEmpty(language?.Trim()) &&
                     info.DisplayText != null)
