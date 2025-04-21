@@ -3,6 +3,7 @@ using Jellyfin.Plugin.HomeScreenSections.Library;
 using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Querying;
+using Microsoft.AspNetCore.Http;
 
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
@@ -29,7 +30,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             AdditionalData = additionalData;
         }
         
-        public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload)
+        public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload, IQueryCollection queryCollection)
         {
             return OnGetResults(payload);
         }

@@ -10,6 +10,7 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
+using Microsoft.AspNetCore.Http;
 
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
@@ -58,7 +59,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         }
 
         /// <inheritdoc/>
-        public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload)
+        public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload, IQueryCollection queryCollection)
         {
             User? user = m_userManager.GetUserById(payload.UserId);
 
@@ -80,7 +81,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             };
 
             MyMediaSection myMedia = new MyMediaSection(m_userViewManager, m_userManager, m_dtoService);
-            QueryResult<BaseItemDto> media = myMedia.GetResults(payload);
+            QueryResult<BaseItemDto> media = myMedia.GetResults(payload, queryCollection);
 
             Guid parentId = media.Items.FirstOrDefault(x => x.Name == payload.AdditionalData)?.Id ?? Guid.Empty;
 

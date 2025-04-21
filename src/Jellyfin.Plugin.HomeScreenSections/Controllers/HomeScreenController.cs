@@ -228,7 +228,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
                 AdditionalData = additionalData
             };
 
-            return m_homeScreenManager.InvokeResultsDelegate(sectionType, payload);
+            return m_homeScreenManager.InvokeResultsDelegate(sectionType, payload, Request.Query);
         }
 
         [HttpPost("RegisterSection")]

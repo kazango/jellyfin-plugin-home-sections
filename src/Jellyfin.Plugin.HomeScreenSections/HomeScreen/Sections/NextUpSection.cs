@@ -10,6 +10,8 @@ using MediaBrowser.Controller.TV;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
@@ -67,7 +69,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         }
 
         /// <inheritdoc/>
-        public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload)
+        public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload, IQueryCollection queryCollection)
         {
             User? user = m_userManager.GetUserById(payload.UserId);
             
@@ -88,6 +90,21 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 ImageType.Primary,
             };
 
+            bool enableRewatching = true; // Enabled by default
+            if (queryCollection.TryGetValue("EnableRewatching", out StringValues enableRewatchingValue))
+            {
+                enableRewatching = enableRewatchingValue.FirstOrDefault() == "true";
+            }
+            
+            DateTime nextUpDateCutoff = DateTime.MinValue;
+            if (queryCollection.TryGetValue("NextUpDateCutoff", out StringValues nextUpDateCutoffValue))
+            {
+                if (DateTime.TryParse(nextUpDateCutoffValue.FirstOrDefault(), out DateTime nextUpDateCutoffParsed))
+                {
+                    nextUpDateCutoff = nextUpDateCutoffParsed;
+                }
+            }
+
             QueryResult<BaseItem> result = m_tvSeriesManager.GetNextUp(
                 new NextUpQuery
                 {
@@ -97,11 +114,10 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                     User = user!,
                     EnableTotalRecordCount = false,
                     DisableFirstEpisode = true,
-                    NextUpDateCutoff = DateTime.MinValue,
-                    EnableRewatching = true
+                    NextUpDateCutoff = nextUpDateCutoff,
+                    EnableRewatching = enableRewatching
                 },
                 options);
-
 
             IReadOnlyList<BaseItemDto> returnItems = m_dtoService.GetBaseItemDtos(result.Items, options, user);
 

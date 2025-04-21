@@ -1,12 +1,24 @@
 ﻿async function test(elem, apiClient, user, userSettings) {
-    function getHomeScreenSectionFetchFn(serverId, sectionInfo, serverConnections) {
+    function getHomeScreenSectionFetchFn(serverId, sectionInfo, serverConnections, _userSettings) {
         return function() {
+            var __userSettings = _userSettings;
+
             var _apiClient = serverConnections.getApiClient(serverId);
-            var getUrl = _apiClient.getUrl("HomeScreen/Section/" + sectionInfo.Section, {
-                    UserId: _apiClient.getCurrentUserId(),
-                    AdditionalData: sectionInfo.AdditionalData,
-                    Language: localStorage.getItem(apiClient.getCurrentUserId() + '-language')
-                });
+            var queryParams = {
+                UserId: _apiClient.getCurrentUserId(),
+                AdditionalData: sectionInfo.AdditionalData,
+                Language: localStorage.getItem(apiClient.getCurrentUserId() + '-language')
+            };
+            
+            if (sectionInfo.Section === 'NextUp') {
+                var cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - _userSettings.maxDaysForNextUp());
+                
+                queryParams.NextUpDateCutoff = cutoffDate.toISOString();
+                queryParams.EnableRewatching = _userSettings.enableRewatchingInNextUp();
+            }
+            
+            var getUrl = _apiClient.getUrl("HomeScreen/Section/" + sectionInfo.Section, queryParams);
             return _apiClient.getJSON(getUrl);
         }
     }
@@ -91,7 +103,7 @@
                     ShowDetailsMenu: sectionInfo.ShowDetailsMenu
                 }
                 
-                itemsContainer.fetchData = getHomeScreenSectionFetchFn(apiClient.serverId(), sectionInfo, u.A);
+                itemsContainer.fetchData = getHomeScreenSectionFetchFn(apiClient.serverId(), sectionInfo, u.A, userSettings);
                 
                 var getBackdropShape = y.UI;
                 var getPortraitShape = y.xK;

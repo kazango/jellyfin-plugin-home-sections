@@ -2,6 +2,7 @@ using Jellyfin.Plugin.HomeScreenSections.Configuration;
 using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Querying;
+using Microsoft.AspNetCore.Http;
 
 namespace Jellyfin.Plugin.HomeScreenSections.Library
 {
@@ -13,7 +14,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Library
         
         IEnumerable<IHomeScreenSection> GetSectionTypes();
 
-        QueryResult<BaseItemDto> InvokeResultsDelegate(string key, HomeScreenSectionPayload payload);
+        QueryResult<BaseItemDto> InvokeResultsDelegate(string key, HomeScreenSectionPayload payload, IQueryCollection queryCollection);
 
         bool GetUserFeatureEnabled(Guid userId);
 
@@ -38,7 +39,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Library
 
         public object? OriginalPayload { get; }
         
-        public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload);
+        public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload, IQueryCollection queryCollection);
 
         public IHomeScreenSection CreateInstance(Guid? userId, IEnumerable<IHomeScreenSection>? otherInstances = null);
 

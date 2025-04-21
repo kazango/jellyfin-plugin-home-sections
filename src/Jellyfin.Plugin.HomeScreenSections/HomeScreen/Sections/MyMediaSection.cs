@@ -8,6 +8,7 @@ using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Library;
 using MediaBrowser.Model.Querying;
+using Microsoft.AspNetCore.Http;
 
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
@@ -53,7 +54,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         }
 
         /// <inheritdoc/>
-        public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload)
+        public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload, IQueryCollection queryCollection)
         {
             User? user = m_userManager.GetUserById(payload.UserId);
 

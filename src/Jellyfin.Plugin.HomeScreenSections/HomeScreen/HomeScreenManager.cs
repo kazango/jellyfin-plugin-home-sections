@@ -6,6 +6,7 @@ using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Querying;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -64,11 +65,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
         }
 
         /// <inheritdoc/>
-        public QueryResult<BaseItemDto> InvokeResultsDelegate(string key, HomeScreenSectionPayload payload)
+        public QueryResult<BaseItemDto> InvokeResultsDelegate(string key, HomeScreenSectionPayload payload, IQueryCollection queryCollection)
         {
             if (m_delegates.ContainsKey(key))
             {
-                return m_delegates[key].GetResults(payload);
+                return m_delegates[key].GetResults(payload, queryCollection);
             }
 
             return new QueryResult<BaseItemDto>(Array.Empty<BaseItemDto>());
