@@ -177,7 +177,7 @@
                             // Loop over these sections and add in what the config has overwritten
                             let urlStart = window.location.protocol + '//' + window.location.host;
                             window.ApiClient.ajax({
-                                url: urlStart + '/ModularHomeViews/Sections',
+                                url: ApiClient.getUrl('ModularHomeViews/Sections'),
                                 type: 'GET'
                             }).then(function (response) {
                                 response.json().then(function (json) {

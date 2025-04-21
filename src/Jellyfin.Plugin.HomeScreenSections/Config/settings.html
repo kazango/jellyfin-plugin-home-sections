@@ -31,7 +31,7 @@
             let urlStart = window.location.protocol + '//' + window.location.host;
 
             ApiClient.fetch({
-                url: urlStart + '/ModularHomeViews/UserSettings?userId=' + ApiClient.getCurrentUserId(),
+                url: ApiClient.getUrl('ModularHomeViews/UserSettings?userId=' + ApiClient.getCurrentUserId()),
                 type: 'GET',
                 dataType: 'json',
                 headers: {
@@ -39,7 +39,7 @@
                 }
             }).then(function (settings) {
                 ApiClient.fetch({
-                    url: urlStart + '/ModularHomeViews/Sections',
+                    url: ApiClient.getUrl('ModularHomeViews/Sections'),
                     type: 'GET',
                     dataType: 'json',
                     headers: {
@@ -93,7 +93,7 @@
                     });
 
                     ApiClient.ajax({
-                        url: urlStart + '/ModularHomeViews/UserSettings',
+                        url: ApiClient.getUrl('ModularHomeViews/UserSettings'),
                         type: 'POST',
                         data: JSON.stringify(data),
                         contentType: 'application/json'
