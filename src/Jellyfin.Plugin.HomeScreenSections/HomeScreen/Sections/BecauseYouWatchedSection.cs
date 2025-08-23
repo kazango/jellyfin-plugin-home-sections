@@ -1,6 +1,5 @@
-﻿using Jellyfin.Data.Entities;
-using Jellyfin.Data.Enums;
-using Jellyfin.Plugin.HomeScreenSections.Configuration;
+﻿using Jellyfin.Plugin.HomeScreenSections.Configuration;
+using Jellyfin.Plugin.HomeScreenSections.JellyfinVersionSpecific;
 using Jellyfin.Plugin.HomeScreenSections.Library;
 using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 using MediaBrowser.Controller.Collections;
@@ -78,7 +77,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				DtoOptions = dtoOptions
 			};
 
-			List<BaseItem>? recentlyPlayedMovies = LibraryManager.GetItemList(query);
+			IEnumerable<BaseItem>? recentlyPlayedMovies = LibraryManager.GetItemList(query);
 
 			recentlyPlayedMovies = recentlyPlayedMovies.Where(x => !otherInstances?.Select(y => y.AdditionalData).Contains(x.Id.ToString()) ?? true).Where(x =>
 			{
@@ -101,12 +100,12 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 			Random rnd = new Random();
 
-			if (recentlyPlayedMovies.Count == 0)
+			if (recentlyPlayedMovies.Count() == 0)
 			{
 				return null!;
 			}
 
-			BaseItem item = recentlyPlayedMovies.ElementAt(rnd.Next(0, recentlyPlayedMovies.Count));
+			BaseItem item = recentlyPlayedMovies.ElementAt(rnd.Next(0, recentlyPlayedMovies.Count()));
 
 			section.AdditionalData = item.Id.ToString();
 			section.DisplayText = "Because You Watched " + item.Name;
@@ -136,7 +135,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 			BaseItem? item = LibraryManager.GetItemById(Guid.Parse(payload.AdditionalData ?? Guid.Empty.ToString()));
 
-			List<BaseItem>? similar = LibraryManager.GetItemList(new InternalItemsQuery(UserManager.GetUserById(payload.UserId))
+			IReadOnlyList<BaseItem>? similar = LibraryManager.GetItemList(new InternalItemsQuery(UserManager.GetUserById(payload.UserId))
 			{
 				Limit = 8,
 				IncludeItemTypes = new[]
@@ -144,12 +143,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 					BaseItemKind.Movie
 				},
 				IsMovie = true,
-				SimilarTo = item,
 				User = user,
 				IsPlayed = false, // Maybe make this configuable but this is the preferred default behaviour.
 				EnableGroupByMetadataKey = true,
 				DtoOptions = dtoOptions
-			});
+			}.ApplySimilarSettings(item));
 
 			return new QueryResult<BaseItemDto>(DtoService.GetBaseItemDtos(similar, dtoOptions, user));
 		}
