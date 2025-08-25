@@ -51,6 +51,18 @@
                     <span>API Key for LibreTranslate instance.</span>
                 </div>
                 <div class="inputContainer">
+                    <input is="emby-input" type="text" data-id="txtJellyseerrUrl" label="Jellyseerr URL" />
+                    <span>URL for Jellyseerr to use for Discover sections.</span>
+                </div>
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" data-id="txtJellyseerrApiKey" required="required" label="Jellyseerr API Key" />
+                    <span>API Key for Jellyseerr instance.</span>
+                </div>
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" data-id="txtJellyseerrPreferredLanguages" required="required" label="Discover Sections Language Filter" />
+                    <span>Preferred languages to filter for Discover section. (comma delimited)</span>
+                </div>
+                <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="defaultMoviesLibrary">Default Movies Library</label>
                     <select is="emby-select" id="defaultMoviesLibrary" class="emby-select-withcolor emby-select">
                         <option value="">Default</option>
@@ -213,6 +225,9 @@
                         AllowUserOverride: document.querySelector('#globalAllowUserOverride').checked,
                         LibreTranslateUrl: document.querySelector('[data-id=txtLibreTranslateUrl]').value,
                         LibreTranslateApiKey: document.querySelector('[data-id=txtLibreTranslateApiKey]').value,
+                        JellyseerrUrl: document.querySelector('[data-id=txtJellyseerrUrl]').value,
+                        JellyseerrApiKey: document.querySelector('[data-id=txtJellyseerrApiKey]').value,
+                        JellyseerrPreferredLanguages: document.querySelector('[data-id=txtJellyseerrPreferredLanguages]').value,
                         DefaultMoviesLibraryId: document.querySelector('#defaultMoviesLibrary').value,
                         DefaultTVShowsLibraryId: document.querySelector('#defaultTVShowsLibrary').value,
                         SectionSettings: []
@@ -250,6 +265,9 @@
                             document.querySelector('#globalAllowUserOverride').checked = config.AllowUserOverride;
                             document.querySelector('[data-id=txtLibreTranslateUrl]').value = config.LibreTranslateUrl;
                             document.querySelector('[data-id=txtLibreTranslateApiKey]').value = config.LibreTranslateApiKey;
+                            document.querySelector('[data-id=txtJellyseerrUrl]').value = config.JellyseerrUrl;
+                            document.querySelector('[data-id=txtJellyseerrApiKey]').value = config.JellyseerrApiKey;
+                            document.querySelector('[data-id=txtJellyseerrPreferredLanguages]').value = config.JellyseerrPreferredLanguages;
 
                             // Set library dropdown values after libraries are loaded
                             setTimeout(function() {

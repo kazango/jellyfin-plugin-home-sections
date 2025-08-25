@@ -54,6 +54,10 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
             RegisterResultsDelegate<MyListSection>();
             RegisterResultsDelegate<WatchAgainSection>();
             
+            RegisterResultsDelegate<DiscoverSection>();
+            RegisterResultsDelegate<DiscoverMoviesSection>();
+            RegisterResultsDelegate<DiscoverTvSection>();
+            
             // Removed from public access while its still in dev.
             //RegisterResultsDelegate<TopTenSection>();
         }
