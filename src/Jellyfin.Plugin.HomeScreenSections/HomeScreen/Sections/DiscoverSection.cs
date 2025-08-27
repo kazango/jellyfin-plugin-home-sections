@@ -36,7 +36,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             // TODO: Get Jellyseerr Url
             string? jellyseerrUrl = HomeScreenSectionsPlugin.Instance.Configuration.JellyseerrUrl;
 
-            if (jellyseerrUrl == null)
+            if (string.IsNullOrEmpty(jellyseerrUrl))
             {
                 return new QueryResult<BaseItemDto>();
             }
