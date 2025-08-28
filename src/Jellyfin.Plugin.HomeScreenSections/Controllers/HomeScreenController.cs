@@ -40,7 +40,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
         public HomeScreenController(
             IHomeScreenManager homeScreenManager,
             IDisplayPreferencesManager displayPreferencesManager,
-            IServerApplicationHost serverApplicationHost, 
+            IServerApplicationHost serverApplicationHost,
             IApplicationPaths applicationPaths)
         {
             m_homeScreenManager = homeScreenManager;
@@ -61,7 +61,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             {
                 return NotFound();
             }
-            
+
             return File(stream, "application/javascript");
         }
 
@@ -77,7 +77,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             {
                 return NotFound();
             }
-            
+
             return File(stream, "text/css");
         }
 
@@ -87,7 +87,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
         {
             return HomeScreenSectionsPlugin.Instance.Configuration;
         }
-        
+
         [HttpGet("Sections")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<QueryResult<HomeScreenSectionInfo>> GetHomeScreenSections(
@@ -105,23 +105,26 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             List<IHomeScreenSection> sectionInstances = new List<IHomeScreenSection>();
 
             List<string> homeSectionOrderTypes = new List<string>();
-            foreach (HomeSection section in displayPreferences.HomeSections.OrderBy(x => x.Order))
+            if (HomeScreenSectionsPlugin.Instance.Configuration.AllowUserOverride)
             {
-                switch (section.Type)
+                foreach (HomeSection section in displayPreferences.HomeSections.OrderBy(x => x.Order))
                 {
-                    case HomeSectionType.SmallLibraryTiles:
-                        homeSectionOrderTypes.Add("MyMedia");
-                        break;
-                    case HomeSectionType.Resume:
-                        homeSectionOrderTypes.Add("ContinueWatching");
-                        break;
-                    case HomeSectionType.LatestMedia:
-                        homeSectionOrderTypes.Add("LatestMovies");
-                        homeSectionOrderTypes.Add("LatestShows");
-                        break;
-                    case HomeSectionType.NextUp:
-                        homeSectionOrderTypes.Add("NextUp");
-                        break;
+                    switch (section.Type)
+                    {
+                        case HomeSectionType.SmallLibraryTiles:
+                            homeSectionOrderTypes.Add("MyMedia");
+                            break;
+                        case HomeSectionType.Resume:
+                            homeSectionOrderTypes.Add("ContinueWatching");
+                            break;
+                        case HomeSectionType.LatestMedia:
+                            homeSectionOrderTypes.Add("LatestMovies");
+                            homeSectionOrderTypes.Add("LatestShows");
+                            break;
+                        case HomeSectionType.NextUp:
+                            homeSectionOrderTypes.Add("NextUp");
+                            break;
+                    }
                 }
             }
 
@@ -160,7 +163,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             foreach (IGrouping<int, SectionSettings> orderedSections in groupedOrderedSections)
             {
                 List<IHomeScreenSection> tmpPluginSections = new List<IHomeScreenSection>(); // we want these randomly distributed among each other.
-                
+
                 foreach (SectionSettings sectionSettings in orderedSections)
                 {
                     IHomeScreenSection? sectionType = sectionTypes.FirstOrDefault(x => x.Section == sectionSettings.SectionId);
@@ -171,12 +174,12 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
                         {
                             Random rnd = new Random();
                             int instanceCount = rnd.Next(sectionSettings?.LowerLimit ?? 0, sectionSettings?.UpperLimit ?? sectionType.Limit ?? 1);
-                            
+
                             for (int i = 0; i < instanceCount; ++i)
                             {
                                 IHomeScreenSection[] tmpSectionInstances = tmpPluginSections.Where(x => x?.GetType() == sectionType.GetType())
                                     .Concat(sectionInstances.Where(x => x.GetType() == sectionType.GetType())).ToArray();
-                            
+
                                 tmpPluginSections.Add(sectionType.CreateInstance(userId, tmpSectionInstances));
                             }
                         }
@@ -186,18 +189,18 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
                         }
                     }
                 }
-                
+
                 tmpPluginSections.Shuffle();
-                
+
                 sectionInstances.AddRange(tmpPluginSections);
             }
-            
+
             List<HomeScreenSectionInfo> sections = sectionInstances.Where(x => x != null).Select(x =>
             {
                 HomeScreenSectionInfo info = x.AsInfo();
 
                 info.ViewMode = HomeScreenSectionsPlugin.Instance.Configuration.SectionSettings.FirstOrDefault(x => x.SectionId == info.Section)?.ViewMode ?? info.ViewMode ?? SectionViewMode.Landscape;
-                
+
                 if (language != "en" && !string.IsNullOrEmpty(language?.Trim()) &&
                     info.DisplayText != null)
                 {
@@ -206,7 +209,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
 
                     info.DisplayText = translatedResult;
                 }
-                
+
                 return info;
             }).ToList();
 
@@ -243,17 +246,17 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
 
                     string? publishedServerUrl = m_serverApplicationHost.GetType()
                         .GetProperty("PublishedServerUrl", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(m_serverApplicationHost) as string;
-                
+
                     HttpClient client = new HttpClient();
                     client.BaseAddress = new Uri(publishedServerUrl ?? $"http://localhost:{m_serverApplicationHost.HttpPort}");
-                    
-                    HttpResponseMessage responseMessage = client.PostAsync(payload.ResultsEndpoint, 
+
+                    HttpResponseMessage responseMessage = client.PostAsync(payload.ResultsEndpoint,
                         new StringContent(jsonPayload.ToString(Formatting.None), MediaTypeHeaderValue.Parse("application/json"))).GetAwaiter().GetResult();
 
                     return JsonConvert.DeserializeObject<QueryResult<BaseItemDto>>(responseMessage.Content.ReadAsStringAsync().GetAwaiter().GetResult()) ?? new QueryResult<BaseItemDto>();
                 }
             });
-            
+
             return Ok();
         }
 
@@ -267,15 +270,15 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             {
                 return BadRequest();
             }
-            
+
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(jellyseerrUrl);
             client.DefaultRequestHeaders.Add("X-Api-Key", HomeScreenSectionsPlugin.Instance.Configuration.JellyseerrApiKey);
-            
+
             HttpResponseMessage usersResponse = await client.GetAsync("/api/v1/user");
             string userResponseRaw = await usersResponse.Content.ReadAsStringAsync();
             int jellyseerrUserId = JObject.Parse(userResponseRaw).Value<JArray>("results").OfType<JObject>().FirstOrDefault(x => x.Value<string>("jellyfinUsername") == user.Username).Value<int>("id");
-            
+
             client.DefaultRequestHeaders.Add("X-Api-User", jellyseerrUserId.ToString());
 
             HttpResponseMessage requestResponse = await client.PostAsync("/api/v1/request", JsonContent.Create(new JellyseerrRequestPayload()
@@ -285,7 +288,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             }));
 
             string responseContent = await requestResponse.Content.ReadAsStringAsync();
-            
+
             return Content(responseContent, requestResponse.Content.Headers.ContentType.MediaType);
         }
     }
