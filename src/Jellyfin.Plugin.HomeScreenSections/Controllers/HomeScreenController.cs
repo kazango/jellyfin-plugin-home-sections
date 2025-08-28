@@ -105,23 +105,26 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             List<IHomeScreenSection> sectionInstances = new List<IHomeScreenSection>();
 
             List<string> homeSectionOrderTypes = new List<string>();
-            foreach (HomeSection section in displayPreferences.HomeSections.OrderBy(x => x.Order))
+            if (HomeScreenSectionsPlugin.Instance.Configuration.AllowUserOverride)
             {
-                switch (section.Type)
+                foreach (HomeSection section in displayPreferences.HomeSections.OrderBy(x => x.Order))
                 {
-                    case HomeSectionType.SmallLibraryTiles:
-                        homeSectionOrderTypes.Add("MyMedia");
-                        break;
-                    case HomeSectionType.Resume:
-                        homeSectionOrderTypes.Add("ContinueWatching");
-                        break;
-                    case HomeSectionType.LatestMedia:
-                        homeSectionOrderTypes.Add("LatestMovies");
-                        homeSectionOrderTypes.Add("LatestShows");
-                        break;
-                    case HomeSectionType.NextUp:
-                        homeSectionOrderTypes.Add("NextUp");
-                        break;
+                    switch (section.Type)
+                    {
+                        case HomeSectionType.SmallLibraryTiles:
+                            homeSectionOrderTypes.Add("MyMedia");
+                            break;
+                        case HomeSectionType.Resume:
+                            homeSectionOrderTypes.Add("ContinueWatching");
+                            break;
+                        case HomeSectionType.LatestMedia:
+                            homeSectionOrderTypes.Add("LatestMovies");
+                            homeSectionOrderTypes.Add("LatestShows");
+                            break;
+                        case HomeSectionType.NextUp:
+                            homeSectionOrderTypes.Add("NextUp");
+                            break;
+                    }
                 }
             }
 
