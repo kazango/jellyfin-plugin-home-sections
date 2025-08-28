@@ -120,7 +120,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 Route = Route,
                 Limit = Limit ?? 1,
                 OriginalPayload = OriginalPayload,
-                ViewMode = SectionViewMode.Portrait
+                ViewMode = SectionViewMode.Portrait,
+                AllowViewModeChange = false
             };
         }
     }
