@@ -24,6 +24,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         
         public string? DefaultMusicLibraryId { get; set; } = "";
         
+        public string? DefaultBooksLibraryId { get; set; } = "";
+
         public SectionSettings[] SectionSettings { get; set; } = Array.Empty<SectionSettings>();
     }
 
