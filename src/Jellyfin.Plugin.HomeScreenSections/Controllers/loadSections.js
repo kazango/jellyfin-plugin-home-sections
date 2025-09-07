@@ -172,7 +172,7 @@
     }
     
     async function isUserUsingHomeScreenSections(_userSettings, _apiClient) {
-        var pluginConfig = await _apiClient.getJSON(_apiClient.getUrl("HomeScreen/Configuration"));
+        var pluginConfig = await _apiClient.getJSON(_apiClient.getUrl("HomeScreen/Meta"));
         
         if (pluginConfig.AllowUserOverride === true) {
             if (_userSettings && _userSettings.getData() && _userSettings.getData().CustomPrefs && _userSettings.getData().CustomPrefs.useModularHome !== undefined) {
