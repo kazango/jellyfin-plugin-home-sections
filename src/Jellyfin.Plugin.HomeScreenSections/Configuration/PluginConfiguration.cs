@@ -32,8 +32,6 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
 
         public int CacheTimeoutSeconds { get; set; } = 86400;
 
-        public string? ConfigVersion { get; set; } = null;
-
         public SectionSettings[] SectionSettings { get; set; } = Array.Empty<SectionSettings>();
     }
 
