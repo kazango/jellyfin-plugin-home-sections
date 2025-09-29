@@ -13,90 +13,46 @@ using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
-    public class UpcomingShowsSection : IHomeScreenSection
+    public class UpcomingShowsSection : UpcomingSectionBase<SonarrCalendarDto>
     {
-        public string? Section => "UpcomingShows";
+        public override string? Section => "UpcomingShows";
         
-        public string? DisplayText { get; set; } = "Upcoming Shows";
-        
-        public int? Limit => 1;
-        
-        public string? Route { get; }
-        
-        public string? AdditionalData { get; set; }
-
-        public object? OriginalPayload { get; set; } = null;
-        
-        private readonly IUserManager _userManager;
-        private readonly IDtoService _dtoService;
-        private readonly ArrApiService _arrApiService;
-        private readonly ILogger<UpcomingShowsSection> _logger;
+        public override string? DisplayText { get; set; } = "Upcoming Shows";
 
         public UpcomingShowsSection(
             IUserManager userManager,
             IDtoService dtoService,
             ArrApiService arrApiService,
             ILogger<UpcomingShowsSection> logger)
+            : base(userManager, dtoService, arrApiService, logger)
         {
-            _userManager = userManager;
-            _dtoService = dtoService;
-            _arrApiService = arrApiService;
-            _logger = logger;
-        }
-        
-        public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload, IQueryCollection queryCollection)
-        {
-            try
-            {
-                var config = HomeScreenSectionsPlugin.Instance?.Configuration;
-                if (config == null)
-                {
-                    _logger.LogWarning("Plugin configuration not available");
-                    return new QueryResult<BaseItemDto>();
-                }
-
-                // Check if Sonarr is configured
-                if (string.IsNullOrEmpty(config.SonarrUrl) || string.IsNullOrEmpty(config.SonarrApiKey))
-                {
-                    _logger.LogWarning("Sonarr URL or API key not configured, skipping upcoming shows");
-                    return new QueryResult<BaseItemDto>();
-                }
-
-                var startDate = DateTime.UtcNow;
-                var endDate = _arrApiService.CalculateEndDate(startDate, config.UpcomingShowsTimeframeValue, config.UpcomingShowsTimeframeUnit);
-                
-                _logger.LogDebug("Fetching upcoming shows from {StartDate} to {EndDate}", startDate, endDate);
-
-                var calendarItems = _arrApiService.GetSonarrCalendarAsync(startDate, endDate).GetAwaiter().GetResult();
-                
-                if (calendarItems == null || calendarItems.Length == 0)
-                {
-                    _logger.LogDebug("No upcoming shows found from Sonarr");
-                    return new QueryResult<BaseItemDto>();
-                }
-
-                var upcomingItems = calendarItems
-                    .Where(item => item.Monitored && !item.HasFile && item.AirDateUtc.HasValue)
-                    .OrderBy(item => item.AirDateUtc)
-                    .Take(16)
-                    .ToArray();
-
-                _logger.LogDebug("Found {Count} upcoming episodes after filtering", upcomingItems.Length);
-
-                var dtoItems = upcomingItems.Select(item => CreateUpcomingShowDto(item, config)).ToArray();
-
-                return new QueryResult<BaseItemDto>(dtoItems);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error fetching upcoming shows from Sonarr");
-                return new QueryResult<BaseItemDto>();
-            }
         }
 
-        private BaseItemDto CreateUpcomingShowDto(SonarrCalendarDto calendarItem, PluginConfiguration config)
+        protected override (string? url, string? apiKey) GetServiceConfiguration(PluginConfiguration config)
         {
-            var formattedDate = _arrApiService.FormatDate(
+            return (config.SonarrUrl, config.SonarrApiKey);
+        }
+
+        protected override (int value, TimeframeUnit unit) GetTimeframeConfiguration(PluginConfiguration config)
+        {
+            return (config.UpcomingShowsTimeframeValue, config.UpcomingShowsTimeframeUnit);
+        }
+
+        protected override SonarrCalendarDto[] GetCalendarItems(DateTime startDate, DateTime endDate)
+        {
+            return ArrApiService.GetSonarrCalendarAsync(startDate, endDate).GetAwaiter().GetResult() ?? Array.Empty<SonarrCalendarDto>();
+        }
+
+        protected override IOrderedEnumerable<SonarrCalendarDto> FilterAndSortItems(SonarrCalendarDto[] items)
+        {
+            return items
+                .Where(item => item.Monitored && !item.HasFile && item.AirDateUtc.HasValue)
+                .OrderBy(item => item.AirDateUtc);
+        }
+
+        protected override BaseItemDto CreateDto(SonarrCalendarDto calendarItem, PluginConfiguration config)
+        {
+            var formattedDate = ArrApiService.FormatDate(
                 calendarItem.AirDateUtc?.ToLocalTime() ?? DateTime.Now,
                 config.DateFormat,
                 config.DateDelimiter);
@@ -148,9 +104,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             };
         }
 
-        public IHomeScreenSection CreateInstance(Guid? userId, IEnumerable<IHomeScreenSection>? otherInstances = null)
+        protected override string GetServiceName() => "Sonarr";
+
+        protected override string GetSectionName() => "upcoming shows";
+
+        public override IHomeScreenSection CreateInstance(Guid? userId, IEnumerable<IHomeScreenSection>? otherInstances = null)
         {
-            return new UpcomingShowsSection(_userManager, _dtoService, _arrApiService, _logger)
+            return new UpcomingShowsSection(UserManager, DtoService, ArrApiService, (ILogger<UpcomingShowsSection>)Logger)
             {
                 DisplayText = DisplayText,
                 AdditionalData = AdditionalData,
@@ -158,7 +118,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             };
         }
         
-        public HomeScreenSectionInfo GetInfo()
+        public override HomeScreenSectionInfo GetInfo()
         {
             return new HomeScreenSectionInfo
             {

@@ -13,90 +13,45 @@ using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
-    public class UpcomingMoviesSection : IHomeScreenSection
+    public class UpcomingMoviesSection : UpcomingSectionBase<RadarrCalendarDto>
     {
-        public string? Section => "UpcomingMovies";
+        public override string? Section => "UpcomingMovies";
         
-        public string? DisplayText { get; set; } = "Upcoming Movies";
-        
-        public int? Limit => 1;
-        
-        public string? Route { get; }
-        
-        public string? AdditionalData { get; set; }
-
-        public object? OriginalPayload { get; set; } = null;
-        
-        private readonly IUserManager _userManager;
-        private readonly IDtoService _dtoService;
-        private readonly ArrApiService _arrApiService;
-        private readonly ILogger<UpcomingMoviesSection> _logger;
+        public override string? DisplayText { get; set; } = "Upcoming Movies";
 
         public UpcomingMoviesSection(
             IUserManager userManager,
             IDtoService dtoService,
             ArrApiService arrApiService,
             ILogger<UpcomingMoviesSection> logger)
+            : base(userManager, dtoService, arrApiService, logger)
         {
-            _userManager = userManager;
-            _dtoService = dtoService;
-            _arrApiService = arrApiService;
-            _logger = logger;
         }
-        
-        public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload, IQueryCollection queryCollection)
+        protected override (string? url, string? apiKey) GetServiceConfiguration(PluginConfiguration config)
         {
-            try
-            {
-                var config = HomeScreenSectionsPlugin.Instance?.Configuration;
-                if (config == null)
-                {
-                    _logger.LogWarning("Plugin configuration not available");
-                    return new QueryResult<BaseItemDto>();
-                }
-
-                // Check if Radarr is configured
-                if (string.IsNullOrEmpty(config.RadarrUrl) || string.IsNullOrEmpty(config.RadarrApiKey))
-                {
-                    _logger.LogWarning("Radarr URL or API key not configured, skipping upcoming movies");
-                    return new QueryResult<BaseItemDto>();
-                }
-
-                var startDate = DateTime.UtcNow;
-                var endDate = _arrApiService.CalculateEndDate(startDate, config.UpcomingMoviesTimeframeValue, config.UpcomingMoviesTimeframeUnit);
-                
-                _logger.LogDebug("Fetching upcoming movies from {StartDate} to {EndDate}", startDate, endDate);
-
-                var calendarItems = _arrApiService.GetRadarrCalendarAsync(startDate, endDate).GetAwaiter().GetResult();
-                
-                if (calendarItems == null || calendarItems.Length == 0)
-                {
-                    _logger.LogDebug("No upcoming movies found from Radarr");
-                    return new QueryResult<BaseItemDto>();
-                }
-
-                var upcomingItems = calendarItems
-                    .Where(item => item.Monitored && !item.HasFile && item.DigitalRelease.HasValue)
-                    .OrderBy(item => item.DigitalRelease)
-                    .Take(16)
-                    .ToArray();
-
-                _logger.LogDebug("Found {Count} upcoming movies after filtering", upcomingItems.Length);
-
-                var dtoItems = upcomingItems.Select(item => CreateUpcomingMovieDto(item, config)).ToArray();
-
-                return new QueryResult<BaseItemDto>(dtoItems);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error fetching upcoming movies from Radarr");
-                return new QueryResult<BaseItemDto>();
-            }
+            return (config.RadarrUrl, config.RadarrApiKey);
         }
 
-        private BaseItemDto CreateUpcomingMovieDto(RadarrCalendarDto calendarItem, PluginConfiguration config)
+        protected override (int value, TimeframeUnit unit) GetTimeframeConfiguration(PluginConfiguration config)
         {
-            var formattedDate = _arrApiService.FormatDate(
+            return (config.UpcomingMoviesTimeframeValue, config.UpcomingMoviesTimeframeUnit);
+        }
+
+        protected override RadarrCalendarDto[] GetCalendarItems(DateTime startDate, DateTime endDate)
+        {
+            return ArrApiService.GetRadarrCalendarAsync(startDate, endDate).GetAwaiter().GetResult() ?? Array.Empty<RadarrCalendarDto>();
+        }
+
+        protected override IOrderedEnumerable<RadarrCalendarDto> FilterAndSortItems(RadarrCalendarDto[] items)
+        {
+            return items
+                .Where(item => item.Monitored && !item.HasFile && item.DigitalRelease.HasValue)
+                .OrderBy(item => item.DigitalRelease);
+        }
+
+        protected override BaseItemDto CreateDto(RadarrCalendarDto calendarItem, PluginConfiguration config)
+        {
+            var formattedDate = ArrApiService.FormatDate(
                 calendarItem.DigitalRelease?.ToLocalTime() ?? DateTime.Now,
                 config.DateFormat,
                 config.DateDelimiter);
@@ -143,9 +98,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             };
         }
 
-        public IHomeScreenSection CreateInstance(Guid? userId, IEnumerable<IHomeScreenSection>? otherInstances = null)
+        protected override string GetServiceName() => "Radarr";
+
+        protected override string GetSectionName() => "upcoming movies";
+
+        public override IHomeScreenSection CreateInstance(Guid? userId, IEnumerable<IHomeScreenSection>? otherInstances = null)
         {
-            return new UpcomingMoviesSection(_userManager, _dtoService, _arrApiService, _logger)
+            return new UpcomingMoviesSection(UserManager, DtoService, ArrApiService, (ILogger<UpcomingMoviesSection>)Logger)
             {
                 DisplayText = DisplayText,
                 AdditionalData = AdditionalData,
@@ -153,7 +112,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             };
         }
         
-        public HomeScreenSectionInfo GetInfo()
+        public override HomeScreenSectionInfo GetInfo()
         {
             return new HomeScreenSectionInfo
             {
