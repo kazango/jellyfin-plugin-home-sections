@@ -85,6 +85,7 @@
     background-color: var(--hoverBackgroundColor);
     color: var(--primaryTextColor);
     text-decoration: none;
+    cursor: default;
 }
 
 .upcomingShowCard:before,
