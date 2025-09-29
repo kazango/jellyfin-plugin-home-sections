@@ -28,6 +28,10 @@
             return createDiscoverCards;
         }
         
+        if (sectionKey === "UpcomingShows") {
+            return createUpcomingShowsCards;
+        }
+        
         return function(items) {
             return cardBuilder.getCardsHtml({
                 items: items,
@@ -81,6 +85,50 @@
             var date = new Date(item.PremiereDate);
             
             html += '               <a target="_blank" href="' + item.ProviderIds.JellyseerrRoot + '/' + item.SourceType + '/' + item.ProviderIds.Jellyseerr + '" class="itemAction textActionButton" title="' + date.getFullYear() + '" data-action="link">' + date.getFullYear() + '</a>';
+            html += '           </bdi>';
+            html += '       </div>';
+            html += '   </div>';
+            html += '</div>';
+            index++;
+        });
+        
+        return html;
+    }
+    
+    function createUpcomingShowsCards(items) {
+        var html = '';
+        
+        var index = 0;
+        items.forEach(function (item) {
+            var episodeInfo = item.ProviderIds.EpisodeInfo || '';
+            var formattedDate = item.ProviderIds.FormattedDate || '';
+            var posterUrl = item.ProviderIds.SonarrPoster || '';
+            
+            html += '<div class="card overflowPortraitCard card-hoverable card-withuserdata upcoming-show-card" data-index="' + index + '">';
+            html += '   <div class="cardBox cardBox-bottompadded">';
+            html += '       <div class="cardScalable upcomingShowCard">';
+            html += '           <div class="cardPadder cardPadder-overflowPortrait lazy-hidden-children"></div>';
+            
+            if (posterUrl) {
+                html += '           <div class="cardImageContainer coveredImage cardContent lazy blurhashed lazy-image-fadein-fast" style="background-image: url(\'' + posterUrl + '\')"></div>';
+            } else {
+                html += '           <canvas aria-hidden="true" width="20" height="20" class="blurhash-canvas lazy-hidden"></canvas>';
+            }
+            
+            html += '       </div>';
+            html += '       <div class="cardText cardTextCentered cardText-first">';
+            html += '           <bdi>';
+            html += '               <div class="itemAction textActionButton" title="' + item.SeriesName + '">' + item.SeriesName + '</div>';
+            html += '           </bdi>';
+            html += '       </div>';
+            html += '       <div class="cardText cardTextCentered cardText-secondary">';
+            html += '           <bdi>';
+            html += '               <div class="itemAction textActionButton" title="' + episodeInfo + '">' + episodeInfo + '</div>';
+            html += '           </bdi>';
+            html += '       </div>';
+            html += '       <div class="cardText cardTextCentered cardText-tertiary">';
+            html += '           <bdi>';
+            html += '               <div class="itemAction textActionButton" title="' + formattedDate + '">' + formattedDate + '</div>';
             html += '           </bdi>';
             html += '       </div>';
             html += '   </div>';

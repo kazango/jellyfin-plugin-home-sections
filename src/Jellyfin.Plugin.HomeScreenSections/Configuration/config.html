@@ -43,9 +43,55 @@
                 </div>
             </fieldset>
 
+            <fieldset class="verticalSection-extrabottompadding">
+                <legend style="padding-bottom:10px; font-weight: bolder; font-size: 1.2em;">Upcoming Section Settings</legend>
+                <div style="padding-left: .5em;">
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="upcomingTimeframeValue">Upcoming Shows Timeframe</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input is="emby-input" type="number" id="upcomingTimeframeValue" min="1" max="999" style="flex: 0 0 100px;" />
+                            <select is="emby-select" id="upcomingTimeframeUnit" class="emby-select-withcolor emby-select" style="flex: 0 0 120px;">
+                                <option value="days">Days</option>
+                                <option value="weeks">Weeks</option>
+                                <option value="months">Months</option>
+                                <option value="years">Years</option>
+                            </select>
+                        </div>
+                        <div class="fieldDescription">How far in the future should we look for upcoming episodes?</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="dateFormat">Date Format</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <select is="emby-select" id="dateFormat" class="emby-select-withcolor emby-select" style="flex: 0 0 150px;">
+                                <option value="YYYY/MM/DD">YYYY/MM/DD</option>
+                                <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                <option value="DD/MM">DD/MM</option>
+                                <option value="MM/DD">MM/DD</option>
+                            </select>
+                            <input is="emby-input" type="text" id="dateDelimiter" maxlength="3" style="flex: 0 0 60px;" placeholder="/" />
+                        </div>
+                        <div class="fieldDescription">How should dates be displayed?</div>
+                    </div>
+                </div>
+            </fieldset>
+
                 <fieldset class="verticalSection-extrabottompadding">
                     <legend style="padding-bottom:10px; font-weight: bolder; font-size: 1.2em;">Advanced Settings</legend>
                     <div style="padding-left: .5em;">
+                        <details style="margin-bottom: 1em;">
+                            <summary style="cursor: pointer; font-weight: bold;">*arr API Settings</summary>
+                            <div style="padding-top: 1em;">
+                                <div class="inputContainer">
+                                    <input is="emby-input" type="text" data-id="txtSonarrUrl" label="Sonarr URL" />
+                                    <div class="fieldDescription">URL for Sonarr to use for upcoming shows sections.</div>
+                                </div>
+                                <div class="inputContainer">
+                                    <input is="emby-input" type="password" data-id="txtSonarrApiKey" label="Sonarr API Key" />
+                                    <div class="fieldDescription">API Key for Sonarr instance.</div>
+                                </div>
+                            </div>
+                        </details>
                         <details style="margin-bottom: 1em;">
                             <summary style="cursor: pointer; font-weight: bold;">LibreTranslate</summary>
                             <div style="padding-top: 1em;">
@@ -294,6 +340,14 @@
                     DefaultTVShowsLibraryId: document.querySelector('#defaultTVShowsLibrary').value,
                     DefaultMusicLibraryId: document.querySelector('#defaultMusicLibrary').value,
                     DefaultBooksLibraryId: document.querySelector('#defaultBooksLibrary').value,
+                    // Arr API Settings
+                    SonarrUrl: document.querySelector('[data-id=txtSonarrUrl]').value,
+                    SonarrApiKey: document.querySelector('[data-id=txtSonarrApiKey]').value,
+                    // Upcoming Section Settings
+                    UpcomingTimeframeValue: parseInt(document.querySelector('#upcomingTimeframeValue').value) || 1,
+                    UpcomingTimeframeUnit: document.querySelector('#upcomingTimeframeUnit').value,
+                    DateFormat: document.querySelector('#dateFormat').value,
+                    DateDelimiter: document.querySelector('#dateDelimiter').value,
                     SectionSettings: []
                 };
 
@@ -327,6 +381,16 @@
                         document.querySelector('[data-id=txtJellyseerrUrl]').value = config.JellyseerrUrl;
                         document.querySelector('[data-id=txtJellyseerrApiKey]').value = config.JellyseerrApiKey;
                         document.querySelector('[data-id=txtJellyseerrPreferredLanguages]').value = config.JellyseerrPreferredLanguages;
+                        
+                        // Arr API Settings
+                        document.querySelector('[data-id=txtSonarrUrl]').value = config.SonarrUrl || '';
+                        document.querySelector('[data-id=txtSonarrApiKey]').value = config.SonarrApiKey || '';
+                        
+                        // Upcoming Section Settings
+                        document.querySelector('#upcomingTimeframeValue').value = config.UpcomingTimeframeValue || 1;
+                        document.querySelector('#upcomingTimeframeUnit').value = config.UpcomingTimeframeUnit || 'days';
+                        document.querySelector('#dateFormat').value = config.DateFormat || 'YYYY/MM/DD';
+                        document.querySelector('#dateDelimiter').value = config.DateDelimiter || '/';
 
                         setTimeout(function() {
                             if (config.DefaultMoviesLibraryId) {

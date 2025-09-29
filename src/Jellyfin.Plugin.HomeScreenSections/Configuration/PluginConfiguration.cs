@@ -26,6 +26,20 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         
         public string? DefaultBooksLibraryId { get; set; } = "";
 
+        // Arr API Settings
+        public string? SonarrUrl { get; set; } = "";
+
+        public string? SonarrApiKey { get; set; } = "";
+
+        // Upcoming Section Settings
+        public int UpcomingTimeframeValue { get; set; } = 1;
+
+        public string UpcomingTimeframeUnit { get; set; } = "days";
+
+        public string DateFormat { get; set; } = "YYYY/MM/DD";
+
+        public string DateDelimiter { get; set; } = "/";
+
         public SectionSettings[] SectionSettings { get; set; } = Array.Empty<SectionSettings>();
     }
 
