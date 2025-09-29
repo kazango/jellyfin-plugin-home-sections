@@ -21,9 +21,7 @@ namespace Jellyfin.Plugin.HomeScreenSections
             {
                 var httpClientFactory = services.GetRequiredService<IHttpClientFactory>();
                 var logger = services.GetRequiredService<ILogger<ArrApiService>>();
-                var config = HomeScreenSectionsPlugin.Instance?.Configuration ?? new Configuration.PluginConfiguration();
-                
-                return new ArrApiService(logger, httpClientFactory.CreateClient(), config);
+                return new ArrApiService(logger, httpClientFactory.CreateClient());
             });
             serviceCollection.AddSingleton<IHomeScreenManager, HomeScreenManager>(services =>
             {

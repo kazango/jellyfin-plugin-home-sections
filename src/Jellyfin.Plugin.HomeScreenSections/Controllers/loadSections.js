@@ -28,8 +28,8 @@
             return createDiscoverCards;
         }
         
-        if (sectionKey === "UpcomingShows") {
-            return createUpcomingShowsCards;
+        if (sectionKey.startsWith("Upcoming")) {
+            return createUpcomingCards;
         }
         
         return function(items) {
@@ -95,18 +95,36 @@
         return html;
     }
     
-    function createUpcomingShowsCards(items) {
+    function createUpcomingCards(items) {
         var html = '';
         
         var index = 0;
         items.forEach(function (item) {
-            var episodeInfo = item.ProviderIds.EpisodeInfo || '';
             var formattedDate = item.ProviderIds.FormattedDate || '';
-            var posterUrl = item.ProviderIds.SonarrPoster || '';
             
-            html += '<div class="card overflowPortraitCard card-hoverable card-withuserdata upcoming-show-card" data-index="' + index + '">';
+            // Determine content type and extract relevant data
+            var contentType, title, secondaryInfo, posterUrl, cardClass, cardScalableClass;
+
+            if (item.Type === 'Episode' || item.ProviderIds.SonarrSeriesId) {
+                // TV Show/Episode content
+                contentType = 'show';
+                title = item.SeriesName || item.Name || 'Unknown Series';
+                secondaryInfo = item.ProviderIds.EpisodeInfo || '';
+                posterUrl = item.ProviderIds.SonarrPoster || '';
+                cardClass = 'upcoming-show-card';
+                cardScalableClass = 'upcomingShowCard';
+            } else if (item.Type === 'Movie' || item.ProviderIds.RadarrMovieId) {
+                // Movie content
+                contentType = 'movie';
+                title = item.Name || 'Unknown Movie';
+                posterUrl = item.ProviderIds.RadarrPoster || '';
+                cardClass = 'upcoming-movie-card';
+                cardScalableClass = 'upcomingMovieCard';
+            }
+            
+            html += '<div class="card overflowPortraitCard card-hoverable card-withuserdata ' + cardClass + '" data-index="' + index + '" data-content-type="' + contentType + '">';
             html += '   <div class="cardBox cardBox-bottompadded">';
-            html += '       <div class="cardScalable upcomingShowCard">';
+            html += '       <div class="cardScalable ' + cardScalableClass + '">';
             html += '           <div class="cardPadder cardPadder-overflowPortrait lazy-hidden-children"></div>';
             
             if (posterUrl) {
@@ -118,19 +136,26 @@
             html += '       </div>';
             html += '       <div class="cardText cardTextCentered cardText-first">';
             html += '           <bdi>';
-            html += '               <div class="itemAction textActionButton" title="' + item.SeriesName + '">' + item.SeriesName + '</div>';
+            html += '               <div class="itemAction textActionButton" title="' + title + '">' + title + '</div>';
             html += '           </bdi>';
             html += '       </div>';
-            html += '       <div class="cardText cardTextCentered cardText-secondary">';
-            html += '           <bdi>';
-            html += '               <div class="itemAction textActionButton" title="' + episodeInfo + '">' + episodeInfo + '</div>';
-            html += '           </bdi>';
-            html += '       </div>';
-            html += '       <div class="cardText cardTextCentered cardText-tertiary">';
-            html += '           <bdi>';
-            html += '               <div class="itemAction textActionButton" title="' + formattedDate + '">' + formattedDate + '</div>';
-            html += '           </bdi>';
-            html += '       </div>';
+            
+            if (secondaryInfo) {
+                html += '       <div class="cardText cardTextCentered cardText-secondary">';
+                html += '           <bdi>';
+                html += '               <div class="itemAction textActionButton" title="' + secondaryInfo + '">' + secondaryInfo + '</div>';
+                html += '           </bdi>';
+                html += '       </div>';
+            }
+            
+            if (formattedDate) {
+                html += '       <div class="cardText cardTextCentered cardText-tertiary">';
+                html += '           <bdi>';
+                html += '               <div class="itemAction textActionButton" title="' + formattedDate + '">' + formattedDate + '</div>';
+                html += '           </bdi>';
+                html += '       </div>';
+            }
+            
             html += '   </div>';
             html += '</div>';
             index++;

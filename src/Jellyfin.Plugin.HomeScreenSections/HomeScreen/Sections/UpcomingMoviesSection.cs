@@ -13,11 +13,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
-    public class UpcomingShowsSection : IHomeScreenSection
+    public class UpcomingMoviesSection : IHomeScreenSection
     {
-        public string? Section => "UpcomingShows";
+        public string? Section => "UpcomingMovies";
         
-        public string? DisplayText { get; set; } = "Upcoming Shows";
+        public string? DisplayText { get; set; } = "Upcoming Movies";
         
         public int? Limit => 1;
         
@@ -30,13 +30,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         private readonly IUserManager _userManager;
         private readonly IDtoService _dtoService;
         private readonly ArrApiService _arrApiService;
-        private readonly ILogger<UpcomingShowsSection> _logger;
+        private readonly ILogger<UpcomingMoviesSection> _logger;
 
-        public UpcomingShowsSection(
+        public UpcomingMoviesSection(
             IUserManager userManager,
             IDtoService dtoService,
             ArrApiService arrApiService,
-            ILogger<UpcomingShowsSection> logger)
+            ILogger<UpcomingMoviesSection> logger)
         {
             _userManager = userManager;
             _dtoService = dtoService;
@@ -55,85 +55,80 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                     return new QueryResult<BaseItemDto>();
                 }
 
-                // Check if Sonarr is configured
-                if (string.IsNullOrEmpty(config.SonarrUrl) || string.IsNullOrEmpty(config.SonarrApiKey))
+                // Check if Radarr is configured
+                if (string.IsNullOrEmpty(config.RadarrUrl) || string.IsNullOrEmpty(config.RadarrApiKey))
                 {
-                    _logger.LogWarning("Sonarr URL or API key not configured, skipping upcoming shows");
+                    _logger.LogWarning("Radarr URL or API key not configured, skipping upcoming movies");
                     return new QueryResult<BaseItemDto>();
                 }
 
                 var startDate = DateTime.UtcNow;
-                var endDate = _arrApiService.CalculateEndDate(startDate, config.UpcomingShowsTimeframeValue, config.UpcomingShowsTimeframeUnit);
+                var endDate = _arrApiService.CalculateEndDate(startDate, config.UpcomingMoviesTimeframeValue, config.UpcomingMoviesTimeframeUnit);
                 
-                _logger.LogDebug("Fetching upcoming shows from {StartDate} to {EndDate}", startDate, endDate);
+                _logger.LogDebug("Fetching upcoming movies from {StartDate} to {EndDate}", startDate, endDate);
 
-                var calendarItems = _arrApiService.GetSonarrCalendarAsync(startDate, endDate).GetAwaiter().GetResult();
+                var calendarItems = _arrApiService.GetRadarrCalendarAsync(startDate, endDate).GetAwaiter().GetResult();
                 
                 if (calendarItems == null || calendarItems.Length == 0)
                 {
-                    _logger.LogDebug("No upcoming shows found from Sonarr");
+                    _logger.LogDebug("No upcoming movies found from Radarr");
                     return new QueryResult<BaseItemDto>();
                 }
 
                 var upcomingItems = calendarItems
-                    .Where(item => item.Monitored && !item.HasFile && item.AirDateUtc.HasValue)
-                    .OrderBy(item => item.AirDateUtc)
+                    .Where(item => item.Monitored && !item.HasFile && item.DigitalRelease.HasValue)
+                    .OrderBy(item => item.DigitalRelease)
                     .Take(16)
                     .ToArray();
 
-                _logger.LogDebug("Found {Count} upcoming episodes after filtering", upcomingItems.Length);
+                _logger.LogDebug("Found {Count} upcoming movies after filtering", upcomingItems.Length);
 
-                var dtoItems = upcomingItems.Select(item => CreateUpcomingShowDto(item, config)).ToArray();
+                var dtoItems = upcomingItems.Select(item => CreateUpcomingMovieDto(item, config)).ToArray();
 
                 return new QueryResult<BaseItemDto>(dtoItems);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error fetching upcoming shows from Sonarr");
+                _logger.LogError(ex, "Error fetching upcoming movies from Radarr");
                 return new QueryResult<BaseItemDto>();
             }
         }
 
-        private BaseItemDto CreateUpcomingShowDto(SonarrCalendarDto calendarItem, PluginConfiguration config)
+        private BaseItemDto CreateUpcomingMovieDto(RadarrCalendarDto calendarItem, PluginConfiguration config)
         {
             var formattedDate = _arrApiService.FormatDate(
-                calendarItem.AirDateUtc?.ToLocalTime() ?? DateTime.Now,
+                calendarItem.DigitalRelease?.ToLocalTime() ?? DateTime.Now,
                 config.DateFormat,
                 config.DateDelimiter);
 
-            var episodeInfo = $"S{calendarItem.SeasonNumber:D2}E{calendarItem.EpisodeNumber:D2} - {calendarItem.Title}";
+            var yearInfo = calendarItem.Year > 0 ? $" ({calendarItem.Year})" : "";
 
-            var posterImage = calendarItem.Series?.Images?.FirstOrDefault(img => 
+            var posterImage = calendarItem.Images?.FirstOrDefault(img => 
                 string.Equals(img.CoverType, "poster", StringComparison.OrdinalIgnoreCase));
 
             // Create provider IDs to store external image URL and metadata
             var providerIds = new Dictionary<string, string>
             {
-                { "SonarrSeriesId", calendarItem.SeriesId.ToString() },
-                { "SonarrEpisodeId", calendarItem.Id.ToString() },
-                { "EpisodeInfo", episodeInfo },
+                { "RadarrMovieId", calendarItem.Id.ToString() },
+                { "YearInfo", yearInfo },
                 { "FormattedDate", formattedDate }
             };
 
             if (posterImage?.RemoteUrl != null)
             {
-                providerIds.Add("SonarrPoster", posterImage.RemoteUrl);
+                providerIds.Add("RadarrPoster", posterImage.RemoteUrl);
             }
 
             return new BaseItemDto
             {
                 Id = Guid.NewGuid(),
-                Name = calendarItem.Series?.Title ?? "Unknown Series",
-                Type = BaseItemKind.Episode,
+                Name = calendarItem.Title ?? "Unknown Movie",
+                Type = BaseItemKind.Movie,
                 ServerId = Guid.NewGuid().ToString(),
-                PremiereDate = calendarItem.AirDateUtc,
+                PremiereDate = calendarItem.DigitalRelease,
                 
-                // Series information
-                SeriesName = calendarItem.Series?.Title,
-                
-                // Episode information  
-                IndexNumber = calendarItem.EpisodeNumber,
-                ParentIndexNumber = calendarItem.SeasonNumber,
+                // Movie information
+                ProductionYear = calendarItem.Year > 0 ? calendarItem.Year : null,
                 
                 // Store external image URL and metadata in ProviderIds
                 ProviderIds = providerIds,
@@ -141,7 +136,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 // Store formatted display information in UserData
                 UserData = new UserItemDataDto
                 {
-                    Key = $"upcoming-{calendarItem.Id}",
+                    Key = $"upcoming-movie-{calendarItem.Id}",
                     PlaybackPositionTicks = 0,
                     IsFavorite = false
                 }
@@ -150,7 +145,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         public IHomeScreenSection CreateInstance(Guid? userId, IEnumerable<IHomeScreenSection>? otherInstances = null)
         {
-            return new UpcomingShowsSection(_userManager, _dtoService, _arrApiService, _logger)
+            return new UpcomingMoviesSection(_userManager, _dtoService, _arrApiService, _logger)
             {
                 DisplayText = DisplayText,
                 AdditionalData = AdditionalData,
@@ -170,7 +165,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 OriginalPayload = OriginalPayload,
                 ViewMode = SectionViewMode.Portrait,
                 AllowViewModeChange = false,
-                ContainerClass = "upcoming-shows-section"
+                ContainerClass = "upcoming-movies-section"
             };
         }
     }

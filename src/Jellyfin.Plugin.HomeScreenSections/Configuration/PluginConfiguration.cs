@@ -31,10 +31,18 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
 
         public string? SonarrApiKey { get; set; } = "";
 
-        // Upcoming Section Settings
-        public int UpcomingTimeframeValue { get; set; } = 1;
+        public string? RadarrUrl { get; set; } = "";
 
-        public string UpcomingTimeframeUnit { get; set; } = "days";
+        public string? RadarrApiKey { get; set; } = "";
+
+        // Upcoming Section Settings
+        public int UpcomingShowsTimeframeValue { get; set; } = 1;
+
+        public TimeframeUnit UpcomingShowsTimeframeUnit { get; set; } = TimeframeUnit.Weeks;
+
+        public int UpcomingMoviesTimeframeValue { get; set; } = 1;
+
+        public TimeframeUnit UpcomingMoviesTimeframeUnit { get; set; } = TimeframeUnit.Months;
 
         public string DateFormat { get; set; } = "YYYY/MM/DD";
 
@@ -48,6 +56,14 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         Portrait,
         Landscape,
         Square
+    }
+
+    public enum TimeframeUnit
+    {
+        Days,
+        Weeks,
+        Months,
+        Years
     }
     
     public class SectionSettings

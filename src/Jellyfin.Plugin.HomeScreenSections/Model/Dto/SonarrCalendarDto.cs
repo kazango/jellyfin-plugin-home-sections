@@ -38,18 +38,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.Model.Dto
         public string? Title { get; set; }
 
         [JsonPropertyName("images")]
-        public SonarrImageDto[]? Images { get; set; }
+        public ArrImageDto[]? Images { get; set; }
 
         [JsonPropertyName("id")]
         public int Id { get; set; }
     }
 
-    public class SonarrImageDto
-    {
-        [JsonPropertyName("coverType")]
-        public string? CoverType { get; set; }
 
-        [JsonPropertyName("remoteUrl")]
-        public string? RemoteUrl { get; set; }
-    }
 }
