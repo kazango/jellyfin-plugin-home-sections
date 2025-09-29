@@ -19,12 +19,15 @@ namespace Jellyfin.Plugin.HomeScreenSections
         public override string Name => "Home Screen Sections";
 
         public static HomeScreenSectionsPlugin Instance { get; private set; } = null!;
+        
+        internal IServiceProvider ServiceProvider { get; set; }
     
-        public HomeScreenSectionsPlugin(IApplicationPaths applicationPaths, IXmlSerializer xmlSerializer, IServerConfigurationManager serverConfigurationManager) : base(applicationPaths, xmlSerializer)
+        public HomeScreenSectionsPlugin(IApplicationPaths applicationPaths, IXmlSerializer xmlSerializer, IServerConfigurationManager serverConfigurationManager, IServiceProvider serviceProvider) : base(applicationPaths, xmlSerializer)
         {
             Instance = this;
             
             ServerConfigurationManager = serverConfigurationManager;
+            ServiceProvider = serviceProvider;
         
             string homeScreenSectionsConfigDir = Path.Combine(applicationPaths.PluginConfigurationsPath, "Jellyfin.Plugin.HomeScreenSections");
             if (!Directory.Exists(homeScreenSectionsConfigDir))
@@ -95,6 +98,48 @@ namespace Jellyfin.Plugin.HomeScreenSections
                     EmbeddedResourcePath = $"{GetType().Namespace}.Config.settings.html"
                 }
             };
+        }
+
+        /// <summary>
+        /// Override UpdateConfiguration to preserve cache bust counter and config version.
+        /// </summary>
+        /// <param name="configuration">The new configuration to save</param>
+        public override void UpdateConfiguration(BasePluginConfiguration configuration)
+        {
+            if (configuration is PluginConfiguration pluginConfig)
+            {
+                var currentConfig = base.Configuration;
+
+                // Handle cache busting when developer mode is turned ON
+                if (!currentConfig.DeveloperMode && pluginConfig.DeveloperMode)
+                {
+                    pluginConfig.CacheBustCounter = currentConfig.CacheBustCounter + 1;
+                }
+                else
+                {
+                    pluginConfig.CacheBustCounter = currentConfig.CacheBustCounter;
+                }
+            }
+
+            base.UpdateConfiguration(configuration);
+        }
+
+        /// <summary>
+        /// Increment the cache bust counter and save configuration.
+        /// </summary>
+        public void BustCache()
+        {
+            var config = base.Configuration;
+            config.CacheBustCounter++;
+            base.UpdateConfiguration(config);
+        }
+
+        /// <summary>
+        /// Get the current plugin version.
+        /// </summary>
+        public string GetCurrentPluginVersion()
+        {
+            return base.Version?.ToString() ?? "0.0.0";
         }
     }
 }

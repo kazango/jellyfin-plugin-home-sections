@@ -21,5 +21,14 @@ namespace Jellyfin.Plugin.HomeScreenSections.Model
         
         [JsonPropertyName("resultsEndpoint")]
         public string? ResultsEndpoint { get; set; }
+        
+        [JsonPropertyName("resultsAssembly")]
+        public string? ResultsAssembly { get; set; }
+        
+        [JsonPropertyName("resultsClass")]
+        public string? ResultsClass { get; set; }
+        
+        [JsonPropertyName("resultsMethod")]
+        public string? ResultsMethod { get; set; }
     }
 }

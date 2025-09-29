@@ -26,7 +26,6 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         
         public string? DefaultBooksLibraryId { get; set; } = "";
 
-        // Arr API Settings
         public string? SonarrUrl { get; set; } = "";
 
         public string? SonarrApiKey { get; set; } = "";
@@ -35,7 +34,6 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
 
         public string? RadarrApiKey { get; set; } = "";
 
-        // Upcoming Section Settings
         public int UpcomingShowsTimeframeValue { get; set; } = 1;
 
         public TimeframeUnit UpcomingShowsTimeframeUnit { get; set; } = TimeframeUnit.Weeks;
@@ -47,6 +45,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         public string DateFormat { get; set; } = "YYYY/MM/DD";
 
         public string DateDelimiter { get; set; } = "/";
+        public bool DeveloperMode { get; set; } = false;
+
+        public int CacheBustCounter { get; set; } = 0;
+
+        public int CacheTimeoutSeconds { get; set; } = 86400;
 
         public SectionSettings[] SectionSettings { get; set; } = Array.Empty<SectionSettings>();
     }
