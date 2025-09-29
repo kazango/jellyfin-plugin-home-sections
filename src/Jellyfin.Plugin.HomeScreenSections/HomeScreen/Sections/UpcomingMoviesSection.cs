@@ -51,10 +51,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected override BaseItemDto CreateDto(RadarrCalendarDto calendarItem, PluginConfiguration config)
         {
-            var formattedDate = ArrApiService.FormatDate(
-                calendarItem.DigitalRelease?.ToLocalTime() ?? DateTime.Now,
-                config.DateFormat,
-                config.DateDelimiter);
+            var releaseDate = calendarItem.DigitalRelease ?? DateTime.Now;
+            var countdownText = CalculateCountdown(releaseDate, config);
 
             var yearInfo = calendarItem.Year > 0 ? $" ({calendarItem.Year})" : "";
 
@@ -66,7 +64,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             {
                 { "RadarrMovieId", calendarItem.Id.ToString() },
                 { "YearInfo", yearInfo },
-                { "FormattedDate", formattedDate }
+                { "FormattedDate", countdownText }
             };
 
             if (posterImage?.RemoteUrl != null)

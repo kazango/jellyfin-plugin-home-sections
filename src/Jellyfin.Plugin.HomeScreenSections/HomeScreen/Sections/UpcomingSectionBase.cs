@@ -89,6 +89,38 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             }
         }
 
+        protected string CalculateCountdown(DateTime releaseDate, PluginConfiguration config)
+        {
+            var now = DateTime.Now;
+            var timeSpan = releaseDate.ToLocalTime() - now;
+            var totalDays = (int)Math.Ceiling(timeSpan.TotalDays);
+            
+            string countdownText = totalDays switch
+            {
+            <= 0 => "Today!",
+            < 7 => $"{totalDays} {(totalDays == 1 ? "Day" : "Days")}",
+            < 30 => FormatTimeUnit(totalDays / 7, totalDays % 7, "Week", "Day"),
+            < 365 => FormatTimeUnit(totalDays / 30, (totalDays % 30) / 7, "Month", "Week"),
+            _ => FormatTimeUnit(totalDays / 365, (totalDays % 365) / 30, "Year", "Month")
+            };
+            
+            var formattedDate = ArrApiService.FormatDate(releaseDate.ToLocalTime(), config.DateFormat, config.DateDelimiter);
+            return $"{countdownText} - {formattedDate}";
+        }
+
+        private static string FormatTimeUnit(int primaryValue, int secondaryValue, string primaryUnit, string secondaryUnit)
+        {
+            var primaryText = $"{primaryValue} {(primaryValue == 1 ? primaryUnit : $"{primaryUnit}s")}";
+            
+            if (secondaryValue > 0)
+            {
+            var secondaryText = $"{secondaryValue} {(secondaryValue == 1 ? secondaryUnit : $"{secondaryUnit}s")}";
+            return $"{primaryText}, {secondaryText}";
+            }
+            
+            return primaryText;
+        }
+
         // Abstract methods that subclasses must implement
         protected abstract (string? url, string? apiKey) GetServiceConfiguration(PluginConfiguration config);
         protected abstract (int value, TimeframeUnit unit) GetTimeframeConfiguration(PluginConfiguration config);

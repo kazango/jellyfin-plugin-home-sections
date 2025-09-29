@@ -52,10 +52,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected override BaseItemDto CreateDto(SonarrCalendarDto calendarItem, PluginConfiguration config)
         {
-            var formattedDate = ArrApiService.FormatDate(
-                calendarItem.AirDateUtc?.ToLocalTime() ?? DateTime.Now,
-                config.DateFormat,
-                config.DateDelimiter);
+            var airDate = calendarItem.AirDateUtc ?? DateTime.Now;
+            var countdownText = CalculateCountdown(airDate, config);
 
             var episodeInfo = $"S{calendarItem.SeasonNumber:D2}E{calendarItem.EpisodeNumber:D2} - {calendarItem.Title}";
 
@@ -68,7 +66,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 { "SonarrSeriesId", calendarItem.SeriesId.ToString() },
                 { "SonarrEpisodeId", calendarItem.Id.ToString() },
                 { "EpisodeInfo", episodeInfo },
-                { "FormattedDate", formattedDate }
+                { "FormattedDate", countdownText }
             };
 
             if (posterImage?.RemoteUrl != null)
