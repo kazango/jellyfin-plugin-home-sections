@@ -74,7 +74,8 @@
 
 .upcomingShowCard .cardImageContainer,
 .upcomingMovieCard .cardImageContainer,
-.upcomingMusicCard .cardImageContainer {
+.upcomingMusicCard .cardImageContainer,
+.upcomingBookCard .cardImageContainer {
     cursor: default;
 }
 
@@ -91,7 +92,8 @@
 
 .upcomingShowCard:before,
 .upcomingMovieCard:before,
-.upcomingMusicCard:before {
+.upcomingMusicCard:before,
+.upcomingBookCard:before {
     position: absolute;
     content: 'Upcoming';
     z-index: 1386;

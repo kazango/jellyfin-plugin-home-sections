@@ -86,6 +86,19 @@
                         <div class="fieldDescription">How far in the future should we look for upcoming music releases?</div>
                     </div>
                     <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="upcomingBooksTimeframeValue">Upcoming Books Timeframe</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input is="emby-input" type="number" id="upcomingBooksTimeframeValue" min="1" max="999" style="flex: 0 0 100px;" />
+                            <select is="emby-select" id="upcomingBooksTimeframeUnit" class="emby-select-withcolor emby-select" style="flex: 0 0 120px;">
+                                <option value="Days">Days</option>
+                                <option value="Weeks">Weeks</option>
+                                <option value="Months">Months</option>
+                                <option value="Years">Years</option>
+                            </select>
+                        </div>
+                        <div class="fieldDescription">How far in the future should we look for upcoming book releases?</div>
+                    </div>
+                    <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="dateFormat">Date Format</label>
                         <div style="display: flex; gap: 10px; align-items: center;">
                             <select is="emby-select" id="dateFormat" class="emby-select-withcolor emby-select" style="flex: 0 0 150px;">
@@ -131,6 +144,14 @@
                                 <div class="inputContainer">
                                     <input is="emby-input" type="password" data-id="txtLidarrApiKey" label="Lidarr API Key" />
                                     <div class="fieldDescription">API Key for Lidarr instance.</div>
+                                </div>
+                                <div class="inputContainer">
+                                    <input is="emby-input" type="text" data-id="txtReadarrUrl" label="Readarr URL" />
+                                    <div class="fieldDescription">Complete URL for Readarr to use for upcoming books sections.</div>
+                                </div>
+                                <div class="inputContainer">
+                                    <input is="emby-input" type="password" data-id="txtReadarrApiKey" label="Readarr API Key" />
+                                    <div class="fieldDescription">API Key for Readarr instance.</div>
                                 </div>
                             </div>
                         </details>
@@ -428,12 +449,16 @@
                     RadarrApiKey: document.querySelector('[data-id=txtRadarrApiKey]').value,
                     LidarrUrl: document.querySelector('[data-id=txtLidarrUrl]').value,
                     LidarrApiKey: document.querySelector('[data-id=txtLidarrApiKey]').value,
+                    ReadarrUrl: document.querySelector('[data-id=txtReadarrUrl]').value,
+                    ReadarrApiKey: document.querySelector('[data-id=txtReadarrApiKey]').value,
                     UpcomingShowsTimeframeValue: parseInt(document.querySelector('#upcomingShowsTimeframeValue').value) || 1,
                     UpcomingShowsTimeframeUnit: document.querySelector('#upcomingShowsTimeframeUnit').value,
                     UpcomingMoviesTimeframeValue: parseInt(document.querySelector('#upcomingMoviesTimeframeValue').value) || 1,
                     UpcomingMoviesTimeframeUnit: document.querySelector('#upcomingMoviesTimeframeUnit').value,
                     UpcomingMusicTimeframeValue: parseInt(document.querySelector('#upcomingMusicTimeframeValue').value) || 2,
                     UpcomingMusicTimeframeUnit: document.querySelector('#upcomingMusicTimeframeUnit').value,
+                    UpcomingBooksTimeframeValue: parseInt(document.querySelector('#upcomingBooksTimeframeValue').value) || 1,
+                    UpcomingBooksTimeframeUnit: document.querySelector('#upcomingBooksTimeframeUnit').value,
                     DateFormat: document.querySelector('#dateFormat').value,
                     DateDelimiter: document.querySelector('#dateDelimiter').value,
                     DeveloperMode: document.querySelector('#globalDeveloperMode').checked,
@@ -478,6 +503,8 @@
                         document.querySelector('[data-id=txtRadarrApiKey]').value = config.RadarrApiKey || '';
                         document.querySelector('[data-id=txtLidarrUrl]').value = config.LidarrUrl || '';
                         document.querySelector('[data-id=txtLidarrApiKey]').value = config.LidarrApiKey || '';
+                        document.querySelector('[data-id=txtReadarrUrl]').value = config.ReadarrUrl || '';
+                        document.querySelector('[data-id=txtReadarrApiKey]').value = config.ReadarrApiKey || '';
                         
                         document.querySelector('#upcomingShowsTimeframeValue').value = config.UpcomingShowsTimeframeValue || 1;
                         document.querySelector('#upcomingShowsTimeframeUnit').value = config.UpcomingShowsTimeframeUnit || 'Weeks';
@@ -485,6 +512,8 @@
                         document.querySelector('#upcomingMoviesTimeframeUnit').value = config.UpcomingMoviesTimeframeUnit || 'Months';
                         document.querySelector('#upcomingMusicTimeframeValue').value = config.UpcomingMusicTimeframeValue || 2;
                         document.querySelector('#upcomingMusicTimeframeUnit').value = config.UpcomingMusicTimeframeUnit || 'Months';
+                        document.querySelector('#upcomingBooksTimeframeValue').value = config.UpcomingBooksTimeframeValue || 3;
+                        document.querySelector('#upcomingBooksTimeframeUnit').value = config.UpcomingBooksTimeframeUnit || 'Months';
                         document.querySelector('#dateFormat').value = config.DateFormat || 'YYYY/MM/DD';
                         document.querySelector('#dateDelimiter').value = config.DateDelimiter || '/';
 

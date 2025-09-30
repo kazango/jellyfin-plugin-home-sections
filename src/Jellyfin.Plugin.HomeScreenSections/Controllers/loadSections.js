@@ -142,7 +142,16 @@
                 cardClass = 'upcoming-music-card';
                 cardScalableClass = 'upcomingMusicCard';
             }
-            
+            else if (item.Type === 'Book' || item.ProviderIds.ReadarrBookId) {
+                // Book content
+                contentType = 'book';
+                title = item.Name || 'Unknown Book';
+                secondaryInfo = item.Overview || '';
+                posterUrl = item.ProviderIds.ReadarrPoster || '';
+                cardClass = 'upcoming-book-card';
+                cardScalableClass = 'upcomingBookCard';
+            }
+
             html += '<div class="card overflowPortraitCard card-hoverable card-withuserdata ' + cardClass + '" data-index="' + index + '" data-content-type="' + contentType + '">';
             html += '   <div class="cardBox cardBox-bottompadded">';
             html += '       <div class="cardScalable ' + cardScalableClass + '">';
