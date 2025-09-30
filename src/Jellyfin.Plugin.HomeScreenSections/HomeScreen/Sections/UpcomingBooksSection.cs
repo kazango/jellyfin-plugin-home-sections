@@ -40,7 +40,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected override ReadarrCalendarDto[] GetCalendarItems(DateTime startDate, DateTime endDate)
         {
-            return ArrApiService.GetReadarrCalendarAsync(startDate, endDate).GetAwaiter().GetResult() ?? Array.Empty<ReadarrCalendarDto>();
+            return ArrApiService.GetArrCalendarAsync<ReadarrCalendarDto>(ArrServiceType.Readarr, startDate, endDate).GetAwaiter().GetResult() ?? Array.Empty<ReadarrCalendarDto>();
         }
 
         protected override IOrderedEnumerable<ReadarrCalendarDto> FilterAndSortItems(ReadarrCalendarDto[] items)
@@ -52,13 +52,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected override BaseItemDto CreateDto(ReadarrCalendarDto calendarItem, PluginConfiguration config)
         {
-            var releaseDate = calendarItem.ReleaseDate ?? DateTime.Now;
-            var countdownText = CalculateCountdown(releaseDate, config);
+            DateTime releaseDate = calendarItem.ReleaseDate ?? DateTime.Now;
+            string countdownText = CalculateCountdown(releaseDate, config);
 
-            var posterImage = calendarItem.Images?.FirstOrDefault(img => 
+            ArrImageDto? posterImage = calendarItem.Images?.FirstOrDefault(img => 
                 string.Equals(img.CoverType, "cover", StringComparison.OrdinalIgnoreCase));
 
-            var providerIds = new Dictionary<string, string>()
+            Dictionary<string, string> providerIds = new Dictionary<string, string>()
             {
                 { "ReadarrBookId", calendarItem.Id.ToString() },
                 { "FormattedDate", countdownText },

@@ -40,7 +40,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected override SonarrCalendarDto[] GetCalendarItems(DateTime startDate, DateTime endDate)
         {
-            return ArrApiService.GetSonarrCalendarAsync(startDate, endDate).GetAwaiter().GetResult() ?? Array.Empty<SonarrCalendarDto>();
+            return ArrApiService.GetArrCalendarAsync<SonarrCalendarDto>(ArrServiceType.Sonarr, startDate, endDate).GetAwaiter().GetResult() ?? Array.Empty<SonarrCalendarDto>();
         }
 
         protected override IOrderedEnumerable<SonarrCalendarDto> FilterAndSortItems(SonarrCalendarDto[] items)
@@ -52,16 +52,16 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected override BaseItemDto CreateDto(SonarrCalendarDto calendarItem, PluginConfiguration config)
         {
-            var airDate = calendarItem.AirDateUtc ?? DateTime.Now;
-            var countdownText = CalculateCountdown(airDate, config);
+            DateTime airDate = calendarItem.AirDateUtc ?? DateTime.Now;
+            string countdownText = CalculateCountdown(airDate, config);
 
-            var episodeInfo = $"S{calendarItem.SeasonNumber:D2}E{calendarItem.EpisodeNumber:D2} - {calendarItem.Title}";
+            string episodeInfo = $"S{calendarItem.SeasonNumber:D2}E{calendarItem.EpisodeNumber:D2} - {calendarItem.Title}";
 
-            var posterImage = calendarItem.Series?.Images?.FirstOrDefault(img => 
+            ArrImageDto? posterImage = calendarItem.Series?.Images?.FirstOrDefault(img => 
                 string.Equals(img.CoverType, "poster", StringComparison.OrdinalIgnoreCase));
 
             // Create provider IDs to store external image URL and metadata
-            var providerIds = new Dictionary<string, string>
+            Dictionary<string, string> providerIds = new Dictionary<string, string>
             {
                 { "SonarrSeriesId", calendarItem.SeriesId.ToString() },
                 { "SonarrEpisodeId", calendarItem.Id.ToString() },

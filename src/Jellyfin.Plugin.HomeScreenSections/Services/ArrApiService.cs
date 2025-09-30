@@ -28,7 +28,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
 
         public async Task<T[]?> GetArrCalendarAsync<T>(ArrServiceType serviceType, DateTime startDate, DateTime endDate)
         {
-            var (url, apiKey, serviceName) = GetServiceConfig(serviceType);
+            (string? url, string? apiKey, string? serviceName) = GetServiceConfig(serviceType);
             
             if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(apiKey))
             {
@@ -38,9 +38,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
 
             try
             {
-                var startParam = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
-                var endParam = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
-                var (queryParams, apiVersion) = serviceType switch
+                string startParam = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                string endParam = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                (string? queryParams, string? apiVersion) = serviceType switch
                 {
                     ArrServiceType.Sonarr => ($"includeSeries=true&start={startParam}&end={endParam}", "v3"),
                     ArrServiceType.Radarr => ($"start={startParam}&end={endParam}", "v3"),
@@ -48,14 +48,14 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                     ArrServiceType.Readarr => ($"includeAuthor=true&start={startParam}&end={endParam}", "v1"),
                     _ => ($"start={startParam}&end={endParam}", "v3")
                 };
-                var requestUrl = $"{url.TrimEnd('/')}/api/{apiVersion}/calendar?{queryParams}";
+                string requestUrl = $"{url.TrimEnd('/')}/api/{apiVersion}/calendar?{queryParams}";
 
-                using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+                using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
                 request.Headers.Add("X-API-KEY", apiKey);
 
                 _logger.LogDebug("Fetching {ServiceName} calendar from {Url}", serviceName, requestUrl);
 
-                var response = await _httpClient.SendAsync(request);
+                HttpResponseMessage response = await _httpClient.SendAsync(request);
                 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -64,7 +64,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                     return null;
                 }
 
-                var jsonContent = await response.Content.ReadAsStringAsync();
+                string jsonContent = await response.Content.ReadAsStringAsync();
                 
                 if (string.IsNullOrEmpty(jsonContent))
                 {
@@ -72,7 +72,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                     return Array.Empty<T>();
                 }
 
-                var calendarItems = JsonSerializer.Deserialize<T[]>(jsonContent, new JsonSerializerOptions
+                T[]? calendarItems = JsonSerializer.Deserialize<T[]>(jsonContent, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
@@ -95,26 +95,6 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                 _logger.LogError(ex, "Unexpected error while fetching {ServiceName} calendar", serviceName);
                 return null;
             }
-        }
-
-        public async Task<SonarrCalendarDto[]?> GetSonarrCalendarAsync(DateTime startDate, DateTime endDate)
-        {
-            return await GetArrCalendarAsync<SonarrCalendarDto>(ArrServiceType.Sonarr, startDate, endDate);
-        }
-
-        public async Task<RadarrCalendarDto[]?> GetRadarrCalendarAsync(DateTime startDate, DateTime endDate)
-        {
-            return await GetArrCalendarAsync<RadarrCalendarDto>(ArrServiceType.Radarr, startDate, endDate);
-        }
-
-        public async Task<LidarrCalendarDto[]?> GetLidarrCalendarAsync(DateTime startDate, DateTime endDate)
-        {
-            return await GetArrCalendarAsync<LidarrCalendarDto>(ArrServiceType.Lidarr, startDate, endDate);
-        }
-
-        public async Task<ReadarrCalendarDto[]?> GetReadarrCalendarAsync(DateTime startDate, DateTime endDate)
-        {
-            return await GetArrCalendarAsync<ReadarrCalendarDto>(ArrServiceType.Readarr, startDate, endDate);
         }
 
         private (string? url, string? apiKey, string serviceName) GetServiceConfig(ArrServiceType serviceType)

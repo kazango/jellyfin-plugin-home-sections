@@ -39,7 +39,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected override RadarrCalendarDto[] GetCalendarItems(DateTime startDate, DateTime endDate)
         {
-            return ArrApiService.GetRadarrCalendarAsync(startDate, endDate).GetAwaiter().GetResult() ?? Array.Empty<RadarrCalendarDto>();
+            return ArrApiService.GetArrCalendarAsync<RadarrCalendarDto>(ArrServiceType.Radarr, startDate, endDate).GetAwaiter().GetResult() ?? Array.Empty<RadarrCalendarDto>();
         }
 
         protected override IOrderedEnumerable<RadarrCalendarDto> FilterAndSortItems(RadarrCalendarDto[] items)
@@ -51,16 +51,16 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected override BaseItemDto CreateDto(RadarrCalendarDto calendarItem, PluginConfiguration config)
         {
-            var releaseDate = calendarItem.DigitalRelease ?? DateTime.Now;
-            var countdownText = CalculateCountdown(releaseDate, config);
+            DateTime releaseDate = calendarItem.DigitalRelease ?? DateTime.Now;
+            string countdownText = CalculateCountdown(releaseDate, config);
 
-            var yearInfo = calendarItem.Year > 0 ? $" ({calendarItem.Year})" : "";
+            string yearInfo = calendarItem.Year > 0 ? $" ({calendarItem.Year})" : "";
 
-            var posterImage = calendarItem.Images?.FirstOrDefault(img => 
+            ArrImageDto? posterImage = calendarItem.Images?.FirstOrDefault(img => 
                 string.Equals(img.CoverType, "poster", StringComparison.OrdinalIgnoreCase));
 
             // Create provider IDs to store external image URL and metadata
-            var providerIds = new Dictionary<string, string>
+            Dictionary<string, string> providerIds = new Dictionary<string, string>
             {
                 { "RadarrMovieId", calendarItem.Id.ToString() },
                 { "YearInfo", yearInfo },

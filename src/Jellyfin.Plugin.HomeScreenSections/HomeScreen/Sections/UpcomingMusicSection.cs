@@ -40,7 +40,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected override LidarrCalendarDto[] GetCalendarItems(DateTime startDate, DateTime endDate)
         {
-            return ArrApiService.GetLidarrCalendarAsync(startDate, endDate).GetAwaiter().GetResult() ?? Array.Empty<LidarrCalendarDto>();
+            return ArrApiService.GetArrCalendarAsync<LidarrCalendarDto>(ArrServiceType.Lidarr, startDate, endDate).GetAwaiter().GetResult() ?? Array.Empty<LidarrCalendarDto>();
         }
 
         protected override IOrderedEnumerable<LidarrCalendarDto> FilterAndSortItems(LidarrCalendarDto[] items)
@@ -53,13 +53,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         protected override BaseItemDto CreateDto(LidarrCalendarDto calendarItem, PluginConfiguration config)
         {
 
-            var releaseDate = calendarItem.ReleaseDate ?? DateTime.Now;
-            var countdownText = CalculateCountdown(releaseDate, config);
+            DateTime releaseDate = calendarItem.ReleaseDate ?? DateTime.Now;
+            string countdownText = CalculateCountdown(releaseDate, config);
 
-            var albumImage = calendarItem.Images?.FirstOrDefault(img => 
+            ArrImageDto? albumImage = calendarItem.Images?.FirstOrDefault(img => 
                 string.Equals(img.CoverType, "cover", StringComparison.OrdinalIgnoreCase));
 
-            var providerIds = new Dictionary<string, string>()
+            Dictionary<string, string> providerIds = new Dictionary<string, string>()
             {
                 { "LidarrAlbumId", calendarItem.Id.ToString() },
                 { "FormattedDate", countdownText },
