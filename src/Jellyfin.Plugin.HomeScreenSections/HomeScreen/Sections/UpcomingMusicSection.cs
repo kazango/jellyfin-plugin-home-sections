@@ -73,6 +73,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 Overview = $"{calendarItem.Artist?.ArtistName ?? "Unknown Artist"} - {calendarItem.AlbumType}",
                 PremiereDate = calendarItem.ReleaseDate,
                 Type = BaseItemKind.MusicAlbum,
+                ProviderIds = providerIds,
                 UserData = new UserItemDataDto
                 {
                     Key = $"upcoming-album-{calendarItem.Id}",

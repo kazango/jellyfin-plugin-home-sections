@@ -116,7 +116,7 @@
             var formattedDate = item.ProviderIds.FormattedDate || '';
             
             // Determine content type and extract relevant data
-            var contentType, title, secondaryInfo, posterUrl, cardClass, cardScalableClass;
+            var contentType, title, secondaryInfo, posterUrl, cardClass, cardScalableClass, cardShapeClass = 'overflowPortraitCard', cardPadderClass = 'cardPadder-overflowPortrait';
 
             if (item.Type === 'Episode' || item.ProviderIds.SonarrSeriesId) {
                 // TV Show/Episode content
@@ -141,6 +141,8 @@
                 posterUrl = item.ProviderIds.LidarrPoster || '';
                 cardClass = 'upcoming-music-card';
                 cardScalableClass = 'upcomingMusicCard';
+                cardShapeClass = 'overflowSquareCard';
+                cardPadderClass = 'cardPadder-square';
             }
             else if (item.Type === 'Book' || item.ProviderIds.ReadarrBookId) {
                 // Book content
@@ -152,10 +154,10 @@
                 cardScalableClass = 'upcomingBookCard';
             }
 
-            html += '<div class="card overflowPortraitCard card-hoverable card-withuserdata ' + cardClass + '" data-index="' + index + '" data-content-type="' + contentType + '">';
+            html += '<div class="card ' + cardShapeClass + ' card-hoverable card-withuserdata ' + cardClass + '" data-index="' + index + '" data-content-type="' + contentType + '">';
             html += '   <div class="cardBox cardBox-bottompadded">';
             html += '       <div class="cardScalable ' + cardScalableClass + '">';
-            html += '           <div class="cardPadder cardPadder-overflowPortrait lazy-hidden-children"></div>';
+            html += '           <div class="cardPadder ' + cardPadderClass + ' lazy-hidden-children"></div>';
             
             if (posterUrl) {
                 html += '           <div class="cardImageContainer coveredImage cardContent lazy blurhashed lazy-image-fadein-fast" style="background-image: url(\'' + posterUrl + '\')"></div>';
