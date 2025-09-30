@@ -9,7 +9,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
     {
         Sonarr,
         Radarr,
-        Lidarr
+        Lidarr,
+        Readarr
     }
 
     public class ArrApiService
@@ -39,12 +40,15 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
             {
                 var startParam = startDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
                 var endParam = endDate.ToString("yyyy-MM-ddTHH:mm:ssZ");
-                
-                var queryParams = serviceType == ArrServiceType.Sonarr 
-                    ? $"includeSeries=true&start={startParam}&end={endParam}"
-                    : $"start={startParam}&end={endParam}";
-                    
-                var requestUrl = $"{url.TrimEnd('/')}/api/v3/calendar?{queryParams}";
+                var (queryParams, apiVersion) = serviceType switch
+                {
+                    ArrServiceType.Sonarr => ($"includeSeries=true&start={startParam}&end={endParam}", "v3"),
+                    ArrServiceType.Radarr => ($"start={startParam}&end={endParam}", "v3"),
+                    ArrServiceType.Lidarr => ($"start={startParam}&end={endParam}", "v1"),
+                    ArrServiceType.Readarr => ($"includeAuthor=true&start={startParam}&end={endParam}", "v1"),
+                    _ => ($"start={startParam}&end={endParam}", "v3")
+                };
+                var requestUrl = $"{url.TrimEnd('/')}/api/{apiVersion}/calendar?{queryParams}";
 
                 using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
                 request.Headers.Add("X-API-KEY", apiKey);
@@ -108,6 +112,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
             return await GetArrCalendarAsync<LidarrCalendarDto>(ArrServiceType.Lidarr, startDate, endDate);
         }
 
+        public async Task<ReadarrCalendarDto[]?> GetReadarrCalendarAsync(DateTime startDate, DateTime endDate)
+        {
+            return await GetArrCalendarAsync<ReadarrCalendarDto>(ArrServiceType.Readarr, startDate, endDate);
+        }
+
         private (string? url, string? apiKey, string serviceName) GetServiceConfig(ArrServiceType serviceType)
         {
             return serviceType switch
@@ -115,6 +124,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                 ArrServiceType.Sonarr => (Config.SonarrUrl, Config.SonarrApiKey, "Sonarr"),
                 ArrServiceType.Radarr => (Config.RadarrUrl, Config.RadarrApiKey, "Radarr"),
                 ArrServiceType.Lidarr => (Config.LidarrUrl, Config.LidarrApiKey, "Lidarr"),
+                ArrServiceType.Readarr => (Config.ReadarrUrl, Config.ReadarrApiKey, "Readarr"),
                 _ => throw new ArgumentOutOfRangeException(nameof(serviceType), serviceType, "Unsupported service type")
             };
         }
