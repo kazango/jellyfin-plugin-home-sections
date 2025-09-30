@@ -8,7 +8,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
     public enum ArrServiceType
     {
         Sonarr,
-        Radarr
+        Radarr,
+        Lidarr
     }
 
     public class ArrApiService
@@ -102,12 +103,18 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
             return await GetArrCalendarAsync<RadarrCalendarDto>(ArrServiceType.Radarr, startDate, endDate);
         }
 
+        public async Task<LidarrCalendarDto[]?> GetLidarrCalendarAsync(DateTime startDate, DateTime endDate)
+        {
+            return await GetArrCalendarAsync<LidarrCalendarDto>(ArrServiceType.Lidarr, startDate, endDate);
+        }
+
         private (string? url, string? apiKey, string serviceName) GetServiceConfig(ArrServiceType serviceType)
         {
             return serviceType switch
             {
                 ArrServiceType.Sonarr => (Config.SonarrUrl, Config.SonarrApiKey, "Sonarr"),
                 ArrServiceType.Radarr => (Config.RadarrUrl, Config.RadarrApiKey, "Radarr"),
+                ArrServiceType.Lidarr => (Config.LidarrUrl, Config.LidarrApiKey, "Lidarr"),
                 _ => throw new ArgumentOutOfRangeException(nameof(serviceType), serviceType, "Unsupported service type")
             };
         }

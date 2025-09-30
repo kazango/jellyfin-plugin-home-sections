@@ -34,6 +34,10 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
 
         public string? RadarrApiKey { get; set; } = "";
 
+        public string? LidarrUrl { get; set; } = "";
+
+        public string? LidarrApiKey { get; set; } = "";
+
         public int UpcomingShowsTimeframeValue { get; set; } = 1;
 
         public TimeframeUnit UpcomingShowsTimeframeUnit { get; set; } = TimeframeUnit.Weeks;
@@ -41,6 +45,10 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         public int UpcomingMoviesTimeframeValue { get; set; } = 1;
 
         public TimeframeUnit UpcomingMoviesTimeframeUnit { get; set; } = TimeframeUnit.Months;
+
+        public int UpcomingMusicTimeframeValue { get; set; } = 6;
+
+        public TimeframeUnit UpcomingMusicTimeframeUnit { get; set; } = TimeframeUnit.Months;
 
         public string DateFormat { get; set; } = "YYYY/MM/DD";
 

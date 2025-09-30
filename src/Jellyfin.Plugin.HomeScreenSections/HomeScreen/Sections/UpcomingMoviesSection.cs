@@ -77,16 +77,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 Id = Guid.NewGuid(),
                 Name = calendarItem.Title ?? "Unknown Movie",
                 Type = BaseItemKind.Movie,
-                ServerId = Guid.NewGuid().ToString(),
                 PremiereDate = calendarItem.DigitalRelease,
-                
-                // Movie information
                 ProductionYear = calendarItem.Year > 0 ? calendarItem.Year : null,
-                
-                // Store external image URL and metadata in ProviderIds
                 ProviderIds = providerIds,
-                
-                // Store formatted display information in UserData
                 UserData = new UserItemDataDto
                 {
                     Key = $"upcoming-movie-{calendarItem.Id}",

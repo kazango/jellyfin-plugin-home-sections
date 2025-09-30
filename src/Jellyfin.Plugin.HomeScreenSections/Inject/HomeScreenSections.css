@@ -65,7 +65,7 @@
         bottom: calc(50% - 60px);
     }
 }
-/* Upcoming Card Styling */
+
 [class*="upcoming-"][class*="-section"] .cardText-tertiary {
     font-size: 0.9em;
     color: var(--secondaryTextColor);
@@ -73,7 +73,8 @@
 }
 
 .upcomingShowCard .cardImageContainer,
-.upcomingMovieCard .cardImageContainer {
+.upcomingMovieCard .cardImageContainer,
+.upcomingMusicCard .cardImageContainer {
     cursor: default;
 }
 
@@ -89,7 +90,8 @@
 }
 
 .upcomingShowCard:before,
-.upcomingMovieCard:before {
+.upcomingMovieCard:before,
+.upcomingMusicCard:before {
     position: absolute;
     content: 'Upcoming';
     z-index: 1386;

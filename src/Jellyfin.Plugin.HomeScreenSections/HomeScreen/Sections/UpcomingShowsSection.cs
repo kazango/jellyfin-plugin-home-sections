@@ -79,20 +79,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 Id = Guid.NewGuid(),
                 Name = calendarItem.Series?.Title ?? "Unknown Series",
                 Type = BaseItemKind.Episode,
-                ServerId = Guid.NewGuid().ToString(),
                 PremiereDate = calendarItem.AirDateUtc,
-                
-                // Series information
                 SeriesName = calendarItem.Series?.Title,
-                
-                // Episode information  
                 IndexNumber = calendarItem.EpisodeNumber,
                 ParentIndexNumber = calendarItem.SeasonNumber,
-                
-                // Store external image URL and metadata in ProviderIds
                 ProviderIds = providerIds,
-                
-                // Store formatted display information in UserData
                 UserData = new UserItemDataDto
                 {
                     Key = $"upcoming-{calendarItem.Id}",
