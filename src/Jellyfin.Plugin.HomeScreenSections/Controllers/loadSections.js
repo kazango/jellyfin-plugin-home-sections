@@ -133,6 +133,14 @@
                 posterUrl = item.ProviderIds.RadarrPoster || '';
                 cardClass = 'upcoming-movie-card';
                 cardScalableClass = 'upcomingMovieCard';
+            } else if (item.Type === 'MusicAlbum' || item.ProviderIds.LidarrArtistId) {
+                // Music Album content
+                contentType = 'music';
+                title = item.Name || 'Unknown Album';
+                secondaryInfo = item.Overview || '';
+                posterUrl = item.ProviderIds.LidarrPoster || '';
+                cardClass = 'upcoming-music-card';
+                cardScalableClass = 'upcomingMusicCard';
             }
             
             html += '<div class="card overflowPortraitCard card-hoverable card-withuserdata ' + cardClass + '" data-index="' + index + '" data-content-type="' + contentType + '">';
