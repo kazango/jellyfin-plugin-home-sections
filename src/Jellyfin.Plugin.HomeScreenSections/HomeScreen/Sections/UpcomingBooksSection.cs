@@ -60,7 +60,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             {
                 Id = Guid.NewGuid(),
                 Name = calendarItem.Title ?? "Unknown Book",
-                Overview = $"{calendarItem.Author?.AuthorName ?? "Unknown Author"} - {calendarItem.SeriesTitle ?? "Unknown Series"}",
+                Overview = (calendarItem.Author?.AuthorName ?? "Unknown Author") + (string.IsNullOrEmpty(calendarItem.SeriesTitle) ? "" : " - " + calendarItem.SeriesTitle),
                 PremiereDate = calendarItem.ReleaseDate,
                 Type = BaseItemKind.Book,
                 ProviderIds = providerIds,
