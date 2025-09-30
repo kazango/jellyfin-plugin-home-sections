@@ -66,13 +66,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 { "SonarrSeriesId", calendarItem.SeriesId.ToString() },
                 { "SonarrEpisodeId", calendarItem.Id.ToString() },
                 { "EpisodeInfo", episodeInfo },
-                { "FormattedDate", countdownText }
+                { "FormattedDate", countdownText },
+                { "SonarrPoster", posterImage?.RemoteUrl ?? GetFallbackCoverUrl(calendarItem) }
             };
-
-            if (posterImage?.RemoteUrl != null)
-            {
-                providerIds.Add("SonarrPoster", posterImage.RemoteUrl);
-            }
 
             return new BaseItemDto
             {

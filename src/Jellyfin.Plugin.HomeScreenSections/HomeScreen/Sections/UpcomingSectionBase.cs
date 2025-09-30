@@ -121,6 +121,22 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             return primaryText;
         }
 
+        protected string GetFallbackCoverUrl(T missingItem)
+        {
+            var (size, title, additionalInfo) = missingItem switch
+            {
+                SonarrCalendarDto sonarr => ("250x400", sonarr.Series?.Title, sonarr.Title),
+                RadarrCalendarDto radarr => ("250x400", radarr.Title, null),
+                LidarrCalendarDto lidarr => ("300x300", lidarr.Title, lidarr.Artist?.ArtistName),
+                ReadarrCalendarDto readarr => ("250x400", readarr.Title, readarr.Author?.AuthorName),
+                _ => ("400x250", "Unknown Item", null)
+            };
+            // Generate a darker random color for good contrast with white text
+            var randomBgColor = $"{Random.Shared.Next(0, 128):X2}{Random.Shared.Next(0, 128):X2}{Random.Shared.Next(0, 128):X2}";
+            string formattedText = string.IsNullOrEmpty(additionalInfo) ? title ?? "Unknown Item" : $"{title}\n{additionalInfo}" + "\nImage Not Found";
+            return $"https://placehold.co/{size}/{randomBgColor}/FFF?text={Uri.EscapeDataString(formattedText)}";
+        }
+
         // Abstract methods that subclasses must implement
         protected abstract (string? url, string? apiKey) GetServiceConfiguration(PluginConfiguration config);
         protected abstract (int value, TimeframeUnit unit) GetTimeframeConfiguration(PluginConfiguration config);

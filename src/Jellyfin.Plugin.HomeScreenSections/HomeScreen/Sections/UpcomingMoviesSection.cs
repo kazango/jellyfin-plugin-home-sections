@@ -64,13 +64,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             {
                 { "RadarrMovieId", calendarItem.Id.ToString() },
                 { "YearInfo", yearInfo },
-                { "FormattedDate", countdownText }
+                { "FormattedDate", countdownText },
+                { "RadarrPoster", posterImage?.RemoteUrl ?? GetFallbackCoverUrl(calendarItem) }
             };
-
-            if (posterImage?.RemoteUrl != null)
-            {
-                providerIds.Add("RadarrPoster", posterImage.RemoteUrl);
-            }
 
             return new BaseItemDto
             {

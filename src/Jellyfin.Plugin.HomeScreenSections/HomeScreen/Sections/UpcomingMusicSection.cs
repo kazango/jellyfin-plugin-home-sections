@@ -63,12 +63,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             {
                 { "LidarrAlbumId", calendarItem.Id.ToString() },
                 { "FormattedDate", countdownText },
+                { "LidarrPoster", albumImage?.RemoteUrl ?? GetFallbackCoverUrl(calendarItem) }
             };
-
-            if (albumImage?.RemoteUrl != null)
-            {
-                providerIds["AlbumImage"] = albumImage.RemoteUrl;
-            }
 
             return new BaseItemDto
             {
