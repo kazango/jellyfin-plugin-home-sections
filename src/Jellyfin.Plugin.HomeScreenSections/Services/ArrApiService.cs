@@ -1,7 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Jellyfin.Plugin.HomeScreenSections.Configuration;
-using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
 
 namespace Jellyfin.Plugin.HomeScreenSections.Services
 {
@@ -13,18 +12,12 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
         Readarr
     }
 
-    public class ArrApiService
+    public class ArrApiService(ILogger<ArrApiService> logger, HttpClient httpClient)
     {
-        private readonly ILogger<ArrApiService> _logger;
-        private readonly HttpClient _httpClient;
+        private readonly ILogger<ArrApiService> _logger = logger;
+        private readonly HttpClient _httpClient = httpClient;
 
-        public ArrApiService(ILogger<ArrApiService> logger, HttpClient httpClient)
-        {
-            _logger = logger;
-            _httpClient = httpClient;
-        }
-
-        private PluginConfiguration Config => HomeScreenSectionsPlugin.Instance?.Configuration ?? new PluginConfiguration();
+        private static PluginConfiguration Config => HomeScreenSectionsPlugin.Instance?.Configuration ?? new PluginConfiguration();
 
         public async Task<T[]?> GetArrCalendarAsync<T>(ArrServiceType serviceType, DateTime startDate, DateTime endDate)
         {
@@ -50,7 +43,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                 };
                 string requestUrl = $"{url.TrimEnd('/')}/api/{apiVersion}/calendar?{queryParams}";
 
-                using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+                using HttpRequestMessage request = new(HttpMethod.Get, requestUrl);
                 request.Headers.Add("X-API-KEY", apiKey);
 
                 _logger.LogDebug("Fetching {ServiceName} calendar from {Url}", serviceName, requestUrl);
@@ -69,7 +62,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                 if (string.IsNullOrEmpty(jsonContent))
                 {
                     _logger.LogWarning("Empty response from {ServiceName} calendar API", serviceName);
-                    return Array.Empty<T>();
+                    return [];
                 }
 
                 T[]? calendarItems = JsonSerializer.Deserialize<T[]>(jsonContent, new JsonSerializerOptions
@@ -78,7 +71,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                 });
 
                 _logger.LogDebug("Successfully fetched {Count} calendar items from {ServiceName}", calendarItems?.Length ?? 0, serviceName);
-                return calendarItems ?? Array.Empty<T>();
+                return calendarItems ?? [];
             }
             catch (HttpRequestException ex)
             {
@@ -97,7 +90,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
             }
         }
 
-        private (string? url, string? apiKey, string serviceName) GetServiceConfig(ArrServiceType serviceType)
+        private static (string? url, string? apiKey, string serviceName) GetServiceConfig(ArrServiceType serviceType)
         {
             return serviceType switch
             {
@@ -109,7 +102,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
             };
         }
 
-        public DateTime CalculateEndDate(DateTime startDate, int timeframeValue, TimeframeUnit timeframeUnit)
+        public static DateTime CalculateEndDate(DateTime startDate, int timeframeValue, TimeframeUnit timeframeUnit)
         {
             return timeframeUnit switch
             {
@@ -121,7 +114,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
             };
         }
 
-        public string FormatDate(DateTime date, string format, string delimiter)
+        public static string FormatDate(DateTime date, string format, string delimiter)
         {
             return format.ToUpperInvariant() switch
             {

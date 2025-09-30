@@ -1,4 +1,3 @@
-using Jellyfin.Data.Enums;
 using Jellyfin.Plugin.HomeScreenSections.Configuration;
 using Jellyfin.Plugin.HomeScreenSections.Library;
 using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
@@ -6,27 +5,19 @@ using Jellyfin.Plugin.HomeScreenSections.Services;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Dto;
-using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Querying;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
-    public class UpcomingMusicSection : UpcomingSectionBase<LidarrCalendarDto>
+    public class UpcomingMusicSection(
+        IUserManager userManager,
+        IDtoService dtoService,
+        ArrApiService arrApiService,
+        ILogger<UpcomingMusicSection> logger) : UpcomingSectionBase<LidarrCalendarDto>(userManager, dtoService, arrApiService, logger)
     {
         public override string? Section => "UpcomingMusic";
         
         public override string? DisplayText { get; set; } = "Upcoming Music";
-
-        public UpcomingMusicSection(
-            IUserManager userManager,
-            IDtoService dtoService,
-            ArrApiService arrApiService,
-            ILogger<UpcomingMusicSection> logger)
-            : base(userManager, dtoService, arrApiService, logger)
-        {
-        }
 
         protected override (string? url, string? apiKey) GetServiceConfiguration(PluginConfiguration config)
         {
@@ -40,7 +31,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected override LidarrCalendarDto[] GetCalendarItems(DateTime startDate, DateTime endDate)
         {
-            return ArrApiService.GetArrCalendarAsync<LidarrCalendarDto>(ArrServiceType.Lidarr, startDate, endDate).GetAwaiter().GetResult() ?? Array.Empty<LidarrCalendarDto>();
+            return ArrApiService.GetArrCalendarAsync<LidarrCalendarDto>(ArrServiceType.Lidarr, startDate, endDate).GetAwaiter().GetResult() ?? [];
         }
 
         protected override IOrderedEnumerable<LidarrCalendarDto> FilterAndSortItems(LidarrCalendarDto[] items)
@@ -59,7 +50,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             ArrImageDto? albumImage = calendarItem.Images?.FirstOrDefault(img => 
                 string.Equals(img.CoverType, "cover", StringComparison.OrdinalIgnoreCase));
 
-            Dictionary<string, string> providerIds = new Dictionary<string, string>()
+            Dictionary<string, string> providerIds = new()
             {
                 { "LidarrAlbumId", calendarItem.Id.ToString() },
                 { "FormattedDate", countdownText },

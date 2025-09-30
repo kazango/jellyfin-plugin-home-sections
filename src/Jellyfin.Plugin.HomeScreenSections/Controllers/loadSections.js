@@ -119,7 +119,6 @@
             var contentType, title, secondaryInfo, posterUrl, cardClass, cardScalableClass, cardShapeClass = 'overflowPortraitCard', cardPadderClass = 'cardPadder-overflowPortrait';
 
             if (item.Type === 'Episode' || item.ProviderIds.SonarrSeriesId) {
-                // TV Show/Episode content
                 contentType = 'show';
                 title = item.SeriesName || item.Name || 'Unknown Series';
                 secondaryInfo = item.ProviderIds.EpisodeInfo || '';
@@ -127,14 +126,12 @@
                 cardClass = 'upcoming-show-card';
                 cardScalableClass = 'upcomingShowCard';
             } else if (item.Type === 'Movie' || item.ProviderIds.RadarrMovieId) {
-                // Movie content
                 contentType = 'movie';
                 title = item.Name || 'Unknown Movie';
                 posterUrl = item.ProviderIds.RadarrPoster || '';
                 cardClass = 'upcoming-movie-card';
                 cardScalableClass = 'upcomingMovieCard';
             } else if (item.Type === 'MusicAlbum' || item.ProviderIds.LidarrArtistId) {
-                // Music Album content
                 contentType = 'music';
                 title = item.Name || 'Unknown Album';
                 secondaryInfo = item.Overview || '';
@@ -145,7 +142,6 @@
                 cardPadderClass = 'cardPadder-square';
             }
             else if (item.Type === 'Book' || item.ProviderIds.ReadarrBookId) {
-                // Book content
                 contentType = 'book';
                 title = item.Name || 'Unknown Book';
                 secondaryInfo = item.Overview || '';

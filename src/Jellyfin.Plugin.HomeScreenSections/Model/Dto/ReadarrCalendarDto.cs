@@ -28,7 +28,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Model.Dto
         [JsonPropertyName("images")]
         public ArrImageDto[]? Images { get; set; }
 
-        // Helper property to check if book has files (using sizeOnDisk like Lidarr)
+        // Helper property to check if book has files
         public bool HasFile => Statistics?.SizeOnDisk > 0;
     }
 

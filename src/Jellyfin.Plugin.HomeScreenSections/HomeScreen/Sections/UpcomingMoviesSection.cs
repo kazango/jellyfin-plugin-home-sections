@@ -1,4 +1,3 @@
-using Jellyfin.Data.Enums;
 using Jellyfin.Plugin.HomeScreenSections.Configuration;
 using Jellyfin.Plugin.HomeScreenSections.Library;
 using Jellyfin.Plugin.HomeScreenSections.Model.Dto;
@@ -6,27 +5,20 @@ using Jellyfin.Plugin.HomeScreenSections.Services;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Dto;
-using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Querying;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
-    public class UpcomingMoviesSection : UpcomingSectionBase<RadarrCalendarDto>
+    public class UpcomingMoviesSection(
+        IUserManager userManager,
+        IDtoService dtoService,
+        ArrApiService arrApiService,
+        ILogger<UpcomingMoviesSection> logger) : UpcomingSectionBase<RadarrCalendarDto>(userManager, dtoService, arrApiService, logger)
     {
         public override string? Section => "UpcomingMovies";
         
         public override string? DisplayText { get; set; } = "Upcoming Movies";
 
-        public UpcomingMoviesSection(
-            IUserManager userManager,
-            IDtoService dtoService,
-            ArrApiService arrApiService,
-            ILogger<UpcomingMoviesSection> logger)
-            : base(userManager, dtoService, arrApiService, logger)
-        {
-        }
         protected override (string? url, string? apiKey) GetServiceConfiguration(PluginConfiguration config)
         {
             return (config.RadarrUrl, config.RadarrApiKey);
@@ -39,7 +31,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected override RadarrCalendarDto[] GetCalendarItems(DateTime startDate, DateTime endDate)
         {
-            return ArrApiService.GetArrCalendarAsync<RadarrCalendarDto>(ArrServiceType.Radarr, startDate, endDate).GetAwaiter().GetResult() ?? Array.Empty<RadarrCalendarDto>();
+            return ArrApiService.GetArrCalendarAsync<RadarrCalendarDto>(ArrServiceType.Radarr, startDate, endDate).GetAwaiter().GetResult() ?? [];
         }
 
         protected override IOrderedEnumerable<RadarrCalendarDto> FilterAndSortItems(RadarrCalendarDto[] items)
@@ -60,7 +52,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 string.Equals(img.CoverType, "poster", StringComparison.OrdinalIgnoreCase));
 
             // Create provider IDs to store external image URL and metadata
-            Dictionary<string, string> providerIds = new Dictionary<string, string>
+            Dictionary<string, string> providerIds = new()
             {
                 { "RadarrMovieId", calendarItem.Id.ToString() },
                 { "YearInfo", yearInfo },
