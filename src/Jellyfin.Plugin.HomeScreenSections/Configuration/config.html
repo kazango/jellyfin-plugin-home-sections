@@ -47,7 +47,7 @@
                 <legend style="padding-bottom:10px; font-weight: bolder; font-size: 1.2em;">Upcoming Section Settings</legend>
                 <div style="padding-left: .5em;">
                     <div class="inputContainer">
-                        <label class="inputLabel inputLabelUnfocused" for="upcomingTimeframeValue">Upcoming Shows Timeframe</label>
+                        <label class="inputLabel inputLabelUnfocused" for="upcomingShowsTimeframeValue">Upcoming Shows Timeframe</label>
                         <div style="display: flex; gap: 10px; align-items: center;">
                             <input is="emby-input" type="number" id="upcomingShowsTimeframeValue" min="1" max="999" style="flex: 0 0 100px;" />
                             <select is="emby-select" id="upcomingShowsTimeframeUnit" class="emby-select-withcolor emby-select" style="flex: 0 0 120px;">
@@ -508,12 +508,12 @@
                         
                         document.querySelector('#upcomingShowsTimeframeValue').value = config.UpcomingShowsTimeframeValue || 1;
                         document.querySelector('#upcomingShowsTimeframeUnit').value = config.UpcomingShowsTimeframeUnit || 'Weeks';
-                        document.querySelector('#upcomingMoviesTimeframeValue').value = config.UpcomingMoviesTimeframeValue || 1;
+                        document.querySelector('#upcomingMoviesTimeframeValue').value = config.UpcomingMoviesTimeframeValue || 3;
                         document.querySelector('#upcomingMoviesTimeframeUnit').value = config.UpcomingMoviesTimeframeUnit || 'Months';
-                        document.querySelector('#upcomingMusicTimeframeValue').value = config.UpcomingMusicTimeframeValue || 2;
+                        document.querySelector('#upcomingMusicTimeframeValue').value = config.UpcomingMusicTimeframeValue || 6;
                         document.querySelector('#upcomingMusicTimeframeUnit').value = config.UpcomingMusicTimeframeUnit || 'Months';
-                        document.querySelector('#upcomingBooksTimeframeValue').value = config.UpcomingBooksTimeframeValue || 3;
-                        document.querySelector('#upcomingBooksTimeframeUnit').value = config.UpcomingBooksTimeframeUnit || 'Months';
+                        document.querySelector('#upcomingBooksTimeframeValue').value = config.UpcomingBooksTimeframeValue || 1;
+                        document.querySelector('#upcomingBooksTimeframeUnit').value = config.UpcomingBooksTimeframeUnit || 'Years';
                         document.querySelector('#dateFormat').value = config.DateFormat || 'YYYY/MM/DD';
                         document.querySelector('#dateDelimiter').value = config.DateDelimiter || '/';
 
