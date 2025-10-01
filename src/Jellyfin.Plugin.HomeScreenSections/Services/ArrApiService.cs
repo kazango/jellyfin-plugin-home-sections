@@ -94,10 +94,10 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
         {
             return serviceType switch
             {
-                ArrServiceType.Sonarr => (Config.SonarrUrl, Config.SonarrApiKey, "Sonarr"),
-                ArrServiceType.Radarr => (Config.RadarrUrl, Config.RadarrApiKey, "Radarr"),
-                ArrServiceType.Lidarr => (Config.LidarrUrl, Config.LidarrApiKey, "Lidarr"),
-                ArrServiceType.Readarr => (Config.ReadarrUrl, Config.ReadarrApiKey, "Readarr"),
+                ArrServiceType.Sonarr => (Config.Sonarr.Url, Config.Sonarr.ApiKey, "Sonarr"),
+                ArrServiceType.Radarr => (Config.Radarr.Url, Config.Radarr.ApiKey, "Radarr"),
+                ArrServiceType.Lidarr => (Config.Lidarr.Url, Config.Lidarr.ApiKey, "Lidarr"),
+                ArrServiceType.Readarr => (Config.Readarr.Url, Config.Readarr.ApiKey, "Readarr"),
                 _ => throw new ArgumentOutOfRangeException(nameof(serviceType), serviceType, "Unsupported service type")
             };
         }

@@ -26,37 +26,21 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         
         public string? DefaultBooksLibraryId { get; set; } = "";
 
-        public string? SonarrUrl { get; set; } = "";
+        public class ArrConfig
+        {
+            public string? ApiKey { get; set; } = "";
+            public string? Url { get; set; } = "";
+            public int UpcomingTimeframeValue { get; set; }
+            public TimeframeUnit UpcomingTimeframeUnit { get; set; }
+        }
 
-        public string? SonarrApiKey { get; set; } = "";
+        public ArrConfig Sonarr { get; set; } = new ArrConfig { UpcomingTimeframeValue = 1, UpcomingTimeframeUnit = TimeframeUnit.Weeks };
 
-        public string? RadarrUrl { get; set; } = "";
+        public ArrConfig Radarr { get; set; } = new ArrConfig { UpcomingTimeframeValue = 3, UpcomingTimeframeUnit = TimeframeUnit.Months };
 
-        public string? RadarrApiKey { get; set; } = "";
+        public ArrConfig Lidarr { get; set; } = new ArrConfig { UpcomingTimeframeValue = 6, UpcomingTimeframeUnit = TimeframeUnit.Months };
 
-        public string? LidarrUrl { get; set; } = "";
-
-        public string? LidarrApiKey { get; set; } = "";
-
-        public string? ReadarrUrl { get; set; } = "";
-
-        public string? ReadarrApiKey { get; set; } = "";
-
-        public int UpcomingShowsTimeframeValue { get; set; } = 1;
-
-        public TimeframeUnit UpcomingShowsTimeframeUnit { get; set; } = TimeframeUnit.Weeks;
-
-        public int UpcomingMoviesTimeframeValue { get; set; } = 1;
-
-        public TimeframeUnit UpcomingMoviesTimeframeUnit { get; set; } = TimeframeUnit.Months;
-
-        public int UpcomingMusicTimeframeValue { get; set; } = 6;
-
-        public TimeframeUnit UpcomingMusicTimeframeUnit { get; set; } = TimeframeUnit.Months;
-
-        public int UpcomingBooksTimeframeValue { get; set; } = 1;
-
-        public TimeframeUnit UpcomingBooksTimeframeUnit { get; set; } = TimeframeUnit.Years;
+        public ArrConfig Readarr { get; set; } = new ArrConfig { UpcomingTimeframeValue = 1, UpcomingTimeframeUnit = TimeframeUnit.Years };
 
         public string DateFormat { get; set; } = "YYYY/MM/DD";
 

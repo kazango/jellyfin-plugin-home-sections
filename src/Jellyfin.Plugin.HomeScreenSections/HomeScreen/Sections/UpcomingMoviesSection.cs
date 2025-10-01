@@ -21,12 +21,12 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected override (string? url, string? apiKey) GetServiceConfiguration(PluginConfiguration config)
         {
-            return (config.RadarrUrl, config.RadarrApiKey);
+            return (config.Radarr.Url, config.Radarr.ApiKey);
         }
 
         protected override (int value, TimeframeUnit unit) GetTimeframeConfiguration(PluginConfiguration config)
         {
-            return (config.UpcomingMoviesTimeframeValue, config.UpcomingMoviesTimeframeUnit);
+            return (config.Radarr.UpcomingTimeframeValue, config.Radarr.UpcomingTimeframeUnit);
         }
 
         protected override RadarrCalendarDto[] GetCalendarItems(DateTime startDate, DateTime endDate)

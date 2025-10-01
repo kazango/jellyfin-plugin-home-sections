@@ -349,6 +349,35 @@
             // Plugin assembly name for transformation cache system
             const pluginAssemblyName = 'Jellyfin.Plugin.HomeScreenSections';
 
+            // Centralized Arr service configuration
+            const arrServiceConfigs = [
+                { name: 'Sonarr', timeframePrefix: 'upcomingShows', defaultValue: 1, defaultUnit: 'Weeks' },
+                { name: 'Radarr', timeframePrefix: 'upcomingMovies', defaultValue: 3, defaultUnit: 'Months' },
+                { name: 'Lidarr', timeframePrefix: 'upcomingMusic', defaultValue: 6, defaultUnit: 'Months' },
+                { name: 'Readarr', timeframePrefix: 'upcomingBooks', defaultValue: 1, defaultUnit: 'Years' }
+            ];
+
+            function createArrConfig(serviceConfig) {
+                const timeframeValueSelector = '#' + serviceConfig.timeframePrefix + 'TimeframeValue';
+                return {
+                    Url: document.querySelector('[data-id=txt' + serviceConfig.name + 'Url]').value,
+                    ApiKey: document.querySelector('[data-id=txt' + serviceConfig.name + 'ApiKey]').value,
+                    UpcomingTimeframeValue: parseInt(document.querySelector(timeframeValueSelector).value) || serviceConfig.defaultValue,
+                    UpcomingTimeframeUnit: document.querySelector('#' + serviceConfig.timeframePrefix + 'TimeframeUnit').value
+                };
+            }
+
+            function loadArrConfig(serviceConfig, config) {
+                const arrConfig = config[serviceConfig.name];
+                const timeframeValueSelector = '#' + serviceConfig.timeframePrefix + 'TimeframeValue';
+                const timeframeUnitSelector = '#' + serviceConfig.timeframePrefix + 'TimeframeUnit';
+                
+                document.querySelector('[data-id=txt' + serviceConfig.name + 'Url]').value = arrConfig?.Url || '';
+                document.querySelector('[data-id=txt' + serviceConfig.name + 'ApiKey]').value = arrConfig?.ApiKey || '';
+                document.querySelector(timeframeValueSelector).value = arrConfig?.UpcomingTimeframeValue || serviceConfig.defaultValue;
+                document.querySelector(timeframeUnitSelector).value = arrConfig?.UpcomingTimeframeUnit || serviceConfig.defaultUnit;
+            }
+
             function setupTabs() {
                 const tabs = document.querySelectorAll('.jellyfin-tab-button');
                 const tabContents = document.querySelectorAll('.jellyfin-tab-content');
@@ -443,22 +472,10 @@
                     DefaultTVShowsLibraryId: document.querySelector('#defaultTVShowsLibrary').value,
                     DefaultMusicLibraryId: document.querySelector('#defaultMusicLibrary').value,
                     DefaultBooksLibraryId: document.querySelector('#defaultBooksLibrary').value,
-                    SonarrUrl: document.querySelector('[data-id=txtSonarrUrl]').value,
-                    SonarrApiKey: document.querySelector('[data-id=txtSonarrApiKey]').value,
-                    RadarrUrl: document.querySelector('[data-id=txtRadarrUrl]').value,
-                    RadarrApiKey: document.querySelector('[data-id=txtRadarrApiKey]').value,
-                    LidarrUrl: document.querySelector('[data-id=txtLidarrUrl]').value,
-                    LidarrApiKey: document.querySelector('[data-id=txtLidarrApiKey]').value,
-                    ReadarrUrl: document.querySelector('[data-id=txtReadarrUrl]').value,
-                    ReadarrApiKey: document.querySelector('[data-id=txtReadarrApiKey]').value,
-                    UpcomingShowsTimeframeValue: parseInt(document.querySelector('#upcomingShowsTimeframeValue').value) || 1,
-                    UpcomingShowsTimeframeUnit: document.querySelector('#upcomingShowsTimeframeUnit').value,
-                    UpcomingMoviesTimeframeValue: parseInt(document.querySelector('#upcomingMoviesTimeframeValue').value) || 1,
-                    UpcomingMoviesTimeframeUnit: document.querySelector('#upcomingMoviesTimeframeUnit').value,
-                    UpcomingMusicTimeframeValue: parseInt(document.querySelector('#upcomingMusicTimeframeValue').value) || 2,
-                    UpcomingMusicTimeframeUnit: document.querySelector('#upcomingMusicTimeframeUnit').value,
-                    UpcomingBooksTimeframeValue: parseInt(document.querySelector('#upcomingBooksTimeframeValue').value) || 1,
-                    UpcomingBooksTimeframeUnit: document.querySelector('#upcomingBooksTimeframeUnit').value,
+                    ...Object.fromEntries(arrServiceConfigs.map(serviceConfig => [
+                        serviceConfig.name, 
+                        createArrConfig(serviceConfig)
+                    ])),
                     DateFormat: document.querySelector('#dateFormat').value,
                     DateDelimiter: document.querySelector('#dateDelimiter').value,
                     DeveloperMode: document.querySelector('#globalDeveloperMode').checked,
@@ -497,23 +514,9 @@
                         document.querySelector('[data-id=txtJellyseerrApiKey]').value = config.JellyseerrApiKey;
                         document.querySelector('[data-id=txtJellyseerrPreferredLanguages]').value = config.JellyseerrPreferredLanguages;
                         
-                        document.querySelector('[data-id=txtSonarrUrl]').value = config.SonarrUrl || '';
-                        document.querySelector('[data-id=txtSonarrApiKey]').value = config.SonarrApiKey || '';
-                        document.querySelector('[data-id=txtRadarrUrl]').value = config.RadarrUrl || '';
-                        document.querySelector('[data-id=txtRadarrApiKey]').value = config.RadarrApiKey || '';
-                        document.querySelector('[data-id=txtLidarrUrl]').value = config.LidarrUrl || '';
-                        document.querySelector('[data-id=txtLidarrApiKey]').value = config.LidarrApiKey || '';
-                        document.querySelector('[data-id=txtReadarrUrl]').value = config.ReadarrUrl || '';
-                        document.querySelector('[data-id=txtReadarrApiKey]').value = config.ReadarrApiKey || '';
-                        
-                        document.querySelector('#upcomingShowsTimeframeValue').value = config.UpcomingShowsTimeframeValue || 1;
-                        document.querySelector('#upcomingShowsTimeframeUnit').value = config.UpcomingShowsTimeframeUnit || 'Weeks';
-                        document.querySelector('#upcomingMoviesTimeframeValue').value = config.UpcomingMoviesTimeframeValue || 3;
-                        document.querySelector('#upcomingMoviesTimeframeUnit').value = config.UpcomingMoviesTimeframeUnit || 'Months';
-                        document.querySelector('#upcomingMusicTimeframeValue').value = config.UpcomingMusicTimeframeValue || 6;
-                        document.querySelector('#upcomingMusicTimeframeUnit').value = config.UpcomingMusicTimeframeUnit || 'Months';
-                        document.querySelector('#upcomingBooksTimeframeValue').value = config.UpcomingBooksTimeframeValue || 1;
-                        document.querySelector('#upcomingBooksTimeframeUnit').value = config.UpcomingBooksTimeframeUnit || 'Years';
+                        arrServiceConfigs.forEach(serviceConfig => {
+                            loadArrConfig(serviceConfig, config);
+                        });
                         document.querySelector('#dateFormat').value = config.DateFormat || 'YYYY/MM/DD';
                         document.querySelector('#dateDelimiter').value = config.DateDelimiter || '/';
 
