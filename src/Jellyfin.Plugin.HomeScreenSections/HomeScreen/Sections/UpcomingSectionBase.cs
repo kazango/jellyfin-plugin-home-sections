@@ -80,20 +80,22 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         protected string CalculateCountdown(DateTime releaseDate, PluginConfiguration config)
         {
             DateTime now = DateTime.Now;
-            TimeSpan timeSpan = releaseDate.ToLocalTime() - now;
-            int totalDays = (int)Math.Ceiling(timeSpan.TotalDays);
+            DateTime releaseDateLocal = releaseDate.ToLocalTime();
+            // Check if it's the same date first to avoid Math.Ceiling rounding up same-day releases
+            bool isToday = releaseDateLocal.Date == now.Date;
+            TimeSpan timeSpan = releaseDateLocal - now;
+            int totalDays = isToday ? 0 : (int)Math.Ceiling(timeSpan.TotalDays);
             
             string countdownText = totalDays switch
             {
-            <= 0 => "Today!",
-            < 7 => $"{totalDays} {(totalDays == 1 ? "Day" : "Days")}",
-            < 30 => FormatTimeUnit(totalDays / 7, totalDays % 7, "Week", "Day"),
-            < 365 => FormatTimeUnit(totalDays / 30, (totalDays % 30) / 7, "Month", "Week"),
-            _ => FormatTimeUnit(totalDays / 365, (totalDays % 365) / 30, "Year", "Month")
+                <= 0 => "Today!",
+                < 7 => $"{totalDays} {(totalDays == 1 ? "Day" : "Days")}",
+                < 30 => FormatTimeUnit(totalDays / 7, totalDays % 7, "Week", "Day"),
+                < 365 => FormatTimeUnit(totalDays / 30, (totalDays % 30) / 7, "Month", "Week"),
+                _ => FormatTimeUnit(totalDays / 365, (totalDays % 365) / 30, "Year", "Month")
             };
 
-            string formattedDate = ArrApiService.FormatDate(releaseDate.ToLocalTime(), config.DateFormat, config.DateDelimiter);
-            return $"{countdownText} - {formattedDate}";
+            return $"{countdownText} - {ArrApiService.FormatDate(releaseDateLocal, config.DateFormat, config.DateDelimiter)}";
         }
 
         private static string FormatTimeUnit(int primaryValue, int secondaryValue, string primaryUnit, string secondaryUnit)
