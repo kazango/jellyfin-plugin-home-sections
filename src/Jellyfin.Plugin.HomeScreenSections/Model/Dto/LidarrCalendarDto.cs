@@ -2,19 +2,10 @@ using System.Text.Json.Serialization;
 
 namespace Jellyfin.Plugin.HomeScreenSections.Model.Dto
 {
-    public class LidarrCalendarDto
+    public class LidarrCalendarDto : ArrDtoBase
     {
-        [JsonPropertyName("id")]
-        public int Id { get; set; }
-        
-        [JsonPropertyName("title")]
-        public string? Title { get; set; }
-
         [JsonPropertyName("releaseDate")]
         public DateTime? ReleaseDate { get; set; }
-
-        [JsonPropertyName("monitored")]
-        public bool Monitored { get; set; }
 
         [JsonPropertyName("artist")]
         public LidarrArtistDto? Artist { get; set; }
@@ -24,9 +15,6 @@ namespace Jellyfin.Plugin.HomeScreenSections.Model.Dto
 
         [JsonPropertyName("statistics")]
         public LidarrStatisticsDto? Statistics { get; set; }
-
-        [JsonPropertyName("images")]
-        public ArrImageDto[]? Images { get; set; }
 
         // Helper property to check if album has files
         public bool HasFile => Statistics?.SizeOnDisk > 0;

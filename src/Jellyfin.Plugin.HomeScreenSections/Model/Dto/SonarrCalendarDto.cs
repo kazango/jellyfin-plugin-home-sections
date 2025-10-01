@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Jellyfin.Plugin.HomeScreenSections.Model.Dto
 {
-    public class SonarrCalendarDto
+    public class SonarrCalendarDto : ArrDtoBase
     {
         [JsonPropertyName("seriesId")]
         public int SeriesId { get; set; }
@@ -13,23 +13,14 @@ namespace Jellyfin.Plugin.HomeScreenSections.Model.Dto
         [JsonPropertyName("episodeNumber")]
         public int EpisodeNumber { get; set; }
 
-        [JsonPropertyName("title")]
-        public string? Title { get; set; }
-
         [JsonPropertyName("airDateUtc")]
         public DateTime? AirDateUtc { get; set; }
 
         [JsonPropertyName("hasFile")]
         public bool HasFile { get; set; }
 
-        [JsonPropertyName("monitored")]
-        public bool Monitored { get; set; }
-
         [JsonPropertyName("series")]
         public SonarrSeriesDto? Series { get; set; }
-
-        [JsonPropertyName("id")]
-        public int Id { get; set; }
     }
 
     public class SonarrSeriesDto
