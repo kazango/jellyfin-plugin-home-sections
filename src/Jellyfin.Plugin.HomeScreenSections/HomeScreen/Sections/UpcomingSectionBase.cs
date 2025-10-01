@@ -79,12 +79,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
         protected string CalculateCountdown(DateTime releaseDate, PluginConfiguration config)
         {
-            DateTime now = DateTime.Now;
             DateTime releaseDateLocal = releaseDate.ToLocalTime();
-            // Check if it's the same date first to avoid Math.Ceiling rounding up same-day releases
-            bool isToday = releaseDateLocal.Date == now.Date;
-            TimeSpan timeSpan = releaseDateLocal - now;
-            int totalDays = isToday ? 0 : (int)Math.Ceiling(timeSpan.TotalDays);
+            // Calculate the difference in calendar days
+            int totalDays = (releaseDateLocal.Date - DateTime.Now.Date).Days;
             
             string countdownText = totalDays switch
             {
