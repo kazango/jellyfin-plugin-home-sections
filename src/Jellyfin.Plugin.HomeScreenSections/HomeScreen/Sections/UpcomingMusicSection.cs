@@ -41,6 +41,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 .OrderBy(item => item.ReleaseDate);
         }
 
+        protected override string GetFallbackCoverUrl(LidarrCalendarDto missingItem)
+        {
+            return $"https://placehold.co/300x300/{GetRandomBgColor()}/FFF?text={Uri.EscapeDataString($"{missingItem.Title}\n{missingItem.Artist?.ArtistName}\nImage Not Found")}";
+        }
+
         protected override BaseItemDto CreateDto(LidarrCalendarDto calendarItem, PluginConfiguration config)
         {
 

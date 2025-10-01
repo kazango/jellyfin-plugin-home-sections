@@ -108,20 +108,14 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             return primaryText;
         }
 
-        protected string GetFallbackCoverUrl(T missingItem)
+        protected static string GetRandomBgColor()
         {
-            (string? size, string? title, string? additionalInfo) = missingItem switch
-            {
-                SonarrCalendarDto sonarr => ("250x400", sonarr.Series?.Title, sonarr.Title),
-                RadarrCalendarDto radarr => ("250x400", radarr.Title, null),
-                LidarrCalendarDto lidarr => ("300x300", lidarr.Title, lidarr.Artist?.ArtistName),
-                ReadarrCalendarDto readarr => ("250x400", readarr.Title, readarr.Author?.AuthorName),
-                _ => ("400x250", "Unknown Item", null)
-            };
-            // Generate a darker random color for good contrast with white text
-            string randomBgColor = $"{Random.Shared.Next(0, 128):X2}{Random.Shared.Next(0, 128):X2}{Random.Shared.Next(0, 128):X2}";
-            string formattedText = string.IsNullOrEmpty(additionalInfo) ? title ?? "Unknown Item" : $"{title}\n{additionalInfo}" + "\nImage Not Found";
-            return $"https://placehold.co/{size}/{randomBgColor}/FFF?text={Uri.EscapeDataString(formattedText)}";
+            return $"{Random.Shared.Next(0, 128):X2}{Random.Shared.Next(0, 128):X2}{Random.Shared.Next(0, 128):X2}";
+        }
+
+        protected virtual string GetFallbackCoverUrl(T missingItem)
+        {
+            return $"https://placehold.co/250x400/{GetRandomBgColor()}/FFF?text={Uri.EscapeDataString("Unknown Item\nImage Not Found")}";
         }
 
         // Abstract methods that subclasses must implement

@@ -41,6 +41,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 .OrderBy(item => item.AirDateUtc);
         }
 
+        protected override string GetFallbackCoverUrl(SonarrCalendarDto missingItem)
+        {
+            return $"https://placehold.co/250x400/{GetRandomBgColor()}/FFF?text={Uri.EscapeDataString($"{missingItem.Series?.Title}\n{missingItem.Title}\nImage Not Found")}";
+        }
+
         protected override BaseItemDto CreateDto(SonarrCalendarDto calendarItem, PluginConfiguration config)
         {
             DateTime airDate = calendarItem.AirDateUtc ?? DateTime.Now;
