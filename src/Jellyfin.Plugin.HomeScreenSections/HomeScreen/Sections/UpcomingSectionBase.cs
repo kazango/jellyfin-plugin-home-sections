@@ -11,11 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
-    public abstract class UpcomingSectionBase<T>(
-        IUserManager userManager,
-        IDtoService dtoService,
-        ArrApiService arrApiService,
-        ILogger logger) : IHomeScreenSection where T : class
+    public abstract class UpcomingSectionBase<T> : IHomeScreenSection where T : class
     {
         public abstract string? Section { get; }
         public abstract string? DisplayText { get; set; }
@@ -24,10 +20,18 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
         public string? AdditionalData { get; set; }
         public object? OriginalPayload { get; set; } = null;
         
-        protected readonly IUserManager UserManager = userManager;
-        protected readonly IDtoService DtoService = dtoService;
-        protected readonly ArrApiService ArrApiService = arrApiService;
-        protected readonly ILogger Logger = logger;
+        protected IUserManager UserManager { get; }
+        protected IDtoService DtoService { get; }
+        protected ArrApiService ArrApiService { get; }
+        protected ILogger Logger { get; }
+
+        protected UpcomingSectionBase(IUserManager userManager, IDtoService dtoService, ArrApiService arrApiService, ILogger logger)
+        {
+            UserManager = userManager;
+            DtoService = dtoService;
+            ArrApiService = arrApiService;
+            Logger = logger;
+        }
 
         public QueryResult<BaseItemDto> GetResults(HomeScreenSectionPayload payload, IQueryCollection queryCollection)
         {

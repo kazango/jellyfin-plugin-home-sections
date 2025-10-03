@@ -9,15 +9,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 {
-    public class UpcomingShowsSection(
-        IUserManager userManager,
-        IDtoService dtoService,
-        ArrApiService arrApiService,
-        ILogger<UpcomingShowsSection> logger) : UpcomingSectionBase<SonarrCalendarDto>(userManager, dtoService, arrApiService, logger)
+    public class UpcomingShowsSection : UpcomingSectionBase<SonarrCalendarDto>
     {
         public override string? Section => "UpcomingShows";
         
         public override string? DisplayText { get; set; } = "Upcoming Shows";
+
+        public UpcomingShowsSection(IUserManager userManager, IDtoService dtoService, ArrApiService arrApiService, ILogger<UpcomingShowsSection> logger)
+            : base(userManager, dtoService, arrApiService, logger)
+        {
+        }
 
         protected override (string? url, string? apiKey) GetServiceConfiguration(PluginConfiguration config)
         {
