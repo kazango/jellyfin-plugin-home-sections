@@ -43,9 +43,118 @@
                 </div>
             </fieldset>
 
+            <fieldset class="verticalSection-extrabottompadding">
+                <legend style="padding-bottom:10px; font-weight: bolder; font-size: 1.2em;">Upcoming Section Settings</legend>
+                <div style="padding-left: .5em;">
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="upcomingShowsTimeframeValue">Upcoming Shows Timeframe</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input is="emby-input" type="number" id="upcomingShowsTimeframeValue" min="1" max="999" style="flex: 0 0 100px;" />
+                            <select is="emby-select" id="upcomingShowsTimeframeUnit" class="emby-select-withcolor emby-select" style="flex: 0 0 120px;">
+                                <option value="Days">Days</option>
+                                <option value="Weeks">Weeks</option>
+                                <option value="Months">Months</option>
+                                <option value="Years">Years</option>
+                            </select>
+                        </div>
+                        <div class="fieldDescription">How far in the future should we look for upcoming episodes?</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="upcomingMoviesTimeframeValue">Upcoming Movies Timeframe</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input is="emby-input" type="number" id="upcomingMoviesTimeframeValue" min="1" max="999" style="flex: 0 0 100px;" />
+                            <select is="emby-select" id="upcomingMoviesTimeframeUnit" class="emby-select-withcolor emby-select" style="flex: 0 0 120px;">
+                                <option value="Days">Days</option>
+                                <option value="Weeks">Weeks</option>
+                                <option value="Months">Months</option>
+                                <option value="Years">Years</option>
+                            </select>
+                        </div>
+                        <div class="fieldDescription">How far in the future should we look for upcoming movies?</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="upcomingMusicTimeframeValue">Upcoming Music Timeframe</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input is="emby-input" type="number" id="upcomingMusicTimeframeValue" min="1" max="999" style="flex: 0 0 100px;" />
+                            <select is="emby-select" id="upcomingMusicTimeframeUnit" class="emby-select-withcolor emby-select" style="flex: 0 0 120px;">
+                                <option value="Days">Days</option>
+                                <option value="Weeks">Weeks</option>
+                                <option value="Months">Months</option>
+                                <option value="Years">Years</option>
+                            </select>
+                        </div>
+                        <div class="fieldDescription">How far in the future should we look for upcoming music releases?</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="upcomingBooksTimeframeValue">Upcoming Books Timeframe</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input is="emby-input" type="number" id="upcomingBooksTimeframeValue" min="1" max="999" style="flex: 0 0 100px;" />
+                            <select is="emby-select" id="upcomingBooksTimeframeUnit" class="emby-select-withcolor emby-select" style="flex: 0 0 120px;">
+                                <option value="Days">Days</option>
+                                <option value="Weeks">Weeks</option>
+                                <option value="Months">Months</option>
+                                <option value="Years">Years</option>
+                            </select>
+                        </div>
+                        <div class="fieldDescription">How far in the future should we look for upcoming book releases?</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="dateFormat">Date Format</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <select is="emby-select" id="dateFormat" class="emby-select-withcolor emby-select" style="flex: 0 0 150px;">
+                                <option value="YYYY/MM/DD">YYYY/MM/DD</option>
+                                <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                <option value="DD/MM">DD/MM</option>
+                                <option value="MM/DD">MM/DD</option>
+                            </select>
+                            <input is="emby-input" type="text" id="dateDelimiter" maxlength="3" style="flex: 0 0 60px;" placeholder="/" />
+                        </div>
+                        <div class="fieldDescription">How should dates be displayed?</div>
+                    </div>
+                </div>
+            </fieldset>
+
                 <fieldset class="verticalSection-extrabottompadding">
                     <legend style="padding-bottom:10px; font-weight: bolder; font-size: 1.2em;">Advanced Settings</legend>
                     <div style="padding-left: .5em;">
+                        <details style="margin-bottom: 1em;">
+                            <summary style="cursor: pointer; font-weight: bold;">*arr API Settings</summary>
+                            <div style="padding-top: 1em;">
+                                <div class="inputContainer">
+                                    <input is="emby-input" type="text" data-id="txtSonarrUrl" label="Sonarr URL" />
+                                    <div class="fieldDescription">Complete URL for Sonarr to use for upcoming shows sections.</div>
+                                </div>
+                                <div class="inputContainer">
+                                    <input is="emby-input" type="password" data-id="txtSonarrApiKey" label="Sonarr API Key" />
+                                    <div class="fieldDescription">API Key for Sonarr instance.</div>
+                                </div>
+                                <div class="inputContainer">
+                                    <input is="emby-input" type="text" data-id="txtRadarrUrl" label="Radarr URL" />
+                                    <div class="fieldDescription">Complete URL for Radarr to use for upcoming movies sections.</div>
+                                </div>
+                                <div class="inputContainer">
+                                    <input is="emby-input" type="password" data-id="txtRadarrApiKey" label="Radarr API Key" />
+                                    <div class="fieldDescription">API Key for Radarr instance.</div>
+                                </div>
+                                <div class="inputContainer">
+                                    <input is="emby-input" type="text" data-id="txtLidarrUrl" label="Lidarr URL" />
+                                    <div class="fieldDescription">Complete URL for Lidarr to use for upcoming music sections.</div>
+                                </div>
+                                <div class="inputContainer">
+                                    <input is="emby-input" type="password" data-id="txtLidarrApiKey" label="Lidarr API Key" />
+                                    <div class="fieldDescription">API Key for Lidarr instance.</div>
+                                </div>
+                                <div class="inputContainer">
+                                    <input is="emby-input" type="text" data-id="txtReadarrUrl" label="Readarr URL" />
+                                    <div class="fieldDescription">Complete URL for Readarr to use for upcoming books sections.</div>
+                                </div>
+                                <div class="inputContainer">
+                                    <input is="emby-input" type="password" data-id="txtReadarrApiKey" label="Readarr API Key" />
+                                    <div class="fieldDescription">API Key for Readarr instance.</div>
+                                </div>
+                            </div>
+                        </details>
                         <details style="margin-bottom: 1em;">
                             <summary style="cursor: pointer; font-weight: bold;">LibreTranslate</summary>
                             <div style="padding-top: 1em;">
@@ -240,6 +349,35 @@
             // Plugin assembly name for transformation cache system
             const pluginAssemblyName = 'Jellyfin.Plugin.HomeScreenSections';
 
+            // Centralized Arr service configuration
+            const arrServiceConfigs = [
+                { name: 'Sonarr', timeframePrefix: 'upcomingShows', defaultValue: 1, defaultUnit: 'Weeks' },
+                { name: 'Radarr', timeframePrefix: 'upcomingMovies', defaultValue: 3, defaultUnit: 'Months' },
+                { name: 'Lidarr', timeframePrefix: 'upcomingMusic', defaultValue: 6, defaultUnit: 'Months' },
+                { name: 'Readarr', timeframePrefix: 'upcomingBooks', defaultValue: 1, defaultUnit: 'Years' }
+            ];
+
+            function createArrConfig(serviceConfig) {
+                const timeframeValueSelector = '#' + serviceConfig.timeframePrefix + 'TimeframeValue';
+                return {
+                    Url: document.querySelector('[data-id=txt' + serviceConfig.name + 'Url]').value,
+                    ApiKey: document.querySelector('[data-id=txt' + serviceConfig.name + 'ApiKey]').value,
+                    UpcomingTimeframeValue: parseInt(document.querySelector(timeframeValueSelector).value) || serviceConfig.defaultValue,
+                    UpcomingTimeframeUnit: document.querySelector('#' + serviceConfig.timeframePrefix + 'TimeframeUnit').value
+                };
+            }
+
+            function loadArrConfig(serviceConfig, config) {
+                const arrConfig = config[serviceConfig.name];
+                const timeframeValueSelector = '#' + serviceConfig.timeframePrefix + 'TimeframeValue';
+                const timeframeUnitSelector = '#' + serviceConfig.timeframePrefix + 'TimeframeUnit';
+                
+                document.querySelector('[data-id=txt' + serviceConfig.name + 'Url]').value = arrConfig?.Url || '';
+                document.querySelector('[data-id=txt' + serviceConfig.name + 'ApiKey]').value = arrConfig?.ApiKey || '';
+                document.querySelector(timeframeValueSelector).value = arrConfig?.UpcomingTimeframeValue || serviceConfig.defaultValue;
+                document.querySelector(timeframeUnitSelector).value = arrConfig?.UpcomingTimeframeUnit || serviceConfig.defaultUnit;
+            }
+
             function setupTabs() {
                 const tabs = document.querySelectorAll('.jellyfin-tab-button');
                 const tabContents = document.querySelectorAll('.jellyfin-tab-content');
@@ -334,6 +472,12 @@
                     DefaultTVShowsLibraryId: document.querySelector('#defaultTVShowsLibrary').value,
                     DefaultMusicLibraryId: document.querySelector('#defaultMusicLibrary').value,
                     DefaultBooksLibraryId: document.querySelector('#defaultBooksLibrary').value,
+                    ...Object.fromEntries(arrServiceConfigs.map(serviceConfig => [
+                        serviceConfig.name, 
+                        createArrConfig(serviceConfig)
+                    ])),
+                    DateFormat: document.querySelector('#dateFormat').value,
+                    DateDelimiter: document.querySelector('#dateDelimiter').value,
                     DeveloperMode: document.querySelector('#globalDeveloperMode').checked,
                     CacheTimeoutSeconds: document.querySelector('[data-id=txtCacheTimeoutSeconds]').value || 86400,
                     SectionSettings: []
@@ -369,6 +513,13 @@
                         document.querySelector('[data-id=txtJellyseerrUrl]').value = config.JellyseerrUrl;
                         document.querySelector('[data-id=txtJellyseerrApiKey]').value = config.JellyseerrApiKey;
                         document.querySelector('[data-id=txtJellyseerrPreferredLanguages]').value = config.JellyseerrPreferredLanguages;
+                        
+                        arrServiceConfigs.forEach(serviceConfig => {
+                            loadArrConfig(serviceConfig, config);
+                        });
+                        document.querySelector('#dateFormat').value = config.DateFormat || 'YYYY/MM/DD';
+                        document.querySelector('#dateDelimiter').value = config.DateDelimiter || '/';
+
                         document.querySelector('#globalDeveloperMode').checked = config.DeveloperMode;
                         document.querySelector('[data-id=txtCacheTimeoutSeconds]').value = config.CacheTimeoutSeconds || 86400;
 

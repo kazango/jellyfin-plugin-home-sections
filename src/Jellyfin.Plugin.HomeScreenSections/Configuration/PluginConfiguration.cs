@@ -26,6 +26,25 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         
         public string? DefaultBooksLibraryId { get; set; } = "";
 
+        public class ArrConfig
+        {
+            public string? ApiKey { get; set; } = "";
+            public string? Url { get; set; } = "";
+            public int UpcomingTimeframeValue { get; set; }
+            public TimeframeUnit UpcomingTimeframeUnit { get; set; }
+        }
+
+        public ArrConfig Sonarr { get; set; } = new ArrConfig { UpcomingTimeframeValue = 1, UpcomingTimeframeUnit = TimeframeUnit.Weeks };
+
+        public ArrConfig Radarr { get; set; } = new ArrConfig { UpcomingTimeframeValue = 3, UpcomingTimeframeUnit = TimeframeUnit.Months };
+
+        public ArrConfig Lidarr { get; set; } = new ArrConfig { UpcomingTimeframeValue = 6, UpcomingTimeframeUnit = TimeframeUnit.Months };
+
+        public ArrConfig Readarr { get; set; } = new ArrConfig { UpcomingTimeframeValue = 1, UpcomingTimeframeUnit = TimeframeUnit.Years };
+
+        public string DateFormat { get; set; } = "YYYY/MM/DD";
+
+        public string DateDelimiter { get; set; } = "/";
         public bool DeveloperMode { get; set; } = false;
 
         public int CacheBustCounter { get; set; } = 0;
@@ -40,6 +59,14 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         Portrait,
         Landscape,
         Square
+    }
+
+    public enum TimeframeUnit
+    {
+        Days,
+        Weeks,
+        Months,
+        Years
     }
     
     public class SectionSettings

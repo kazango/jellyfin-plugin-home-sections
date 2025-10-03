@@ -41,6 +41,10 @@
             return createDiscoverCards;
         }
         
+        if (sectionKey.startsWith("Upcoming")) {
+            return createUpcomingCards;
+        }
+        
         return function(items) {
             return cardBuilder.getCardsHtml({
                 items: items,
@@ -96,6 +100,90 @@
             html += '               <a target="_blank" href="' + item.ProviderIds.JellyseerrRoot + '/' + item.SourceType + '/' + item.ProviderIds.Jellyseerr + '" class="itemAction textActionButton" title="' + date.getFullYear() + '" data-action="link">' + date.getFullYear() + '</a>';
             html += '           </bdi>';
             html += '       </div>';
+            html += '   </div>';
+            html += '</div>';
+            index++;
+        });
+        
+        return html;
+    }
+    
+    function createUpcomingCards(items) {
+        var html = '';
+        
+        var index = 0;
+        items.forEach(function (item) {
+            var formattedDate = item.ProviderIds.FormattedDate || '';
+            
+            // Determine content type and extract relevant data
+            var contentType, title, secondaryInfo, posterUrl, cardClass, cardScalableClass, cardShapeClass = 'overflowPortraitCard', cardPadderClass = 'cardPadder-overflowPortrait';
+
+            if (item.Type === 'Episode' || item.ProviderIds.SonarrSeriesId) {
+                contentType = 'show';
+                title = item.SeriesName || item.Name || 'Unknown Series';
+                secondaryInfo = item.ProviderIds.EpisodeInfo || '';
+                posterUrl = item.ProviderIds.SonarrPoster || '';
+                cardClass = 'upcoming-show-card';
+                cardScalableClass = 'upcomingShowCard';
+            } else if (item.Type === 'Movie' || item.ProviderIds.RadarrMovieId) {
+                contentType = 'movie';
+                title = item.Name || 'Unknown Movie';
+                posterUrl = item.ProviderIds.RadarrPoster || '';
+                cardClass = 'upcoming-movie-card';
+                cardScalableClass = 'upcomingMovieCard';
+            } else if (item.Type === 'MusicAlbum' || item.ProviderIds.LidarrArtistId) {
+                contentType = 'music';
+                title = item.Name || 'Unknown Album';
+                secondaryInfo = item.Overview || '';
+                posterUrl = item.ProviderIds.LidarrPoster || '';
+                cardClass = 'upcoming-music-card';
+                cardScalableClass = 'upcomingMusicCard';
+                cardShapeClass = 'overflowSquareCard';
+                cardPadderClass = 'cardPadder-square';
+            }
+            else if (item.Type === 'Book' || item.ProviderIds.ReadarrBookId) {
+                contentType = 'book';
+                title = item.Name || 'Unknown Book';
+                secondaryInfo = item.Overview || '';
+                posterUrl = item.ProviderIds.ReadarrPoster || '';
+                cardClass = 'upcoming-book-card';
+                cardScalableClass = 'upcomingBookCard';
+            }
+
+            html += '<div class="card ' + cardShapeClass + ' card-hoverable card-withuserdata ' + cardClass + '" data-index="' + index + '" data-content-type="' + contentType + '">';
+            html += '   <div class="cardBox cardBox-bottompadded">';
+            html += '       <div class="cardScalable ' + cardScalableClass + '">';
+            html += '           <div class="cardPadder ' + cardPadderClass + ' lazy-hidden-children"></div>';
+            
+            if (posterUrl) {
+                html += '           <div class="cardImageContainer coveredImage cardContent lazy blurhashed lazy-image-fadein-fast" style="background-image: url(\'' + posterUrl + '\')"></div>';
+            } else {
+                html += '           <canvas aria-hidden="true" width="20" height="20" class="blurhash-canvas lazy-hidden"></canvas>';
+            }
+            
+            html += '       </div>';
+            html += '       <div class="cardText cardTextCentered cardText-first">';
+            html += '           <bdi>';
+            html += '               <div class="itemAction textActionButton" title="' + title + '">' + title + '</div>';
+            html += '           </bdi>';
+            html += '       </div>';
+            
+            if (secondaryInfo) {
+                html += '       <div class="cardText cardTextCentered cardText-secondary">';
+                html += '           <bdi>';
+                html += '               <div class="itemAction textActionButton" title="' + secondaryInfo + '">' + secondaryInfo + '</div>';
+                html += '           </bdi>';
+                html += '       </div>';
+            }
+            
+            if (formattedDate) {
+                html += '       <div class="cardText cardTextCentered cardText-tertiary">';
+                html += '           <bdi>';
+                html += '               <div class="itemAction textActionButton" title="' + formattedDate + '">' + formattedDate + '</div>';
+                html += '           </bdi>';
+                html += '       </div>';
+            }
+            
             html += '   </div>';
             html += '</div>';
             index++;
