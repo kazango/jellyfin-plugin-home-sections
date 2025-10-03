@@ -12,11 +12,17 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
         Readarr
     }
 
-    public class ArrApiService(ILogger<ArrApiService> logger, HttpClient httpClient)
+    public class ArrApiService
     {
-        private readonly ILogger<ArrApiService> _logger = logger;
-        private readonly HttpClient _httpClient = httpClient;
+        private readonly ILogger<ArrApiService> _logger;
+        private readonly HttpClient _httpClient;
 
+        public ArrApiService(ILogger<ArrApiService> logger, HttpClient httpClient)
+        {
+            _logger = logger;
+            _httpClient = httpClient;
+        }
+        
         private static PluginConfiguration Config => HomeScreenSectionsPlugin.Instance?.Configuration ?? new PluginConfiguration();
 
         public async Task<T[]?> GetArrCalendarAsync<T>(ArrServiceType serviceType, DateTime startDate, DateTime endDate)
