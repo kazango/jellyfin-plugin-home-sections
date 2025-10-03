@@ -104,10 +104,10 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 			{
 				IEnumerable<BaseItem> collections = CollectionManagerProxy.GetCollections(user)
-					.Where(x => x.IsPlayed(user))
+					.Where(x => x.IsPlayed(user, null))
 					.Select(x =>
 					{
-						IReadOnlyList<BaseItem>? children = x.GetChildren(user, true);
+						IReadOnlyList<BaseItem>? children = x.GetChildren(user, true, null);
 
 						if (children.Any())
 						{
@@ -133,7 +133,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				IEnumerable<Series>? series = LibraryManager.GetItemList(new InternalItemsQuery
 				{
 					IncludeItemTypes = new[] { BaseItemKind.Series }
-				}).Cast<Series>().Where(x => x.IsPlayed(user));
+				}).Cast<Series>().Where(x => x.IsPlayed(user, null));
 				EpisodeEqualityComparer? eqComp = new EpisodeEqualityComparer();
 
 				IEnumerable<BaseItem?> firstEpisodes = series
@@ -145,7 +145,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				//})
 				.Select(x =>
 				{
-					return x.GetChildren(user, true).Cast<Season>().Where(y => y.IndexNumber == 1).FirstOrDefault()?.GetChildren(user, true).Cast<Episode>().Where(y => y.IndexNumber == 1 && !y.IsMissingEpisode).FirstOrDefault();
+					return x.GetChildren(user, true, null).Cast<Season>().Where(y => y.IndexNumber == 1).FirstOrDefault()?.GetChildren(user, true, null).Cast<Episode>().Where(y => y.IndexNumber == 1 && !y.IsMissingEpisode).FirstOrDefault();
 				}).Distinct(eqComp);
 
 				results.AddRange(firstEpisodes.Where(x => x != null).Cast<BaseItem>());

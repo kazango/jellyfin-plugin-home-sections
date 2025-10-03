@@ -84,11 +84,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				if (user != null)
 				{
 					IEnumerable<BoxSet>? collections = CollectionManagerProxy.GetCollections(user)
-						.Where(y => y.GetChildren(user, true).OfType<Movie>().Contains(x as Movie));
+						.Where(y => y.GetChildren(user, true, null).OfType<Movie>().Contains(x as Movie));
 
 					foreach (BoxSet? collection in collections)
 					{
-						if (collection.GetChildren(user, true).OfType<Movie>().Any(y => otherInstances?.Select(z => z.AdditionalData).Contains(y.Id.ToString()) ?? true))
+						if (collection.GetChildren(user, true, null).OfType<Movie>().Any(y => otherInstances?.Select(z => z.AdditionalData).Contains(y.Id.ToString()) ?? true))
 						{
 							return false;
 						}
