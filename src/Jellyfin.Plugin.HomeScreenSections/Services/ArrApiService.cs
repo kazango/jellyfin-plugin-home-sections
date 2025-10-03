@@ -14,13 +14,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
 
     public class ArrApiService
     {
-        private readonly ILogger<ArrApiService> _logger;
-        private readonly HttpClient _httpClient;
+        private readonly ILogger<ArrApiService> m_logger;
+        private readonly HttpClient m_httpClient;
 
         public ArrApiService(ILogger<ArrApiService> logger, HttpClient httpClient)
         {
-            _logger = logger;
-            _httpClient = httpClient;
+            m_logger = logger;
+            m_httpClient = httpClient;
         }
         
         private static PluginConfiguration Config => HomeScreenSectionsPlugin.Instance?.Configuration ?? new PluginConfiguration();
@@ -31,7 +31,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
             
             if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(apiKey))
             {
-                _logger.LogWarning("{ServiceName} URL or API key not configured", serviceName);
+                m_logger.LogWarning("{ServiceName} URL or API key not configured", serviceName);
                 return null;
             }
 
@@ -52,13 +52,13 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                 using HttpRequestMessage request = new(HttpMethod.Get, requestUrl);
                 request.Headers.Add("X-API-KEY", apiKey);
 
-                _logger.LogDebug("Fetching {ServiceName} calendar from {Url}", serviceName, requestUrl);
+                m_logger.LogDebug("Fetching {ServiceName} calendar from {Url}", serviceName, requestUrl);
 
-                HttpResponseMessage response = await _httpClient.SendAsync(request);
+                HttpResponseMessage response = await m_httpClient.SendAsync(request);
                 
                 if (!response.IsSuccessStatusCode)
                 {
-                    _logger.LogError("Failed to fetch {ServiceName} calendar. Status: {StatusCode}, Reason: {ReasonPhrase}", 
+                    m_logger.LogError("Failed to fetch {ServiceName} calendar. Status: {StatusCode}, Reason: {ReasonPhrase}", 
                         serviceName, response.StatusCode, response.ReasonPhrase);
                     return null;
                 }
@@ -67,7 +67,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                 
                 if (string.IsNullOrEmpty(jsonContent))
                 {
-                    _logger.LogWarning("Empty response from {ServiceName} calendar API", serviceName);
+                    m_logger.LogWarning("Empty response from {ServiceName} calendar API", serviceName);
                     return [];
                 }
 
@@ -76,22 +76,22 @@ namespace Jellyfin.Plugin.HomeScreenSections.Services
                     PropertyNameCaseInsensitive = true
                 });
 
-                _logger.LogDebug("Successfully fetched {Count} calendar items from {ServiceName}", calendarItems?.Length ?? 0, serviceName);
+                m_logger.LogDebug("Successfully fetched {Count} calendar items from {ServiceName}", calendarItems?.Length ?? 0, serviceName);
                 return calendarItems ?? [];
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, "HTTP error while fetching {ServiceName} calendar", serviceName);
+                m_logger.LogError(ex, "HTTP error while fetching {ServiceName} calendar", serviceName);
                 return null;
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, "JSON parsing error while processing {ServiceName} calendar response", serviceName);
+                m_logger.LogError(ex, "JSON parsing error while processing {ServiceName} calendar response", serviceName);
                 return null;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error while fetching {ServiceName} calendar", serviceName);
+                m_logger.LogError(ex, "Unexpected error while fetching {ServiceName} calendar", serviceName);
                 return null;
             }
         }
