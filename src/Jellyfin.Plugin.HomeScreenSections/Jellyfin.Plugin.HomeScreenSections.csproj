@@ -25,9 +25,9 @@
     </ItemGroup>
     
     <!-- Remove 10.11.0 Specific Code from non 10.11.0 builds -->
-    <ItemGroup Condition="'$(JellyfinVersion)' != '10.11.0-rc5'">
-        <None Include="JellyfinVersionSpecific/10.11.0-rc5/*.cs" />
-        <Compile Remove="JellyfinVersionSpecific/10.11.0-rc5/*.cs" />
+    <ItemGroup Condition="'$(JellyfinVersion)' != '10.11.0-rc8'">
+        <None Include="JellyfinVersionSpecific/10.11.0-rc8/*.cs" />
+        <Compile Remove="JellyfinVersionSpecific/10.11.0-rc8/*.cs" />
     </ItemGroup>
 
     <!-- Remove 10.11.0 Specific Code from non 10.11.0 builds -->
@@ -59,7 +59,7 @@
     </ItemGroup>
     
     <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="Exists('C:\ProgramData\Jellyfin\Server\plugins\HomeScreenSections')">
-        <Exec Condition="'$(JellyfinVersion)' == '10.11.0-rc5'" Command="xcopy $(OutDir) &quot;C:\ProgramData\Jellyfin\Server\plugins\HomeScreenSections&quot; /y" />
+        <Exec Condition="'$(JellyfinVersion)' == '10.11.0-rc8'" Command="xcopy $(OutDir) &quot;C:\ProgramData\Jellyfin\Server\plugins\HomeScreenSections&quot; /y" />
         <Exec Condition="'$(JellyfinVersion)' == '10.10.7'"     Command="xcopy $(OutDir) &quot;C:\ProgramData\Jellyfin\Server_10_10_7\plugins\HomeScreenSections&quot; /y" />
     </Target>
 </Project>
