@@ -34,6 +34,4 @@ namespace Jellyfin.Plugin.HomeScreenSections.Model.Dto
         [JsonPropertyName("id")]
         public int Id { get; set; }
     }
-
-
 }
