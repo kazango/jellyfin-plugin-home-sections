@@ -7,7 +7,6 @@ using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Plugins;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.HomeScreenSections
 {
@@ -19,9 +18,8 @@ namespace Jellyfin.Plugin.HomeScreenSections
             serviceCollection.AddHttpClient();
             serviceCollection.AddSingleton<ArrApiService>(services =>
             {
-                var httpClientFactory = services.GetRequiredService<IHttpClientFactory>();
-                var logger = services.GetRequiredService<ILogger<ArrApiService>>();
-                return new ArrApiService(logger, httpClientFactory.CreateClient());
+                IHttpClientFactory httpClientFactory = services.GetRequiredService<IHttpClientFactory>();
+                return ActivatorUtilities.CreateInstance<ArrApiService>(services, httpClientFactory.CreateClient());
             });
             serviceCollection.AddSingleton<IHomeScreenManager, HomeScreenManager>(services =>
             {
