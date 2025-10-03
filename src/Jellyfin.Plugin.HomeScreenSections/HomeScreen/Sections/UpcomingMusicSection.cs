@@ -56,7 +56,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             ArrImageDto? albumImage = calendarItem.Images?.FirstOrDefault(img => 
                 string.Equals(img.CoverType, "cover", StringComparison.OrdinalIgnoreCase));
 
-            Dictionary<string, string> providerIds = new()
+            Dictionary<string, string> providerIds = new Dictionary<string, string>
             {
                 { "LidarrAlbumId", calendarItem.Id.ToString() },
                 { "FormattedDate", countdownText },

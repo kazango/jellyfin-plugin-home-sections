@@ -58,7 +58,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 string.Equals(img.CoverType, "poster", StringComparison.OrdinalIgnoreCase));
 
             // Create provider IDs to store external image URL and metadata
-            Dictionary<string, string> providerIds = new()
+            Dictionary<string, string> providerIds = new Dictionary<string, string>
             {
                 { "RadarrMovieId", calendarItem.Id.ToString() },
                 { "YearInfo", yearInfo },

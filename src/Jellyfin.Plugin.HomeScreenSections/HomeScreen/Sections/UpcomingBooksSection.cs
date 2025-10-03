@@ -55,7 +55,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             ArrImageDto? posterImage = calendarItem.Images?.FirstOrDefault(img => 
                 string.Equals(img.CoverType, "cover", StringComparison.OrdinalIgnoreCase));
 
-            Dictionary<string, string> providerIds = new()
+            Dictionary<string, string> providerIds = new Dictionary<string, string>
             {
                 { "ReadarrBookId", calendarItem.Id.ToString() },
                 { "FormattedDate", countdownText },
