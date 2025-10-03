@@ -26,14 +26,6 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         
         public string? DefaultBooksLibraryId { get; set; } = "";
 
-        public class ArrConfig
-        {
-            public string? ApiKey { get; set; } = "";
-            public string? Url { get; set; } = "";
-            public int UpcomingTimeframeValue { get; set; }
-            public TimeframeUnit UpcomingTimeframeUnit { get; set; }
-        }
-
         public ArrConfig Sonarr { get; set; } = new ArrConfig { UpcomingTimeframeValue = 1, UpcomingTimeframeUnit = TimeframeUnit.Weeks };
 
         public ArrConfig Radarr { get; set; } = new ArrConfig { UpcomingTimeframeValue = 3, UpcomingTimeframeUnit = TimeframeUnit.Months };
@@ -85,4 +77,12 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         
         public SectionViewMode ViewMode { get; set; } = SectionViewMode.Landscape;
     }
+    
+    public class ArrConfig
+    {
+        public string? ApiKey { get; set; } = "";
+        public string? Url { get; set; } = "";
+        public int UpcomingTimeframeValue { get; set; }
+        public TimeframeUnit UpcomingTimeframeUnit { get; set; }
+    }   
 }
