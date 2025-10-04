@@ -366,9 +366,14 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             client.BaseAddress = new Uri(jellyseerrUrl);
             client.DefaultRequestHeaders.Add("X-Api-Key", HomeScreenSectionsPlugin.Instance.Configuration.JellyseerrApiKey);
             
-            HttpResponseMessage usersResponse = await client.GetAsync("/api/v1/user");
-            string userResponseRaw = await usersResponse.Content.ReadAsStringAsync();
-            int jellyseerrUserId = JObject.Parse(userResponseRaw).Value<JArray>("results").OfType<JObject>().FirstOrDefault(x => x.Value<string>("jellyfinUsername") == user.Username).Value<int>("id");
+            HttpResponseMessage usersResponse = client.GetAsync($"/api/v1/user?q={user.Username}").GetAwaiter().GetResult();
+            string userResponseRaw = usersResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            int? jellyseerrUserId = JObject.Parse(userResponseRaw).Value<JArray>("results")!.OfType<JObject>().FirstOrDefault(x => x.Value<string>("jellyfinUsername") == user.Username)?.Value<int>("id");
+
+            if (jellyseerrUserId == null)
+            {
+                return BadRequest();
+            }
             
             client.DefaultRequestHeaders.Add("X-Api-User", jellyseerrUserId.ToString());
 
