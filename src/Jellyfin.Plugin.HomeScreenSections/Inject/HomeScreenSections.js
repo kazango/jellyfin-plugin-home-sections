@@ -33,6 +33,10 @@ if (typeof HomeScreenSectionsHandler == 'undefined') {
                 }),
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json'
+            }).then(function(response) {
+                Dashboard.alert("Item successfully requested");
+            }, function(error) {
+                Dashboard.alert("Item request failed");
             })
         }
     };
