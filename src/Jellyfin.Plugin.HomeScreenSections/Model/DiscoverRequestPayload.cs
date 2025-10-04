@@ -21,5 +21,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Model
 
         [JsonPropertyName("mediaId")]
         public int MediaId { get; set; }
+        
+        [JsonPropertyName("seasons")]
+        public string? Seasons { get; set; }
     }
 }

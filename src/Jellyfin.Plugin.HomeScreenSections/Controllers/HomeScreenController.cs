@@ -380,7 +380,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             HttpResponseMessage requestResponse = await client.PostAsync("/api/v1/request", JsonContent.Create(new JellyseerrRequestPayload()
             {
                 MediaType = payload.MediaType,
-                MediaId = payload.MediaId
+                MediaId = payload.MediaId,
+                Seasons = payload.MediaType == "tv" ? "all" : null
             }));
 
             string responseContent = await requestResponse.Content.ReadAsStringAsync();
