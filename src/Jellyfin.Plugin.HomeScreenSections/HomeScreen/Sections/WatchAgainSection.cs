@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Jellyfin.Plugin.HomeScreenSections.Attributes;
 using Jellyfin.Plugin.HomeScreenSections.Configuration;
 using Jellyfin.Plugin.HomeScreenSections.JellyfinVersionSpecific;
 using Jellyfin.Plugin.HomeScreenSections.Library;
@@ -104,14 +105,14 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 
 			{
 				IEnumerable<BaseItem> collections = CollectionManagerProxy.GetCollections(user)
-					.Where(x => x.IsPlayed(user, null))
+					.Where(x => x.IsPlayedVersionSpecific(user))
 					.Select(x =>
 					{
 						IReadOnlyList<BaseItem>? children = x.GetChildren(user, true, null);
 
-						if (children.Any())
+						if (children.Count(y => y is Movie) > 1)
 						{
-							return children.Cast<Movie>().OrderBy(y => y.PremiereDate).First();
+							return children.OfType<Movie>().OrderBy(y => y.PremiereDate).First();
 						}
 
 						return null;
@@ -133,7 +134,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
 				IEnumerable<Series>? series = LibraryManager.GetItemList(new InternalItemsQuery
 				{
 					IncludeItemTypes = new[] { BaseItemKind.Series }
-				}).Cast<Series>().Where(x => x.IsPlayed(user, null));
+				}).Cast<Series>().Where(x => x.IsPlayedVersionSpecific(user));
 				EpisodeEqualityComparer? eqComp = new EpisodeEqualityComparer();
 
 				IEnumerable<BaseItem?> firstEpisodes = series
