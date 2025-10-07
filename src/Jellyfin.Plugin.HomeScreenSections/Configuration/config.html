@@ -583,12 +583,13 @@
 
                 function setButtonState(button, loading, originalText) {
                     button.disabled = loading;
-                    button.innerHTML = loading ? '<span>Busting Cache...</span>' : `<span>${originalText}</span>`;
+                    button.querySelector('span').textContent = loading ? 'Busting Cache...' : originalText;
                 }
 
                 if (btnBustHomeSectionsCache) {
+                    const originalText = btnBustHomeSectionsCache.querySelector('span').textContent;
                     btnBustHomeSectionsCache.addEventListener('click', function() {
-                        setButtonState(btnBustHomeSectionsCache, true, 'Bust Static Assets Cache');
+                        setButtonState(btnBustHomeSectionsCache, true, originalText);
 
                         window.ApiClient.ajax({
                             url: window.ApiClient.getUrl('HomeScreen/BustCache'),
@@ -604,14 +605,15 @@
                             console.error('Static assets cache bust error:', error);
                             showStatus('Failed to bust static assets cache', true);
                         }).finally(() => {
-                            setButtonState(btnBustHomeSectionsCache, false, 'Bust Static Assets Cache');
+                            setButtonState(btnBustHomeSectionsCache, false, originalText);
                         });
                     });
                 }
 
                 if (btnBustAllCaches) {
+                    const originalText = btnBustAllCaches.querySelector('span').textContent;
                     btnBustAllCaches.addEventListener('click', function() {
-                        setButtonState(btnBustAllCaches, true, 'Bust All Caches (Assets + Index)');
+                        setButtonState(btnBustAllCaches, true, originalText);
                         
                         // First bust static assets cache (Home Sections)
                         const staticAssetsPromise = window.ApiClient.ajax({
@@ -648,9 +650,9 @@
                                 } else if (staticResult.status === 'fulfilled' && transformResult.status === 'rejected') {
                                     console.warn('Transformation cache bust failed:', transformResult.reason);
                                     if (transformResult.reason?.status === 404) {
-                                        message = 'Static assets cache busted - transformation plugin not found or plugin not registered';
+                                        message = 'Static assets cache busted - file-transformation plugin not found or plugin not registered';
                                     } else {
-                                        message = 'Static assets cache busted - transformation cache failed (check console)';
+                                        message = 'Static assets cache busted - file-transformation cache failed (check console)';
                                     }
                                 } else if (staticResult.status === 'rejected') {
                                     console.error('Static assets cache bust failed:', staticResult.reason);
@@ -662,7 +664,7 @@
                                 
                                 showStatus(message, isError);
                             }).finally(() => {
-                                setButtonState(btnBustAllCaches, false, 'Bust All Caches (Assets + Index)');
+                                setButtonState(btnBustAllCaches, false, originalText);
                             });
                     });
                 }
