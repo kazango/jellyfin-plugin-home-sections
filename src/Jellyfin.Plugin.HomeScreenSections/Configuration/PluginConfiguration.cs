@@ -43,8 +43,6 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
 
         public int CacheTimeoutSeconds { get; set; } = 86400;
 
-        public bool HideWatchedItems { get; set; } = false;
-
         public SectionSettings[] SectionSettings { get; set; } = Array.Empty<SectionSettings>();
     }
 
@@ -78,6 +76,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         public int OrderIndex { get; set; }
         
         public SectionViewMode ViewMode { get; set; } = SectionViewMode.Landscape;
+
+        public bool HideWatchedItems { get; set; } = false;
     }
     
     public class ArrConfig

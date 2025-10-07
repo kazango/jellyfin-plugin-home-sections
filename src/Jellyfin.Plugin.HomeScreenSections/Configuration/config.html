@@ -40,13 +40,6 @@
                         </label>
                         <div class="fieldDescription">Can users enable/disable this plugin for their own view?</div>
                     </div>
-                    <div class="checkboxContainer checkboxContainer-withDescription">
-                        <label class="emby-checkbox-label">
-                            <input id="hideWatchedItems" type="checkbox" is="emby-checkbox" class="emby-checkbox">
-                            <span>Hide Watched Items</span>
-                        </label>
-                        <div class="fieldDescription">Hide watched movies and shows?</div>
-                    </div>
                 </div>
             </fieldset>
 
@@ -286,6 +279,7 @@
                             <th style="text-align: center; vertical-align: middle; padding: 8px 12px; font-weight: bold;">Order</th>
                             <th style="text-align: center; vertical-align: middle; padding: 8px 12px; font-weight: bold;">Enabled</th>
                             <th style="text-align: center; vertical-align: middle; padding: 8px 12px; font-weight: bold;">User Override</th>
+                            <th style="text-align: center; vertical-align: middle; padding: 8px 12px; font-weight: bold;">Hide Watched</th>
                             <th style="text-align: center; vertical-align: middle; padding: 8px 12px; font-weight: bold;">Min</th>
                             <th style="text-align: center; vertical-align: middle; padding: 8px 12px; font-weight: bold;">Max</th>
                             <th style="text-align: center; vertical-align: middle; padding: 8px 12px; font-weight: bold;">View Mode</th>
@@ -326,6 +320,16 @@
             <td style="text-align: center; vertical-align: middle; padding: 8px 12px;">
                 <label style="width: 0;" class="emby-checkbox-label">
                     <input data-id="chkSectionUserOverrideAllowed" type="checkbox" is="emby-checkbox" data-embycheckbox="true" class="emby-checkbox">
+                    <span class="checkboxLabel"></span>
+                    <span class="checkboxOutline">
+                        <span class="material-icons checkboxIcon checkboxIcon-checked check" aria-hidden="true"></span>
+                        <span class="material-icons checkboxIcon checkboxIcon-unchecked " aria-hidden="true"></span>
+                    </span>
+                </label>
+            </td>
+                        <td style="text-align: center; vertical-align: middle; padding: 8px 12px;">
+                <label style="width: 0;" class="emby-checkbox-label">
+                    <input data-id="chkHideWatchedItems" type="checkbox" is="emby-checkbox" data-embycheckbox="true" class="emby-checkbox">
                     <span class="checkboxLabel"></span>
                     <span class="checkboxOutline">
                         <span class="material-icons checkboxIcon checkboxIcon-checked check" aria-hidden="true"></span>
@@ -428,6 +432,15 @@
                     viewModeSelect.setAttribute('disabled', true);
                 }
 
+                const hideWatchedCheckbox = template.querySelector('[data-id=chkHideWatchedItems]');
+                const hideWatchedLabel = hideWatchedCheckbox.closest('.emby-checkbox-label');
+                hideWatchedCheckbox.checked = sectionConfig.HideWatchedItems
+                if (!sectionInfo.AllowHideWatched && hideWatchedLabel) {
+                    hideWatchedCheckbox.setAttribute('disabled', true);
+                    hideWatchedLabel.style.opacity = '0.5';
+                    hideWatchedLabel.style.cursor = 'default';
+                }
+
                 sectionWrapper.appendChild(template);
             }
 
@@ -470,7 +483,6 @@
                 const config = {
                     Enabled: document.querySelector('#globalEnabledDefault').checked,
                     AllowUserOverride: document.querySelector('#globalAllowUserOverride').checked,
-                    HideWatchedItems: document.querySelector('#hideWatchedItems').checked,
                     LibreTranslateUrl: document.querySelector('[data-id=txtLibreTranslateUrl]').value,
                     LibreTranslateApiKey: document.querySelector('[data-id=txtLibreTranslateApiKey]').value,
                     JellyseerrUrl: document.querySelector('[data-id=txtJellyseerrUrl]').value,
@@ -500,6 +512,7 @@
                         UpperLimit: row.querySelector('[data-id=txtSectionMaxLimit]').value,
                         OrderIndex: row.querySelector('[data-id=txtOrderIndex]').value,
                         ViewMode: row.querySelector('[data-id=viewModeSelect]').value,
+                        HideWatchedItems: row.querySelector('[data-id=chkHideWatchedItems]').checked,
                     };
                     config.SectionSettings.push(sectionConfig);
                 });
@@ -516,7 +529,6 @@
                     .then(function (config) {
                         document.querySelector('#globalEnabledDefault').checked = config.Enabled;
                         document.querySelector('#globalAllowUserOverride').checked = config.AllowUserOverride;
-                        document.querySelector('#hideWatchedItems').checked = config.HideWatchedItems || false;
                         document.querySelector('[data-id=txtLibreTranslateUrl]').value = config.LibreTranslateUrl;
                         document.querySelector('[data-id=txtLibreTranslateApiKey]').value = config.LibreTranslateApiKey;
                         document.querySelector('[data-id=txtJellyseerrUrl]').value = config.JellyseerrUrl;
@@ -561,7 +573,8 @@
                                         LowerLimit: 1,
                                         UpperLimit: sectionType.Limit,
                                         ViewMode: sectionType.ViewMode,
-                                        OrderIndex: 999
+                                        OrderIndex: 999,
+                                        HideWatchedItems: false
                                     };
                                 }
                                 addSectionSetting(sectionConfig, sectionType);

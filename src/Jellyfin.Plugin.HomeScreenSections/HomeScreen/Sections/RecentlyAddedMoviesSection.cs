@@ -79,8 +79,9 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             };
 
             var config = HomeScreenSectionsPlugin.Instance?.Configuration;
-            // If HideWatchedItems is enabled in config, set isPlayed to false to hide watched items; otherwise, include all.
-            bool? isPlayed = config?.HideWatchedItems == true ? false : null;
+            var sectionSettings = config?.SectionSettings.FirstOrDefault(x => x.SectionId == Section);
+            // If HideWatchedItems is enabled for this section, set isPlayed to false to hide watched items; otherwise, include all.
+            bool? isPlayed = sectionSettings?.HideWatchedItems == true ? false : null;
 
             IReadOnlyList<BaseItem> recentlyAddedMovies = m_libraryManager.GetItemList(new InternalItemsQuery(user)
             {
@@ -151,7 +152,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 Route = Route,
                 Limit = Limit ?? 1,
                 OriginalPayload = OriginalPayload,
-                ViewMode = SectionViewMode.Landscape
+                ViewMode = SectionViewMode.Landscape,
+                AllowHideWatched = true
             };
         }
     }
