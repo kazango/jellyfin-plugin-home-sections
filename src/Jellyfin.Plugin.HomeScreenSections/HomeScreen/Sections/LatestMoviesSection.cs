@@ -62,6 +62,10 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             
             User? user = m_userManager.GetUserById(payload.UserId);
 
+            var config = HomeScreenSectionsPlugin.Instance?.Configuration;
+            // If HideWatchedItems is enabled in config, set isPlayed to false to hide watched items; otherwise, include all.
+            bool? isPlayed = config?.HideWatchedItems == true ? false : null;
+
             IReadOnlyList<BaseItem> latestMovies = m_libraryManager.GetItemList(new InternalItemsQuery(user)
             {
                 IncludeItemTypes = new[]
@@ -72,7 +76,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 OrderBy = new[]
                 {
                     (ItemSortBy.PremiereDate, SortOrder.Descending)
-                }
+                },
+                IsPlayed = isPlayed
             });
 
             return new QueryResult<BaseItemDto>(Array.ConvertAll(latestMovies.ToArray(),

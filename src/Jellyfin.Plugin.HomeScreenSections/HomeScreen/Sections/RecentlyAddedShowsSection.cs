@@ -79,12 +79,17 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 ImageType.Primary,
             };
 
+            var config = HomeScreenSectionsPlugin.Instance?.Configuration;
+            // If HideWatchedItems is enabled in config, set isPlayed to false to hide watched items; otherwise, include all.
+            bool? isPlayed = config?.HideWatchedItems == true ? false : null;
+
             IReadOnlyList<BaseItem> episodes = m_libraryManager.GetItemList(new InternalItemsQuery(user)
             {
                 IncludeItemTypes = new[] { BaseItemKind.Episode },
                 OrderBy = new[] { (ItemSortBy.DateCreated, SortOrder.Descending) },
                 DtoOptions = new DtoOptions
-                    { Fields = new[] { ItemFields.ParentId }, EnableImages = false }
+                    { Fields = new[] { ItemFields.ParentId }, EnableImages = false },
+                IsPlayed = isPlayed
             });
             
             List<BaseItem> series = episodes

@@ -40,6 +40,13 @@
                         </label>
                         <div class="fieldDescription">Can users enable/disable this plugin for their own view?</div>
                     </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="hideWatchedItems" type="checkbox" is="emby-checkbox" class="emby-checkbox">
+                            <span>Hide Watched Items</span>
+                        </label>
+                        <div class="fieldDescription">Hide watched movies and shows?</div>
+                    </div>
                 </div>
             </fieldset>
 
@@ -463,6 +470,7 @@
                 const config = {
                     Enabled: document.querySelector('#globalEnabledDefault').checked,
                     AllowUserOverride: document.querySelector('#globalAllowUserOverride').checked,
+                    HideWatchedItems: document.querySelector('#hideWatchedItems').checked,
                     LibreTranslateUrl: document.querySelector('[data-id=txtLibreTranslateUrl]').value,
                     LibreTranslateApiKey: document.querySelector('[data-id=txtLibreTranslateApiKey]').value,
                     JellyseerrUrl: document.querySelector('[data-id=txtJellyseerrUrl]').value,
@@ -508,6 +516,7 @@
                     .then(function (config) {
                         document.querySelector('#globalEnabledDefault').checked = config.Enabled;
                         document.querySelector('#globalAllowUserOverride').checked = config.AllowUserOverride;
+                        document.querySelector('#hideWatchedItems').checked = config.HideWatchedItems || false;
                         document.querySelector('[data-id=txtLibreTranslateUrl]').value = config.LibreTranslateUrl;
                         document.querySelector('[data-id=txtLibreTranslateApiKey]').value = config.LibreTranslateApiKey;
                         document.querySelector('[data-id=txtJellyseerrUrl]').value = config.JellyseerrUrl;

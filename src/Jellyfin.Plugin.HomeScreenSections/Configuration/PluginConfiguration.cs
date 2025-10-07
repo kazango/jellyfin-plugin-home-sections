@@ -43,6 +43,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
 
         public int CacheTimeoutSeconds { get; set; } = 86400;
 
+        public bool HideWatchedItems { get; set; } = false;
+
         public SectionSettings[] SectionSettings { get; set; } = Array.Empty<SectionSettings>();
     }
 
