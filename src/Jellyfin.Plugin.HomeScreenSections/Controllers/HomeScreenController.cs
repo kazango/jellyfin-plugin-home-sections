@@ -352,6 +352,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
         }
 
         [HttpPost("DiscoverRequest")]
+        [Authorize]
         public async Task<ActionResult> MakeDiscoverRequest([FromServices] IUserManager userManager, [FromBody] DiscoverRequestPayload payload)
         {
             User? user = userManager.GetUserById(payload.UserId);

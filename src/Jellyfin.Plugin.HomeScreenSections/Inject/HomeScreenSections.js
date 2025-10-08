@@ -23,9 +23,9 @@ if (typeof HomeScreenSectionsHandler == 'undefined') {
             });
         },
         clickHandler: function(event) {
-            $.ajax({
+            window.ApiClient.ajax({
                 url: window.ApiClient.getUrl("HomeScreen/DiscoverRequest"),
-                method: "POST",
+                type: "POST",
                 data: JSON.stringify({
                     UserId: window.ApiClient._currentUser.Id,
                     MediaType: $(this).data('media-type'),
