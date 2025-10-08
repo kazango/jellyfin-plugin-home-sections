@@ -62,6 +62,11 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
             
             User? user = m_userManager.GetUserById(payload.UserId);
 
+            var config = HomeScreenSectionsPlugin.Instance?.Configuration;
+            var sectionSettings = config?.SectionSettings.FirstOrDefault(x => x.SectionId == Section);
+            // If HideWatchedItems is enabled for this section, set isPlayed to false to hide watched items; otherwise, include all.
+            bool? isPlayed = sectionSettings?.HideWatchedItems == true ? false : null;
+
             IReadOnlyList<BaseItem> latestMovies = m_libraryManager.GetItemList(new InternalItemsQuery(user)
             {
                 IncludeItemTypes = new[]
@@ -72,7 +77,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 OrderBy = new[]
                 {
                     (ItemSortBy.PremiereDate, SortOrder.Descending)
-                }
+                },
+                IsPlayed = isPlayed
             });
 
             return new QueryResult<BaseItemDto>(Array.ConvertAll(latestMovies.ToArray(),
@@ -128,7 +134,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 Route = Route,
                 Limit = Limit ?? 1,
                 OriginalPayload = OriginalPayload,
-                ViewMode = SectionViewMode.Landscape
+                ViewMode = SectionViewMode.Landscape,
+                AllowHideWatched = true
             };
         }
     }

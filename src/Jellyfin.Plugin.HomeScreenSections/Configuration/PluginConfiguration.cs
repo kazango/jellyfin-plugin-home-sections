@@ -76,6 +76,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         public int OrderIndex { get; set; }
         
         public SectionViewMode ViewMode { get; set; } = SectionViewMode.Landscape;
+
+        public bool HideWatchedItems { get; set; } = false;
     }
     
     public class ArrConfig

@@ -79,12 +79,18 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 ImageType.Primary,
             };
 
+            var config = HomeScreenSectionsPlugin.Instance?.Configuration;
+            var sectionSettings = config?.SectionSettings.FirstOrDefault(x => x.SectionId == Section);
+            // If HideWatchedItems is enabled for this section, set isPlayed to false to hide watched items; otherwise, include all.
+            bool? isPlayed = sectionSettings?.HideWatchedItems == true ? false : null;
+
             IReadOnlyList<BaseItem> episodes = m_libraryManager.GetItemList(new InternalItemsQuery(user)
             {
                 IncludeItemTypes = new[] { BaseItemKind.Episode },
                 OrderBy = new[] { (ItemSortBy.DateCreated, SortOrder.Descending) },
                 DtoOptions = new DtoOptions
-                    { Fields = new[] { ItemFields.ParentId }, EnableImages = false }
+                    { Fields = new[] { ItemFields.ParentId }, EnableImages = false },
+                IsPlayed = isPlayed
             });
             
             List<BaseItem> series = episodes
@@ -151,7 +157,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen.Sections
                 Route = Route,
                 Limit = Limit ?? 1,
                 OriginalPayload = OriginalPayload,
-                ViewMode = SectionViewMode.Landscape
+                ViewMode = SectionViewMode.Landscape,
+                AllowHideWatched = true
             };
         }
     }
