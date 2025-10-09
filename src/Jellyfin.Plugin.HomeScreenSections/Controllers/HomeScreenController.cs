@@ -355,7 +355,15 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
         [Authorize]
         public async Task<ActionResult> MakeDiscoverRequest([FromServices] IUserManager userManager, [FromBody] DiscoverRequestPayload payload)
         {
-            User? user = userManager.GetUserById(payload.UserId);
+            string? userIdString = User.Claims.FirstOrDefault(x => x.Type.Equals("Jellyfin-UserId", StringComparison.OrdinalIgnoreCase))?.Value;
+            Guid userId = string.IsNullOrEmpty(userIdString) ? Guid.Empty : Guid.Parse(userIdString);
+
+            if (userId == Guid.Empty)
+            {
+                return Forbid();
+            }
+            
+            User? user = userManager.GetUserById(userId);
             string? jellyseerrUrl = HomeScreenSectionsPlugin.Instance.Configuration.JellyseerrUrl;
 
             if (jellyseerrUrl == null)
