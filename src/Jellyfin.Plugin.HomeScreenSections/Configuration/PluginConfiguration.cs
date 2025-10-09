@@ -50,7 +50,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
     {
         Portrait,
         Landscape,
-        Square
+        Square,
+        Small
     }
 
     public enum TimeframeUnit
