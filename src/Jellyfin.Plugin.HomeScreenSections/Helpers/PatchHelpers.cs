@@ -23,8 +23,14 @@ public class PatchHelpers
             .FirstOrDefault(x => x.FullName?.Contains("Jellyfin.Plugin.Streamyfin") ?? false)?
             .GetTypes()
             .FirstOrDefault(x => x.Name == "StreamyfinController");
-        s_harmony.Patch(streamyfinControllerType.GetMethod("getConfig"),
-            postfix: streamyfinConfigurationPatch);
+
+        // If the type couldn't be found the user probably doesn't have Streamyfin plugin, so there's nothing
+        // we can do about that.
+        if (streamyfinControllerType != null)
+        {
+            s_harmony.Patch(streamyfinControllerType.GetMethod("getConfig"),
+                postfix: streamyfinConfigurationPatch);
+        }
     }
 
     private static void Patch_Streamyfin_Configuration(ref object __result, object __instance)
