@@ -73,6 +73,7 @@ namespace Jellyfin.Plugin.HomeScreenSections.HomeScreen
             RegisterResultsDelegate<UpcomingMusicSection>();
             RegisterResultsDelegate<UpcomingBooksSection>();
             
+            RegisterResultsDelegate<GenreSection>();
             // Removed from public access while its still in dev.
             //RegisterResultsDelegate<TopTenSection>();
         }
