@@ -14,9 +14,15 @@ namespace Jellyfin.Plugin.HomeScreenSections.Helpers;
 public class PatchHelpers
 {
     private static Harmony s_harmony = new Harmony("dev.iamparadox.jellyfin.hss");
+    private static bool s_patched = false;
 
     public static void SetupPatches()
     {
+        if (s_patched)
+        {
+            return;
+        }
+        
         HarmonyMethod streamyfinConfigurationPatch = new HarmonyMethod(typeof(PatchHelpers).GetMethod(nameof(PatchHelpers.Patch_Streamyfin_Configuration), BindingFlags.NonPublic | BindingFlags.Static));
 
         Type? streamyfinControllerType = AssemblyLoadContext.All.SelectMany(x => x.Assemblies)
@@ -30,6 +36,7 @@ public class PatchHelpers
         {
             s_harmony.Patch(streamyfinControllerType.GetMethod("getConfig"),
                 postfix: streamyfinConfigurationPatch);
+            s_patched = true;
         }
     }
 
