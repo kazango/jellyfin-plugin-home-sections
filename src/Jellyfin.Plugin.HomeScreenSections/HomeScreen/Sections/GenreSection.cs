@@ -96,7 +96,10 @@ public class GenreSection : IHomeScreenSection
             m_userGenreCache.Add(userId!.Value, GetGenresForUser(user));
         }
 
-        var userGenreScores = m_userGenreCache[userId!.Value];
+        var userGenreScores = m_userGenreCache[userId!.Value]
+            .Where(x => !otherInstances.Any(y => y.AdditionalData == x.Genre))
+            .ToArray();
+        
         int totalScore = userGenreScores.Sum(x => x.Score);
         Random rnd = new Random();
 
@@ -104,16 +107,33 @@ public class GenreSection : IHomeScreenSection
         bool foundNew = false;
         do
         {
-            int randomScore = rnd.Next(0, totalScore);
-
-            foreach (var userGenre in userGenreScores)
+            int randomScore = 0;
+            if (totalScore != 0)
             {
-                randomScore -= userGenre.Score;
+                randomScore = rnd.Next(0, totalScore);
+            }
 
-                if (randomScore < 0)
+            if (totalScore == 0)
+            {
+                randomScore = rnd.Next(0, userGenreScores.Length);
+                selectedGenre = userGenreScores[randomScore].Genre;
+            }
+            else
+            {
+                foreach (var userGenre in userGenreScores)
                 {
-                    selectedGenre = userGenre.Genre;
-                    break;
+                    randomScore -= userGenre.Score;
+
+                    if (randomScore < 0)
+                    {
+                        selectedGenre = userGenre.Genre;
+                        break;
+                    }
+                }
+
+                if (selectedGenre == null)
+                {
+                    selectedGenre = userGenreScores.Last().Genre;
                 }
             }
 
@@ -170,7 +190,6 @@ public class GenreSection : IHomeScreenSection
 
             score += userData.IsFavorite ? favouriteScore : 0;
             score += (userData.Likes ?? false) ? likedScore : 0;
-            score += userData.PlayCount * scorePerPlay;
 
             return x.Genres.Select(genre => new
             {
@@ -181,7 +200,7 @@ public class GenreSection : IHomeScreenSection
         {
             Genre = x.Key,
             Score = x.Sum(y => y.Score)
-        });
+        }).ToArray();
         
         InternalItemsQuery? recentlyWatchedQuery = new InternalItemsQuery(user)
         {
@@ -194,31 +213,74 @@ public class GenreSection : IHomeScreenSection
             ParentId = Guid.Empty,
             Recursive = true,
             IsPlayed = true,
-            IsFavoriteOrLiked = false, // Ignore all the favourited and liked movies as we've already catered for them and their watches.
             DtoOptions = dtoOptions
         };
 
-        var recentlyPlayedMovies = m_libraryManager.GetItemList(recentlyWatchedQuery)
-            .SelectMany(x =>
-            {
-                int score = 0;
-                var userData = m_userDataManager.GetUserData(user, x);
+        var test = m_libraryManager.GetItemList(recentlyWatchedQuery);
+        var recentlyPlayedMovies = test.SelectMany(x =>
+        {
+            int score = 0;
+            var userData = m_userDataManager.GetUserData(user, x);
 
+            if ((userData.LastPlayedDate ?? DateTime.MinValue) > DateTime.Today.Subtract(TimeSpan.FromDays(14)))
+            {
                 score += recentlyWatchedScore;
-                score += userData.PlayCount * scorePerPlay;
+            }
 
-                return x.Genres.Select(genre => new
-                {
-                    Genre = genre,
-                    Score = score
-                });
-            }).GroupBy(x => x.Genre).Select(x => new
+            return m_libraryManager.GetGenres(new InternalItemsQuery()
             {
-                Genre = x.Key,
-                Score = x.Sum(y => y.Score)
+                ItemIds = new[] { x.Id }
+            }).Items.Select(genre => new
+            {
+                Genre = genre.Item.Name,
+                Score = score
             });
+        }).GroupBy(x => x.Genre).Select(x => new
+        {
+            Genre = x.Key,
+            Score = x.Sum(y => y.Score)
+        }).ToArray();
 
-        scoredGenres = scoredGenres.Concat(recentlyPlayedMovies);
+        var allGenres = m_libraryManager.GetGenres(new InternalItemsQuery()
+        {
+            IncludeItemTypes = new[]
+            {
+                BaseItemKind.Movie
+            },
+            User = user
+        }).Items.Where(x => x.ItemCounts.MovieCount > 0)
+            .Select(x =>
+            {
+                var items = m_libraryManager.GetItemList(new InternalItemsQuery()
+                {
+                    IncludeItemTypes = new[]
+                    {
+                        BaseItemKind.Movie
+                    },
+                    GenreIds = new[] { x.Item.Id }
+                });
+
+                int playCount = items.Sum(y =>
+                {
+                    var userData = m_userDataManager.GetUserData(user, y);
+
+                    return userData.PlayCount;
+                });
+                
+                int score = playCount * scorePerPlay;
+                return new
+                {
+                    Genre = (x.Item as Genre)?.Name, 
+                    Score = score
+                };
+            }).ToArray();
+        
+        scoredGenres = scoredGenres
+            .Concat(recentlyPlayedMovies)
+            .Concat(allGenres)
+            .GroupBy(x => x.Genre)
+            .Select(x => new { Genre = x.Key, Score = x.Sum(y => y.Score) })
+            .ToArray();
 
         return scoredGenres.Select(x => (x.Genre, x.Score)).ToArray();
     }
