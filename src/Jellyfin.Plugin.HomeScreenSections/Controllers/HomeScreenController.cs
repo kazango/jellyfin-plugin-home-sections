@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -250,26 +251,31 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
                 .OrderBy(x => x.OrderIndex)
                 .GroupBy(x => x.OrderIndex);
 
-            foreach (IGrouping<int, SectionSettings> orderedSections in groupedOrderedSections)
+            ConcurrentDictionary<int, List<IHomeScreenSection>> groupedSections = new ConcurrentDictionary<int, List<IHomeScreenSection>>();
+            Parallel.ForEach(groupedOrderedSections, orderedSections =>
             {
-                List<IHomeScreenSection> tmpPluginSections = new List<IHomeScreenSection>(); // we want these randomly distributed among each other.
-                
-                foreach (SectionSettings sectionSettings in orderedSections)
+                ConcurrentBag<IHomeScreenSection> tmpPluginSections = new ConcurrentBag<IHomeScreenSection>(); // we want these randomly distributed among each other.
+
+                Parallel.ForEach(orderedSections, sectionSettings =>
                 {
-                    IHomeScreenSection? sectionType = sectionTypes.FirstOrDefault(x => x.Section == sectionSettings.SectionId);
+                    IHomeScreenSection? sectionType =
+                        sectionTypes.FirstOrDefault(x => x.Section == sectionSettings.SectionId);
 
                     if (sectionType != null)
                     {
                         if (sectionType.Limit > 1)
                         {
                             Random rnd = new Random();
-                            int instanceCount = rnd.Next(sectionSettings?.LowerLimit ?? 0, sectionSettings?.UpperLimit ?? sectionType.Limit ?? 1);
-                            
+                            int instanceCount = rnd.Next(sectionSettings?.LowerLimit ?? 0,
+                                sectionSettings?.UpperLimit ?? sectionType.Limit ?? 1);
+
                             for (int i = 0; i < instanceCount; ++i)
                             {
-                                IHomeScreenSection[] tmpSectionInstances = tmpPluginSections.Where(x => x?.GetType() == sectionType.GetType())
-                                    .Concat(sectionInstances.Where(x => x.GetType() == sectionType.GetType())).ToArray();
-                            
+                                IHomeScreenSection[] tmpSectionInstances = tmpPluginSections
+                                    .Where(x => x?.GetType() == sectionType.GetType())
+                                    .Concat(sectionInstances.Where(x => x.GetType() == sectionType.GetType()))
+                                    .ToArray();
+
                                 tmpPluginSections.Add(sectionType.CreateInstance(userId, tmpSectionInstances));
                             }
                         }
@@ -278,11 +284,17 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
                             tmpPluginSections.Add(sectionType.CreateInstance(userId));
                         }
                     }
-                }
-                
-                tmpPluginSections.Shuffle();
-                
-                sectionInstances.AddRange(tmpPluginSections);
+                });
+
+                var sectionList = tmpPluginSections.ToList();
+                sectionList.Shuffle();
+
+                groupedSections.TryAdd(orderedSections.Key, sectionList);
+            });
+
+            foreach (var key in groupedSections.Keys.OrderBy(x => x))
+            {
+                sectionInstances.AddRange(groupedSections[key]);
             }
             
             List<HomeScreenSectionInfo> sections = sectionInstances.Where(x => x != null).Select(x =>
