@@ -227,6 +227,18 @@
                                 </div>
                             </div>
                         </details>
+                        <details>
+                            <summary style="cursor: pointer; font-weight: bold;">Third-Party Integrations</summary>
+                            <div style="padding-top: 1em;">
+                                <div class="checkboxContainer checkboxContainer-withDescription" style="margin-bottom: 1.5em;">
+                                    <label class="emby-checkbox-label">
+                                        <input id="globalStreamyfinHomeOverride" type="checkbox" is="emby-checkbox" class="emby-checkbox">
+                                        <span>Override Streamyfin Home</span>
+                                    </label>
+                                    <div class="fieldDescription">Should requests for the Streamyfin config overwrite the home section with a Home Screen Sections generation.</div>
+                                </div>
+                            </div>
+                        </details>
                     </div>
                 </fieldset>
 
@@ -501,6 +513,7 @@
                     DateDelimiter: document.querySelector('#dateDelimiter').value,
                     DeveloperMode: document.querySelector('#globalDeveloperMode').checked,
                     CacheTimeoutSeconds: document.querySelector('[data-id=txtCacheTimeoutSeconds]').value || 86400,
+                    OverrideStreamyfinHome: document.querySelector('#globalStreamyfinHomeOverride').checked,
                     SectionSettings: []
                 };
 
@@ -542,6 +555,7 @@
                         document.querySelector('#dateFormat').value = config.DateFormat || 'YYYY/MM/DD';
                         document.querySelector('#dateDelimiter').value = config.DateDelimiter || '/';
 
+                        document.querySelector('#globalStreamyfinHomeOverride').checked = config.OverrideStreamyfinHome;
                         document.querySelector('#globalDeveloperMode').checked = config.DeveloperMode;
                         document.querySelector('[data-id=txtCacheTimeoutSeconds]').value = config.CacheTimeoutSeconds || 86400;
 
