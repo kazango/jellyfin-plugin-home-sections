@@ -34,7 +34,7 @@ if (typeof HomeScreenSectionsHandler == 'undefined') {
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json'
             }).then(function(response) {
-                if (response.errors.length > 0) {
+                if (response.errors && response.errors.length > 0) {
                     Dashboard.alert("Item request failed. Check browser logs for details.");
                     console.error("Item request failed. Response including errors:");
                     console.error(response);
