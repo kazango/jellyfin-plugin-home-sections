@@ -34,7 +34,13 @@ if (typeof HomeScreenSectionsHandler == 'undefined') {
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json'
             }).then(function(response) {
-                Dashboard.alert("Item successfully requested");
+                if (response.errors.length > 0) {
+                    Dashboard.alert("Item request failed. Check browser logs for details.");
+                    console.error("Item request failed. Response including errors:");
+                    console.error(response);
+                } else {
+                    Dashboard.alert("Item successfully requested");
+                }
             }, function(error) {
                 Dashboard.alert("Item request failed");
             })

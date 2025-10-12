@@ -273,12 +273,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Controllers
             
             client.DefaultRequestHeaders.Add("X-Api-User", jellyseerrUserId.ToString());
 
-            HttpResponseMessage requestResponse = await client.PostAsync("/api/v1/request", JsonContent.Create(new JellyseerrRequestPayload()
-            {
-                MediaType = payload.MediaType,
-                MediaId = payload.MediaId,
-                Seasons = payload.MediaType == "tv" ? "all" : null
-            }));
+            HttpResponseMessage requestResponse = await client.PostAsync("/api/v1/request", JsonContent.Create(
+                JellyseerrRequestPayload.Create(payload.MediaType, payload.MediaId, payload.MediaType == "tv" ? "all" : null)));
 
             string responseContent = await requestResponse.Content.ReadAsStringAsync();
             
