@@ -21,29 +21,16 @@ namespace Jellyfin.Plugin.HomeScreenSections.Model
 
         [JsonPropertyName("mediaId")]
         public int MediaId { get; set; }
-        
-        public static JellyseerrRequestPayload Create(string mediaType, int mediaId, string? seasons = null)
-        {
-            if (seasons != null)
-            {
-                return new JellyseerrTvShowRequestPayload
-                {
-                    MediaType = mediaType,
-                    MediaId = mediaId,
-                    Seasons = seasons
-                };
-            }
-            
-            return new JellyseerrRequestPayload
-            {
-                MediaType = mediaType,
-                MediaId = mediaId
-            };
-        }
     }
 
-    public class JellyseerrTvShowRequestPayload : JellyseerrRequestPayload
+    public class JellyseerrTvShowRequestPayload
     {
+        [JsonPropertyName("mediaType")]
+        public string MediaType { get; set; }
+
+        [JsonPropertyName("mediaId")]
+        public int MediaId { get; set; }
+        
         [JsonPropertyName("seasons")]
         public string? Seasons { get; set; }
     }
