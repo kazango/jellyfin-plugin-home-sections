@@ -23,6 +23,8 @@ namespace Jellyfin.Plugin.HomeScreenSections.Configuration
         public string? DefaultTVShowsLibraryId { get; set; } = "";
         
         public string? DefaultMusicLibraryId { get; set; } = "";
+
+        public string? DefaultMusicVideosLibraryId { get; set; } = "";
         
         public string? DefaultBooksLibraryId { get; set; } = "";
 
