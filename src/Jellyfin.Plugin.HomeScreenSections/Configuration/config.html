@@ -210,6 +210,13 @@
                                     <div class="fieldDescription">Select the specific music library to use for navigation. Lists all underlying library folders (not grouped views).<br><strong>Requires Jellyfin restart to take effect.</strong></div>
                                 </div>
                                 <div class="inputContainer">
+                                    <label class="inputLabel inputLabelUnfocused" for="defaultMusicVideosLibrary">Default Music Videos Library</label>
+                                    <select is="emby-select" id="defaultMusicVideosLibrary" class="emby-select-withcolor emby-select">
+                                        <option value="">Default</option>
+                                    </select>
+                                    <div class="fieldDescription">Select the specific music videos library to use for navigation. Lists all underlying library folders (not grouped views).<br><strong>Requires Jellyfin restart to take effect.</strong></div>
+                                </div>
+                                <div class="inputContainer">
                                     <label class="inputLabel inputLabelUnfocused" for="defaultBooksLibrary">Default Books Library</label>
                                     <select is="emby-select" id="defaultBooksLibrary" class="emby-select-withcolor emby-select">
                                         <option value="">Default</option>
@@ -462,15 +469,17 @@
                     const moviesSelect = document.querySelector('#defaultMoviesLibrary');
                     const tvShowsSelect = document.querySelector('#defaultTVShowsLibrary');
                     const musicSelect = document.querySelector('#defaultMusicLibrary');
+                    const musicVideosSelect = document.querySelector('#defaultMusicVideosLibrary');
                     const booksSelect = document.querySelector('#defaultBooksLibrary');
 
                     moviesSelect.innerHTML = '<option value="">Default</option>';
                     tvShowsSelect.innerHTML = '<option value="">Default</option>';
                     musicSelect.innerHTML = '<option value="">Default</option>';
+                    musicVideosSelect.innerHTML = '<option value="">Default</option>';
                     booksSelect.innerHTML = '<option value="">Default</option>';
 
                     result.forEach(function (folder) {
-                         if (folder.CollectionType === 'movies' || folder.CollectionType === 'tvshows' || folder.CollectionType === 'music' || folder.CollectionType === 'books') {
+                         if (folder.CollectionType === 'movies' || folder.CollectionType === 'tvshows' || folder.CollectionType === 'music' || folder.CollectionType === 'musicvideos' || folder.CollectionType === 'books') {
                              const option = document.createElement('option');
                             let folderId = folder.ItemId;
                             if (folderId && !folderId.includes('-')) {
@@ -482,6 +491,7 @@
                             if(folder.CollectionType === 'movies') moviesSelect.appendChild(option);
                             if(folder.CollectionType === 'tvshows') tvShowsSelect.appendChild(option);
                             if(folder.CollectionType === 'music') musicSelect.appendChild(option);
+                            if(folder.CollectionType === 'musicvideos') musicVideosSelect.appendChild(option);
                             if(folder.CollectionType === 'books') booksSelect.appendChild(option);
                         }
                     });
@@ -504,6 +514,7 @@
                     DefaultMoviesLibraryId: document.querySelector('#defaultMoviesLibrary').value,
                     DefaultTVShowsLibraryId: document.querySelector('#defaultTVShowsLibrary').value,
                     DefaultMusicLibraryId: document.querySelector('#defaultMusicLibrary').value,
+                    DefaultMusicVideosLibraryId: document.querySelector('#defaultMusicVideosLibrary').value,
                     DefaultBooksLibraryId: document.querySelector('#defaultBooksLibrary').value,
                     ...Object.fromEntries(arrServiceConfigs.map(serviceConfig => [
                         serviceConfig.name, 
@@ -568,6 +579,9 @@
                             }
                             if (config.DefaultMusicLibraryId) {
                                 document.querySelector('#defaultMusicLibrary').value = config.DefaultMusicLibraryId;
+                            }
+                            if (config.DefaultMusicVideosLibraryId) {
+                                document.querySelector('#defaultMusicVideosLibrary').value = config.DefaultMusicVideosLibraryId;
                             }
                             if (config.DefaultBooksLibraryId) {
                                 document.querySelector('#defaultBooksLibrary').value = config.DefaultBooksLibraryId;
